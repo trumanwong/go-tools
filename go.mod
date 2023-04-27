@@ -1,4 +1,4 @@
-module go-tools
+module github.com/trumanwong/go-tools
 
 go 1.20
 
