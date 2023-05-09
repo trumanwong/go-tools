@@ -11,10 +11,12 @@ import (
 type AllowCors struct {
 	mode         string
 	allowOrigins []string
+	allowHeaders []string
+	allowMethods []string
 }
 
-func NewAllowCors(mode string, allowOrigins []string) *AllowCors {
-	return &AllowCors{mode: mode, allowOrigins: allowOrigins}
+func NewAllowCors(mode string, allowHeaders, allowMethods, allowOrigins []string) *AllowCors {
+	return &AllowCors{mode: mode, allowHeaders: allowHeaders, allowMethods: allowMethods, allowOrigins: allowOrigins}
 }
 
 func (cors *AllowCors) Handle() gin.HandlerFunc {
@@ -42,8 +44,8 @@ func (cors *AllowCors) Handle() gin.HandlerFunc {
 				}
 			}
 		}
-		ctx.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, PATCH")
-		ctx.Header("Access-Control-Allow-Headers", "Content-Type,Accept,Authorization,X-Requested-With,X-XSRF-TOKEN,x-csrf-token,Cache-Control,crm-token")
+		ctx.Header("Access-Control-Allow-Methods", strings.Join(cors.allowMethods, ","))
+		ctx.Header("Access-Control-Allow-Headers", strings.Join(cors.allowHeaders, ","))
 		ctx.Header("Access-Control-Allow-Credentials", "true")
 
 		if ctx.Request.Method == "OPTIONS" {
