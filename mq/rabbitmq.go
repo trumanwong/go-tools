@@ -9,13 +9,6 @@ import (
 	"time"
 )
 
-const (
-	// QueueLog 日志
-	QueueLog = "api4.0_queue_log"
-	// ExchangeXDelayedMessage 延迟队列名
-	ExchangeXDelayedMessage = "x-delayed-message"
-)
-
 type RabbitMQ struct {
 	name            string
 	logger          *log.Logger
