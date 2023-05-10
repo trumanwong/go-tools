@@ -1,6 +1,8 @@
 package helper
 
 import (
+	"github.com/gin-gonic/gin"
+	"os"
 	"regexp"
 	"strconv"
 )
@@ -46,4 +48,23 @@ func CheckIdCard(idCardStr string) bool {
 		return true
 	}
 	return false
+}
+
+func Response(ctx *gin.Context, data interface{}, code int, message string) {
+	ctx.JSON(code, gin.H{
+		"message": message,
+		"data":    data,
+	})
+}
+
+// PathExists 判断路径是否存在
+func PathExists(path string) bool {
+	_, err := os.Stat(path)
+	if err != nil {
+		if os.IsExist(err) {
+			return true
+		}
+		return false
+	}
+	return true
 }
