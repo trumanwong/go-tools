@@ -3,9 +3,11 @@ package qiniu
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
 	"github.com/qiniu/go-sdk/v7/cdn"
+	"github.com/qiniu/go-sdk/v7/sms/rpc"
 	"github.com/qiniu/go-sdk/v7/storage"
 )
 
@@ -60,4 +62,66 @@ func (c Client) GetUploadToken(bucket string) string {
 
 func (c Client) Delete(bucket, key string) error {
 	return c.bucketManager.Delete(bucket, key)
+}
+
+// MoveFiles 批量移动或重命名文件
+func (c *Client) MoveFiles(moveKeys []string, srcBucket, destBucket string, force bool) error {
+	moveOps := make([]string, 0, len(moveKeys))
+	for _, v := range moveKeys {
+		moveOps = append(moveOps, storage.URIMove(srcBucket, v, destBucket, v, force))
+	}
+	rets, err := c.bucketManager.Batch(moveOps)
+	if err != nil {
+		if _, ok := err.(*rpc.ErrorInfo); ok {
+			for _, ret := range rets {
+				if ret.Code != 200 {
+					return err
+				}
+			}
+		} else {
+			return err
+		}
+	}
+	return nil
+}
+
+// CopyFiles 复制文件
+func (c *Client) CopyFiles(copyKeys, destKeys []string, srcBucket, destBucket string, force bool) error {
+	if len(copyKeys) != len(destKeys) {
+		return errors.New("copyKeys length must equal destKeys length")
+	}
+	copyOps := make([]string, len(copyKeys))
+	for i := 0; i < len(copyKeys); i++ {
+		copyOps[i] = storage.URICopy(srcBucket, copyKeys[i], destBucket, destKeys[i], force)
+	}
+	rets, err := c.bucketManager.Batch(copyOps)
+	if err != nil {
+		if _, ok := err.(*rpc.ErrorInfo); ok {
+			for _, ret := range rets {
+				if ret.Code != 200 {
+					return err
+				}
+			}
+		} else {
+			return err
+		}
+	}
+	return nil
+}
+
+// ListFiles 列举文件，每次最大1000
+func (c *Client) ListFiles(bucket, prefix, delimiter, marker string, limit int) ([]storage.ListItem, []string, string, bool, error) {
+	entries, commonPrefixes, nextMarker, hasNext, err := c.bucketManager.ListFiles(
+		bucket,
+		prefix,
+		delimiter,
+		marker,
+		limit,
+	)
+	return entries, commonPrefixes, nextMarker, hasNext, err
+}
+
+// MakePublicUrl 公开空间访问链接
+func (c *Client) MakePublicUrl(domain, key string) string {
+	return storage.MakePublicURL(domain, key)
 }
