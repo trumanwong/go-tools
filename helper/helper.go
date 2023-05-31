@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"os"
 	"regexp"
@@ -67,4 +68,13 @@ func PathExists(path string) bool {
 		return false
 	}
 	return true
+}
+
+func ConvertDownloadCount(downloadCount uint64) string {
+	if downloadCount >= 100000000 {
+		return fmt.Sprintf("%.2f亿次下载", float64(downloadCount)/100000000)
+	} else if downloadCount >= 10000 {
+		return fmt.Sprintf("%d万次下载", downloadCount/10000)
+	}
+	return fmt.Sprintf("%d次下载", downloadCount)
 }
