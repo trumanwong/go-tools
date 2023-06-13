@@ -19,6 +19,7 @@ type RabbitMQ struct {
 	notifyChanClose chan *amqp.Error
 	notifyConfirm   chan amqp.Confirmation
 	isReady         bool
+	consume         func(<-chan amqp.Delivery)
 }
 
 const (
@@ -40,11 +41,12 @@ var (
 
 // NewRabbitMQ creates a new consumer state instance, and automatically
 // attempts to connect to the server.
-func NewRabbitMQ(name string, addr string) *RabbitMQ {
+func NewRabbitMQ(name string, addr string, consume func(<-chan amqp.Delivery)) *RabbitMQ {
 	rabbitMQ := RabbitMQ{
-		logger: log.New(os.Stdout, "", log.LstdFlags),
-		name:   name,
-		done:   make(chan bool),
+		logger:  log.New(os.Stdout, "", log.LstdFlags),
+		name:    name,
+		done:    make(chan bool),
+		consume: consume,
 	}
 	go rabbitMQ.handleReconnect(addr)
 	return &rabbitMQ
@@ -149,6 +151,15 @@ func (rabbitMQ *RabbitMQ) init(conn *amqp.Connection) error {
 	rabbitMQ.changeChannel(ch)
 	rabbitMQ.isReady = true
 	log.Println("Setup!")
+
+	if rabbitMQ.consume != nil {
+		go func() {
+			msgs, err := rabbitMQ.Stream()
+			if err == nil {
+				rabbitMQ.consume(msgs)
+			}
+		}()
+	}
 
 	return nil
 }
