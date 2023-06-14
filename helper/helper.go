@@ -8,6 +8,7 @@ import (
 	"strconv"
 )
 
+// CheckIdCard 检查身份证号码是否正确
 func CheckIdCard(idCardStr string) bool {
 	//18位身份证 ^(\d{17})([0-9]|X)$
 	// 匹配规则
