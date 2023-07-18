@@ -3,12 +3,16 @@ package qiniu
 import (
 	"bytes"
 	"context"
+	"crypto/md5"
 	"errors"
 	"fmt"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
 	"github.com/qiniu/go-sdk/v7/cdn"
 	"github.com/qiniu/go-sdk/v7/sms/rpc"
 	"github.com/qiniu/go-sdk/v7/storage"
+	"net/url"
+	"strings"
+	"time"
 )
 
 type Client struct {
@@ -53,10 +57,7 @@ func (c Client) RefreshUrls(urlsToRefresh []string) error {
 	return err
 }
 
-func (c Client) GetUploadToken(bucket string) string {
-	putPolicy := storage.PutPolicy{
-		Scope: bucket,
-	}
+func (c Client) GetUploadToken(putPolicy storage.PutPolicy, bucket string) string {
 	return putPolicy.UploadToken(c.mac)
 }
 
@@ -124,4 +125,16 @@ func (c *Client) ListFiles(bucket, prefix, delimiter, marker string, limit int) 
 // MakePublicUrl 公开空间访问链接
 func (c *Client) MakePublicUrl(domain, key string) string {
 	return storage.MakePublicURL(domain, key)
+}
+
+func (c *Client) GetTimestampSignUrl(urlPath url.URL, secretKey string, expiration time.Duration) string {
+	t := fmt.Sprintf("%x", time.Now().Add(expiration).Unix())
+	encodePath := strings.ReplaceAll(url.QueryEscape(urlPath.Path), "%2F", "/")
+	sign := strings.ToLower(fmt.Sprintf("%x", md5.Sum([]byte(secretKey+encodePath+t))))
+	attname := strings.Trim(urlPath.Query().Get("attname"), " ")
+	location := urlPath.Scheme + "://" + urlPath.Host + encodePath + fmt.Sprintf("?sign=%s&t=%s", sign, t)
+	if attname != "" {
+		location = urlPath.Scheme + "://" + urlPath.Host + encodePath + fmt.Sprintf("?sign=%s&t=%s&attname=%s", sign, t, attname)
+	}
+	return location
 }
