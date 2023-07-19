@@ -19,7 +19,6 @@ type RabbitMQ struct {
 	notifyChanClose chan *amqp.Error
 	notifyConfirm   chan amqp.Confirmation
 	isReady         bool
-	queue           amqp.Queue
 	consume         func(<-chan amqp.Delivery)
 }
 
@@ -136,7 +135,7 @@ func (rabbitMQ *RabbitMQ) init(conn *amqp.Connection) error {
 	if err != nil {
 		return err
 	}
-	queue, err := ch.QueueDeclare(
+	_, err = ch.QueueDeclare(
 		rabbitMQ.name,
 		true,  // Durable
 		false, // Delete when unused
@@ -151,7 +150,6 @@ func (rabbitMQ *RabbitMQ) init(conn *amqp.Connection) error {
 
 	rabbitMQ.changeChannel(ch)
 	rabbitMQ.isReady = true
-	rabbitMQ.queue = queue
 	log.Println("Setup!")
 
 	if rabbitMQ.consume != nil {
@@ -277,8 +275,4 @@ func (rabbitMQ *RabbitMQ) Close() error {
 // GetIsReady returns whether the queue is ready to be used.
 func (rabbitMQ *RabbitMQ) GetIsReady() bool {
 	return rabbitMQ.isReady
-}
-
-func (rabbitMQ *RabbitMQ) GetMessageCount() int {
-	return rabbitMQ.queue.Messages
 }
