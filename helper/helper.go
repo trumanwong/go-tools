@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"time"
 )
 
 // CheckIdCard 检查身份证号码是否正确
@@ -78,4 +79,12 @@ func ConvertDownloadCount(downloadCount uint64) string {
 		return fmt.Sprintf("%d万次下载", downloadCount/10000)
 	}
 	return fmt.Sprintf("%d次下载", downloadCount)
+}
+
+func ParseTime(t string) (*time.Time, error) {
+	res, err := time.Parse("2006-01-02 15:04:05", t)
+	if err != nil {
+		return nil, err
+	}
+	return &res, nil
 }
