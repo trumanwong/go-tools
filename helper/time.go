@@ -41,8 +41,9 @@ func GetIntervalTime(req *GetIntervalTimeRequest) (resp *GetIntervalTimeResponse
 	var offset int
 	switch req.Type {
 	case Day:
-		resp.StartAt, _ = time.ParseInLocation(time.DateTime, req.Time.Format(time.DateOnly)+" 00:00:00", time.Local)
-		resp.EndAt, _ = time.ParseInLocation(time.DateTime, req.Time.Format(time.DateOnly)+" 23:59:59", time.Local)
+		t := req.Time.AddDate(0, 0, req.Num)
+		resp.StartAt, _ = time.ParseInLocation(time.DateTime, t.Format(time.DateOnly)+" 00:00:00", time.Local)
+		resp.EndAt, _ = time.ParseInLocation(time.DateTime, t.Format(time.DateOnly)+" 23:59:59", time.Local)
 	case Week:
 		year, month, day := req.Time.Date()
 		offset = int(time.Monday - req.Time.Weekday())
