@@ -3,6 +3,8 @@ package helper
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"math/big"
+	"net"
 	"os"
 	"regexp"
 	"strconv"
@@ -78,4 +80,26 @@ func ConvertDownloadCount(downloadCount uint64) string {
 		return fmt.Sprintf("%d万次下载", downloadCount/10000)
 	}
 	return fmt.Sprintf("%d次下载", downloadCount)
+}
+
+func IP2Long(ipAddress string) *big.Int {
+	ip := net.ParseIP(ipAddress)
+	if ip == nil {
+		return nil
+	}
+	isIPv6 := false
+	for i := 0; i < len(ipAddress); i++ {
+		switch ipAddress[i] {
+		case '.':
+			break
+		case ':':
+			isIPv6 = true
+			break
+		}
+	}
+	ipInt := big.NewInt(0)
+	if isIPv6 {
+		return ipInt.SetBytes(ip.To16())
+	}
+	return ipInt.SetBytes(ip.To4())
 }
