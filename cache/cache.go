@@ -230,3 +230,22 @@ type ZRankRequest struct {
 func (c *Cache) ZRank(ctx context.Context, request *ZRankRequest) (int64, error) {
 	return c.client.ZRank(ctx, c.prefixKey(request.Key, request.Prefix), request.Member).Result()
 }
+
+type SAddRequest struct {
+	Key    string
+	Value  []interface{}
+	Prefix *string
+}
+
+func (c *Cache) SAdd(ctx context.Context, request *SAddRequest) (int64, error) {
+	return c.client.SAdd(ctx, c.prefixKey(request.Key, request.Prefix), request.Value).Result()
+}
+
+type SCardRequest struct {
+	Key    string
+	Prefix *string
+}
+
+func (c *Cache) SCard(ctx context.Context, request *SCardRequest) (int64, error) {
+	return c.client.SCard(ctx, c.prefixKey(request.Key, request.Prefix)).Result()
+}
