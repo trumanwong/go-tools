@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/pkoukk/tiktoken-go"
 	"github.com/sashabaranov/go-openai"
-	"log"
 	"strings"
 )
 
@@ -19,12 +18,16 @@ func NumTokensFromMessages(messages []openai.ChatCompletionMessage, model string
 
 	var tokensPerMessage, tokensPerName int
 	switch model {
-	case "gpt-3.5-turbo-0613",
-		"gpt-3.5-turbo-16k-0613",
-		"gpt-4-0314",
-		"gpt-4-32k-0314",
-		"gpt-4-0613",
-		"gpt-4-32k-0613":
+	case openai.GPT3Dot5Turbo,
+		openai.GPT3Dot5Turbo0613,
+		openai.GPT3Dot5Turbo16K,
+		openai.GPT3Dot5Turbo16K0613,
+		openai.GPT432K0613,
+		openai.GPT432K0314,
+		openai.GPT432K,
+		openai.GPT40613,
+		openai.GPT40314,
+		openai.GPT4:
 		tokensPerMessage = 3
 		tokensPerName = 1
 	case "gpt-3.5-turbo-0301":
@@ -32,10 +35,8 @@ func NumTokensFromMessages(messages []openai.ChatCompletionMessage, model string
 		tokensPerName = -1   // if there's a name, the role is omitted
 	default:
 		if strings.Contains(model, "gpt-3.5-turbo") {
-			log.Println("warning: gpt-3.5-turbo may update over time. Returning num tokens assuming gpt-3.5-turbo-0613.")
 			return NumTokensFromMessages(messages, "gpt-3.5-turbo-0613")
 		} else if strings.Contains(model, "gpt-4") {
-			log.Println("warning: gpt-4 may update over time. Returning num tokens assuming gpt-4-0613.")
 			return NumTokensFromMessages(messages, "gpt-4-0613")
 		} else {
 			err = fmt.Errorf("num_tokens_from_messages() is not implemented for model %s. See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens", model)
