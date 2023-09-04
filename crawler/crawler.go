@@ -16,25 +16,38 @@ func GenerateCookie() string {
 	return result
 }
 
-// Request 发送请求
-// Request send request
-// url: 请求地址
-// method: 请求方法
-// headers: 请求头
-// body: 请求体
-func Request(url, method string, headers map[string]string, body io.Reader) (*http.Response, error) {
-	client := &http.Client{}
-	req, err := http.NewRequest(method, url, body)
+type Request struct {
+	// 请求地址
+	Url string
+	// 请求方法
+	Method string
+	// 请求头
+	Headers map[string]string
+	// 请求体
+	Body io.Reader
+	// 请求代理
+	Transport http.RoundTripper
+	// 请求超时时间
+	Timeout time.Duration
+}
+
+// Send 发送请求
+func Send(request *Request) (*http.Response, error) {
+	client := &http.Client{
+		Transport: request.Transport,
+		Timeout:   request.Timeout,
+	}
+	req, err := http.NewRequest(request.Method, request.Url, request.Body)
 
 	if err != nil {
 		return nil, err
 	}
 
-	if _, ok := headers["Cookie"]; !ok {
+	if _, ok := request.Headers["Cookie"]; !ok {
 		req.Header.Add("Cookie", GenerateCookie())
 	}
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.200")
-	req.Header.Set("Referer", "https://developer.microsoft.com/")
+	req.Header.Set("Referer", "https://www.baidu.com/")
 	req.Header.Set("Sec-Ch-Ua", "\"Not/A)Brand\";v=\"99\", \"Microsoft Edge\";v=\"115\", \"Chromium\";v=\"115\"")
 	req.Header.Set("Sec-Ch-Ua-Mobile", "?0")
 	req.Header.Set("Sec-Ch-Ua-Platform", "\"Windows\"")
@@ -45,8 +58,8 @@ func Request(url, method string, headers map[string]string, body io.Reader) (*ht
 	req.Header.Set("Sec-Fetch-Site", "cross-site")
 	req.Header.Set("Sec-Fetch-User", "?1")
 	req.Header.Set("Upgrade-Insecure-Requests", "1")
-	if headers != nil {
-		for k, v := range headers {
+	if request.Headers != nil {
+		for k, v := range request.Headers {
 			req.Header.Set(k, v)
 		}
 	}
