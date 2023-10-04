@@ -12,12 +12,8 @@ type Cache struct {
 	client *redis.Client
 }
 
-func NewCache(addr, password, prefix string, db int) (*Cache, error) {
-	client := redis.NewClient(&redis.Options{
-		Addr:     addr,
-		Password: password,
-		DB:       db,
-	})
+func NewCache(options *redis.Options, prefix string) (*Cache, error) {
+	client := redis.NewClient(options)
 	timeout, cancelFunc := context.WithTimeout(context.Background(), time.Second*2)
 	defer cancelFunc()
 	err := client.Ping(timeout).Err()
