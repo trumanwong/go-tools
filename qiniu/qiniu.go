@@ -32,70 +32,96 @@ func NewClient(accessKey, secretKey string) *Client {
 	return &Client{mac: mac, cdnManager: cdnManager, bucketManager: bucketManager}
 }
 
-func (c Client) PutFile(ctx context.Context, bucket, key string, data []byte) error {
-	putPolicy := storage.PutPolicy{
-		Scope: fmt.Sprintf("%s:%s", bucket, key),
-	}
-	upToken := putPolicy.UploadToken(c.mac)
+type PutFileRequest struct {
+	// 上传桶
+	Bucket string
+	// 上传文件key
+	Key string
+	// 上传文件内容
+	Data []byte
+	// 文件上传的上传策略
+	PutPolicy storage.PutPolicy
+	// 文件上传，资源管理等配置
+	Config *storage.Config
+	// 表示分片上传
+	Extra *storage.RputV2Extra
+}
 
-	resumeUploader := storage.NewResumeUploaderV2(&storage.Config{
-		Zone:          &storage.ZoneHuanan,
-		UseHTTPS:      true,
-		UseCdnDomains: false,
-	})
+type PutRet struct {
+	Key          string `json:"key"`
+	Hash         string `json:"hash"`
+	Fsize        int64  `json:"fsize"`
+	PersistentID string `json:"persistentId"`
+}
 
-	ret := storage.PutRet{}
-	err := resumeUploader.Put(ctx, &ret, upToken, key, bytes.NewReader(data), int64(len(data)), &storage.RputV2Extra{})
+// PutFile 上传文件
+func (c *Client) PutFile(ctx context.Context, req *PutFileRequest) error {
+	token := c.GetUploadToken(req.PutPolicy)
+
+	resumeUploader := storage.NewResumeUploaderV2(req.Config)
+
+	ret := PutRet{}
+	err := resumeUploader.Put(ctx, &ret, token, req.Key, bytes.NewReader(req.Data), int64(len(req.Data)), req.Extra)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c Client) RefreshUrls(urlsToRefresh []string) error {
+func (c *Client) RefreshUrls(urlsToRefresh []string) error {
 	_, err := c.cdnManager.RefreshUrls(urlsToRefresh)
 	return err
 }
 
-func (c Client) GetUploadToken(putPolicy storage.PutPolicy, bucket string) string {
+// GetUploadToken 获取上传token
+func (c *Client) GetUploadToken(putPolicy storage.PutPolicy) string {
 	return putPolicy.UploadToken(c.mac)
 }
 
-func (c Client) Delete(bucket, key string) error {
+// Delete 删除指定文件
+func (c *Client) Delete(bucket, key string) error {
 	return c.bucketManager.Delete(bucket, key)
 }
 
-// MoveFiles 批量移动或重命名文件
-func (c *Client) MoveFiles(moveKeys []string, srcBucket, destBucket string, force bool) error {
-	moveOps := make([]string, 0, len(moveKeys))
-	for _, v := range moveKeys {
-		moveOps = append(moveOps, storage.URIMove(srcBucket, v, destBucket, v, force))
-	}
-	rets, err := c.bucketManager.Batch(moveOps)
-	if err != nil {
-		if _, ok := err.(*rpc.ErrorInfo); ok {
-			for _, ret := range rets {
-				if ret.Code != 200 {
-					return err
-				}
-			}
-		} else {
-			return err
-		}
-	}
-	return nil
+type BatchFilesType string
+
+const (
+	BatchFilesTypeMove BatchFilesType = "move"
+	BatchFilesTypeCopy BatchFilesType = "copy"
+)
+
+type BatchFilesRequest struct {
+	// 操作类型，move/copy
+	Type BatchFilesType
+	// 需要移动/复制的源文件key
+	SrcKeys []string
+	// 移动/复制到的目标文件key
+	DstKeys []string
+	// 源文件所在桶
+	SrcBucket string
+	// 目标文件所在桶
+	DestBucket string
+	// 是否强制覆盖
+	Force bool
 }
 
-// CopyFiles 复制文件
-func (c *Client) CopyFiles(copyKeys, destKeys []string, srcBucket, destBucket string, force bool) error {
-	if len(copyKeys) != len(destKeys) {
-		return errors.New("copyKeys length must equal destKeys length")
+// BatchFiles 批量移动/复制文件
+func (c *Client) BatchFiles(req *BatchFilesRequest) error {
+	if len(req.SrcKeys) != len(req.DstKeys) {
+		return errors.New("srcKeys length must equal destKeys length")
 	}
-	copyOps := make([]string, len(copyKeys))
-	for i := 0; i < len(copyKeys); i++ {
-		copyOps[i] = storage.URICopy(srcBucket, copyKeys[i], destBucket, destKeys[i], force)
+	operations := make([]string, len(req.SrcKeys))
+	for i, v := range req.DstKeys {
+		switch req.Type {
+		case BatchFilesTypeCopy:
+			operations[i] = storage.URICopy(req.SrcBucket, req.SrcKeys[i], req.DestBucket, v, req.Force)
+		case BatchFilesTypeMove:
+			operations[i] = storage.URIMove(req.SrcBucket, req.SrcKeys[i], req.DestBucket, v, req.Force)
+		}
 	}
-	rets, err := c.bucketManager.Batch(copyOps)
+	var rets []storage.BatchOpRet
+	var err error
+	rets, err = c.bucketManager.Batch(operations)
 	if err != nil {
 		if _, ok := err.(*rpc.ErrorInfo); ok {
 			for _, ret := range rets {
