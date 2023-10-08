@@ -58,10 +58,10 @@ type PutRet struct {
 func (c *Client) PutFile(ctx context.Context, req *PutFileRequest) (*PutRet, error) {
 	token := c.GetUploadToken(req.PutPolicy)
 
-	resumeUploader := storage.NewResumeUploaderV2(req.Config)
+	formUploader := storage.NewFormUploader(req.Config)
 
 	ret := PutRet{}
-	err := resumeUploader.Put(ctx, &ret, token, req.Key, bytes.NewReader(req.Data), int64(len(req.Data)), req.Extra)
+	err := formUploader.Put(ctx, &ret, token, req.Key, bytes.NewReader(req.Data), int64(len(req.Data)), req.Extra)
 	if err != nil {
 		return nil, err
 	}
