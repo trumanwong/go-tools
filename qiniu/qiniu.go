@@ -55,7 +55,7 @@ type PutRet struct {
 }
 
 // PutFile 上传文件
-func (c *Client) PutFile(ctx context.Context, req *PutFileRequest) error {
+func (c *Client) PutFile(ctx context.Context, req *PutFileRequest) (*PutRet, error) {
 	token := c.GetUploadToken(req.PutPolicy)
 
 	resumeUploader := storage.NewResumeUploaderV2(req.Config)
@@ -63,9 +63,9 @@ func (c *Client) PutFile(ctx context.Context, req *PutFileRequest) error {
 	ret := PutRet{}
 	err := resumeUploader.Put(ctx, &ret, token, req.Key, bytes.NewReader(req.Data), int64(len(req.Data)), req.Extra)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return &ret, nil
 }
 
 func (c *Client) RefreshUrls(urlsToRefresh []string) error {
