@@ -44,7 +44,7 @@ type PutFileRequest struct {
 	// 文件上传，资源管理等配置
 	Config *storage.Config
 	// 表示分片上传
-	Extra *storage.RputV2Extra
+	Extra *storage.PutExtra
 }
 
 type PutRet struct {
