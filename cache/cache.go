@@ -112,6 +112,16 @@ func (c *Cache) RPop(ctx context.Context, request *RPopRequest) (string, error) 
 	return c.client.RPop(ctx, c.prefixKey(request.Key, request.Prefix)).Result()
 }
 
+type LRangeRequest struct {
+	Key    string
+	Value  string
+	Prefix *string
+}
+
+func (c *Cache) LRange(ctx context.Context, request *GetListIndexRequest) ([]string, error) {
+	return c.client.LRange(ctx, c.prefixKey(request.Key, request.Prefix), 0, -1).Result()
+}
+
 type GetListIndexRequest struct {
 	Key    string
 	Value  string
