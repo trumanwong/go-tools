@@ -260,8 +260,9 @@ type SetNXRequest struct {
 	Key     string
 	Value   interface{}
 	Seconds int64
+	Prefix  *string
 }
 
 func (c *Cache) SetNX(ctx context.Context, request *SetNXRequest) (bool, error) {
-	return c.client.SetNX(ctx, request.Key, request.Value, time.Second*time.Duration(request.Seconds)).Result()
+	return c.client.SetNX(ctx, c.prefixKey(request.Key, request.Prefix), request.Value, time.Second*time.Duration(request.Seconds)).Result()
 }
