@@ -10,6 +10,7 @@ import (
 	"github.com/qiniu/go-sdk/v7/cdn"
 	"github.com/qiniu/go-sdk/v7/sms/rpc"
 	"github.com/qiniu/go-sdk/v7/storage"
+	"net/http"
 	"net/url"
 	"strings"
 	"time"
@@ -37,8 +38,10 @@ type PutFileRequest struct {
 	Bucket string
 	// 上传文件key
 	Key string
-	// 上传文件内容
+	// 上传文件内容，Data和LocalFile必须有一个不为nil
 	Data []byte
+	// 本地文件路径
+	LocalFile *string
 	// 文件上传的上传策略
 	PutPolicy storage.PutPolicy
 	// 文件上传，资源管理等配置
@@ -61,7 +64,14 @@ func (c *Client) PutFile(ctx context.Context, req *PutFileRequest) (*PutRet, err
 	formUploader := storage.NewFormUploader(req.Config)
 
 	ret := PutRet{}
-	err := formUploader.Put(ctx, &ret, token, req.Key, bytes.NewReader(req.Data), int64(len(req.Data)), req.Extra)
+	var err error
+	if req.Data != nil {
+		err = formUploader.Put(ctx, &ret, token, req.Key, bytes.NewReader(req.Data), int64(len(req.Data)), req.Extra)
+	} else if req.LocalFile != nil {
+		err = formUploader.PutFile(ctx, &ret, token, req.Key, *req.LocalFile, req.Extra)
+	} else {
+		return nil, errors.New("data and filePath can't both be nil")
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -163,4 +173,9 @@ func (c *Client) GetTimestampSignUrl(urlPath url.URL, secretKey string, expirati
 		location = urlPath.Scheme + "://" + urlPath.Host + encodePath + fmt.Sprintf("?sign=%s&t=%s&attname=%s", sign, t, attname)
 	}
 	return location
+}
+
+// VerifyCallback 验证上传回调请求是否来自七牛
+func (c *Client) VerifyCallback(req *http.Request) (bool, error) {
+	return qbox.VerifyCallback(c.mac, req)
 }
