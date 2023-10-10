@@ -255,3 +255,13 @@ type SCardRequest struct {
 func (c *Cache) SCard(ctx context.Context, request *SCardRequest) (int64, error) {
 	return c.client.SCard(ctx, c.prefixKey(request.Key, request.Prefix)).Result()
 }
+
+type SetNXRequest struct {
+	Key     string
+	Value   interface{}
+	Seconds int64
+}
+
+func (c *Cache) SetNX(ctx context.Context, request *SetNXRequest) (bool, error) {
+	return c.client.SetNX(ctx, request.Key, request.Value, time.Second*time.Duration(request.Seconds)).Result()
+}
