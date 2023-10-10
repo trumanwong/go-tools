@@ -118,7 +118,7 @@ type LRangeRequest struct {
 	Prefix *string
 }
 
-func (c *Cache) LRange(ctx context.Context, request *GetListIndexRequest) ([]string, error) {
+func (c *Cache) LRange(ctx context.Context, request *LRangeRequest) ([]string, error) {
 	return c.client.LRange(ctx, c.prefixKey(request.Key, request.Prefix), 0, -1).Result()
 }
 
