@@ -13,16 +13,9 @@ type Cache struct {
 }
 
 func NewCache(options *redis.Options, prefix string) (*Cache, error) {
-	client := redis.NewClient(options)
-	timeout, cancelFunc := context.WithTimeout(context.Background(), time.Second*2)
-	defer cancelFunc()
-	err := client.Ping(timeout).Err()
-	if err != nil {
-		return nil, err
-	}
 	return &Cache{
 		prefix: prefix,
-		client: client,
+		client: redis.NewClient(options),
 	}, nil
 }
 
