@@ -112,6 +112,16 @@ func (c *Cache) RPop(ctx context.Context, request *RPopRequest) (string, error) 
 	return c.client.RPop(ctx, c.prefixKey(request.Key, request.Prefix)).Result()
 }
 
+type LRangeRequest struct {
+	Key    string
+	Value  string
+	Prefix *string
+}
+
+func (c *Cache) LRange(ctx context.Context, request *LRangeRequest) ([]string, error) {
+	return c.client.LRange(ctx, c.prefixKey(request.Key, request.Prefix), 0, -1).Result()
+}
+
 type GetListIndexRequest struct {
 	Key    string
 	Value  string
@@ -244,4 +254,15 @@ type SCardRequest struct {
 
 func (c *Cache) SCard(ctx context.Context, request *SCardRequest) (int64, error) {
 	return c.client.SCard(ctx, c.prefixKey(request.Key, request.Prefix)).Result()
+}
+
+type SetNXRequest struct {
+	Key     string
+	Value   interface{}
+	Seconds int64
+	Prefix  *string
+}
+
+func (c *Cache) SetNX(ctx context.Context, request *SetNXRequest) (bool, error) {
+	return c.client.SetNX(ctx, c.prefixKey(request.Key, request.Prefix), request.Value, time.Second*time.Duration(request.Seconds)).Result()
 }

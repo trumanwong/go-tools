@@ -19,7 +19,7 @@ func NewWorkWechatRobot(url string) *WorkWechatRobot {
 	return &WorkWechatRobot{url: url}
 }
 
-func (robot *WorkWechatRobot) SendText(level, content string) error {
+func (robot *WorkWechatRobot) SendText(level, content string) {
 	messages, params := make([]string, 0), make(map[string]interface{})
 	messages = append(messages, fmt.Sprintf("- 时间：%s", time.Now().Format("2006-01-02 15:04:05")))
 	messages = append(messages, fmt.Sprintf("- Level：%s", level))
@@ -33,15 +33,12 @@ func (robot *WorkWechatRobot) SendText(level, content string) error {
 	data, _ := json.Marshal(params)
 	request, err := http.NewRequest("POST", robot.url, bytes.NewReader(data))
 	if err != nil {
-		log.Printf("NewRequest fail, %s", err)
-		return err
+		log.Printf("NewRequest fail, %s\n", err)
 	}
 	request.Header.Set("Content-Type", "application/json")
 	client := http.Client{}
 	_, err = client.Do(request)
 	if err != nil {
-		log.Printf("Request WeChat Api fail, %s", err)
-		return err
+		log.Printf("Request WeChat Api fail, %s\n", err)
 	}
-	return nil
 }
