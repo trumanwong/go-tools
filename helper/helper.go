@@ -3,9 +3,12 @@ package helper
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"io"
 	"math/big"
 	"net"
+	"net/http"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 )
@@ -102,4 +105,32 @@ func IP2Long(ipAddress string) *big.Int {
 		return ipInt.SetBytes(ip.To16())
 	}
 	return ipInt.SetBytes(ip.To4())
+}
+
+// DownloadFile 下载文件
+// url: 下载地址
+// savePath: 保存路径
+func DownloadFile(url, savePath string) error {
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	dirPath := filepath.Dir(savePath)
+	// 判断目录是否存在
+	if !PathExists(dirPath) {
+		err = os.MkdirAll(dirPath, 0666)
+		if err != nil {
+			return err
+		}
+	}
+	out, err := os.Create(savePath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+	// 写入文件
+	_, err = io.Copy(out, resp.Body)
+	return err
 }
