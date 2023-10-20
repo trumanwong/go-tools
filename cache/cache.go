@@ -259,3 +259,14 @@ type SetNXRequest struct {
 func (c *Cache) SetNX(ctx context.Context, request *SetNXRequest) (bool, error) {
 	return c.client.SetNX(ctx, c.prefixKey(request.Key, request.Prefix), request.Value, time.Second*time.Duration(request.Seconds)).Result()
 }
+
+type LRemRequest struct {
+	Key    string
+	Count  int64
+	Value  interface{}
+	Prefix *string
+}
+
+func (c *Cache) LRem(ctx context.Context, request *LRemRequest) (int64, error) {
+	return c.client.LRem(ctx, c.prefixKey(request.Key, request.Prefix), request.Count, request.Value).Result()
+}
