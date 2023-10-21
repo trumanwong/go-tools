@@ -19,7 +19,13 @@ type RabbitMQ struct {
 	notifyChanClose chan *amqp.Error
 	notifyConfirm   chan amqp.Confirmation
 	isReady         bool
-	consume         func(<-chan amqp.Delivery)
+	// 每次队列只消费一个消息 这个消息没处理完服务器不会发送第二个消息过来
+	prefetchCount int
+	// 服务器传递的最大容量
+	prefetchSize int
+	// 如果为true 对channel可用, false则只对当前队列可用
+	global  bool
+	consume func(<-chan amqp.Delivery)
 }
 
 const (
@@ -39,16 +45,28 @@ var (
 	errShutdown      = errors.New("rabbitMQ is shutting down")
 )
 
+type Options struct {
+	Name          string
+	Addr          string
+	PrefetchCount int
+	PrefetchSize  int
+	Global        bool
+	Consume       func(<-chan amqp.Delivery)
+}
+
 // NewRabbitMQ creates a new consumer state instance, and automatically
 // attempts to connect to the server.
-func NewRabbitMQ(name string, addr string, consume func(<-chan amqp.Delivery)) *RabbitMQ {
+func NewRabbitMQ(option *Options) *RabbitMQ {
 	rabbitMQ := RabbitMQ{
-		logger:  log.New(os.Stdout, "", log.LstdFlags),
-		name:    name,
-		done:    make(chan bool),
-		consume: consume,
+		logger:        log.New(os.Stdout, "", log.LstdFlags),
+		name:          option.Name,
+		done:          make(chan bool),
+		consume:       option.Consume,
+		prefetchCount: option.PrefetchCount,
+		prefetchSize:  option.PrefetchSize,
+		global:        option.Global,
 	}
-	go rabbitMQ.handleReconnect(addr)
+	go rabbitMQ.handleReconnect(option.Addr)
 	return &rabbitMQ
 }
 
@@ -144,13 +162,18 @@ func (rabbitMQ *RabbitMQ) init(conn *amqp.Connection) error {
 		nil,   // Arguments
 	)
 
+	ch.Qos(
+		rabbitMQ.prefetchCount,
+		rabbitMQ.prefetchSize,
+		rabbitMQ.global,
+	)
+
 	if err != nil {
 		return err
 	}
 
 	rabbitMQ.changeChannel(ch)
 	rabbitMQ.isReady = true
-	log.Println("Setup!")
 
 	if rabbitMQ.consume != nil {
 		go func() {

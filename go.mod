@@ -10,7 +10,7 @@ require (
 	github.com/rabbitmq/amqp091-go v1.9.0
 	github.com/sashabaranov/go-openai v1.15.4
 	github.com/stretchr/testify v1.8.4
-	github.com/trumanwong/cryptogo v1.0.3
+	github.com/trumanwong/cryptogo v1.0.4
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.17
 )
 
@@ -40,10 +40,10 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	golang.org/x/arch v0.5.0 // indirect
-	golang.org/x/crypto v0.13.0 // indirect
+	golang.org/x/crypto v0.14.0 // indirect
 	golang.org/x/net v0.15.0 // indirect
 	golang.org/x/sync v0.3.0 // indirect
-	golang.org/x/sys v0.12.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
