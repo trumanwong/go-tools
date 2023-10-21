@@ -162,11 +162,13 @@ func (rabbitMQ *RabbitMQ) init(conn *amqp.Connection) error {
 		nil,   // Arguments
 	)
 
-	ch.Qos(
-		rabbitMQ.prefetchCount,
-		rabbitMQ.prefetchSize,
-		rabbitMQ.global,
-	)
+	if rabbitMQ.prefetchCount > 0 {
+		ch.Qos(
+			rabbitMQ.prefetchCount,
+			rabbitMQ.prefetchSize,
+			rabbitMQ.global,
+		)
+	}
 
 	if err != nil {
 		return err
