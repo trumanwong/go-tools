@@ -28,7 +28,7 @@ func (cors *AllowCors) Handle() gin.HandlerFunc {
 			originUrl, err := url.Parse(origin)
 			if err == nil {
 				for _, v := range cors.allowOrigins {
-					if origin == v {
+					if originUrl.Host == v {
 						ctx.Header("Access-Control-Allow-Origin", origin)
 						break
 					} else if v == "*" {
