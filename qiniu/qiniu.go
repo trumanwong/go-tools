@@ -96,21 +96,24 @@ func (c *Client) Delete(bucket, key string) error {
 type BatchFilesType string
 
 const (
-	BatchFilesTypeMove BatchFilesType = "move"
-	BatchFilesTypeCopy BatchFilesType = "copy"
+	BatchFilesTypeMove      BatchFilesType = "move"
+	BatchFilesTypeCopy      BatchFilesType = "copy"
+	BatchFilesTypeRestoreAr                = "restoreAr"
 )
 
 type BatchFilesRequest struct {
-	// 操作类型，move/copy
+	// 操作类型，move/copy/restoreAr
 	Type BatchFilesType
-	// 需要移动/复制的源文件key
+	// 需要移动/复制/解冻的源文件key
 	SrcKeys []string
 	// 移动/复制到的目标文件key
 	DstKeys []string
 	// 源文件所在桶
-	SrcBucket string
+	SrcBucket *string
 	// 目标文件所在桶
-	DestBucket string
+	DestBucket *string
+	// 解冻文件天数
+	AfterDay int
 	// 是否强制覆盖
 	Force bool
 }
@@ -124,9 +127,11 @@ func (c *Client) BatchFiles(req *BatchFilesRequest) error {
 	for i, v := range req.DstKeys {
 		switch req.Type {
 		case BatchFilesTypeCopy:
-			operations[i] = storage.URICopy(req.SrcBucket, req.SrcKeys[i], req.DestBucket, v, req.Force)
+			operations[i] = storage.URICopy(*req.SrcBucket, req.SrcKeys[i], *req.DestBucket, v, req.Force)
 		case BatchFilesTypeMove:
-			operations[i] = storage.URIMove(req.SrcBucket, req.SrcKeys[i], req.DestBucket, v, req.Force)
+			operations[i] = storage.URIMove(*req.SrcBucket, req.SrcKeys[i], *req.DestBucket, v, req.Force)
+		case BatchFilesTypeRestoreAr:
+			operations[i] = storage.URIRestoreAr(*req.SrcBucket, req.SrcKeys[i], req.AfterDay)
 		}
 	}
 	var rets []storage.BatchOpRet
