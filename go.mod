@@ -8,7 +8,7 @@ require (
 	github.com/pkoukk/tiktoken-go v0.1.6
 	github.com/qiniu/go-sdk/v7 v7.17.1
 	github.com/rabbitmq/amqp091-go v1.9.0
-	github.com/sashabaranov/go-openai v1.15.4
+	github.com/sashabaranov/go-openai v1.17.2
 	github.com/stretchr/testify v1.8.4
 	github.com/trumanwong/cryptogo v1.0.4
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.17

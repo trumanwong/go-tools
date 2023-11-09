@@ -18,16 +18,18 @@ func NumTokensFromMessages(messages []openai.ChatCompletionMessage, model string
 
 	var tokensPerMessage, tokensPerName int
 	switch model {
-	case openai.GPT3Dot5Turbo,
-		openai.GPT3Dot5Turbo0613,
-		openai.GPT3Dot5Turbo16K,
-		openai.GPT3Dot5Turbo16K0613,
-		openai.GPT432K0613,
+	case openai.GPT432K0613,
 		openai.GPT432K0314,
 		openai.GPT432K,
 		openai.GPT40613,
 		openai.GPT40314,
-		openai.GPT4:
+		openai.GPT4TurboPreview,
+		openai.GPT4VisionPreview,
+		openai.GPT4,
+		openai.GPT3Dot5Turbo1106,
+		openai.GPT3Dot5Turbo16K,
+		openai.GPT3Dot5Turbo16K0613,
+		openai.GPT3Dot5Turbo0613:
 		tokensPerMessage = 3
 		tokensPerName = 1
 	case "gpt-3.5-turbo-0301":
