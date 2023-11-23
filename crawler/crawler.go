@@ -43,21 +43,6 @@ func Send(request *Request) (*http.Response, error) {
 		return nil, err
 	}
 
-	if _, ok := request.Headers["Cookie"]; !ok {
-		req.Header.Add("Cookie", GenerateCookie())
-	}
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.200")
-	req.Header.Set("Referer", "https://www.baidu.com/")
-	req.Header.Set("Sec-Ch-Ua", "\"Not/A)Brand\";v=\"99\", \"Microsoft Edge\";v=\"115\", \"Chromium\";v=\"115\"")
-	req.Header.Set("Sec-Ch-Ua-Mobile", "?0")
-	req.Header.Set("Sec-Ch-Ua-Platform", "\"Windows\"")
-	req.Header.Set("Sec-Ch-Ua-Platform-Version", "\"15.0.0\"")
-	req.Header.Set("Sec-Ch-Ua-Arch", "\"x64\"")
-	req.Header.Set("Sec-Fetch-Dest", "document")
-	req.Header.Set("Sec-Fetch-Mode", "navigate")
-	req.Header.Set("Sec-Fetch-Site", "cross-site")
-	req.Header.Set("Sec-Fetch-User", "?1")
-	req.Header.Set("Upgrade-Insecure-Requests", "1")
 	if request.Headers != nil {
 		for k, v := range request.Headers {
 			req.Header.Set(k, v)
