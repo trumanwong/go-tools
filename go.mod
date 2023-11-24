@@ -3,6 +3,7 @@ module github.com/trumanwong/go-tools
 go 1.21
 
 require (
+	github.com/aliyun/aliyun-oss-go-sdk v3.0.1+incompatible
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/pkoukk/tiktoken-go v0.1.6
@@ -45,6 +46,7 @@ require (
 	golang.org/x/sync v0.3.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
+	golang.org/x/time v0.4.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
