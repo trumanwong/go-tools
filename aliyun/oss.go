@@ -1,8 +1,11 @@
 package aliyun
 
 import (
+	"fmt"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"io"
+	"net/url"
+	"strings"
 )
 
 type AliOss struct {
@@ -69,4 +72,13 @@ func (a AliOss) DeleteObjects(objects []string) error {
 		return err
 	}
 	return nil
+}
+
+// MakePublicURL 用来生成公开空间资源下载链接，注意该方法并不会对 key 进行 escape
+func (a AliOss) MakePublicURL(domain, key string) (finalUrl string) {
+	domain = strings.TrimRight(domain, "/")
+	srcUrl := fmt.Sprintf("%s/%s", domain, key)
+	srcUri, _ := url.Parse(srcUrl)
+	finalUrl = srcUri.String()
+	return
 }
