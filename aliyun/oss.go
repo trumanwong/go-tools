@@ -107,6 +107,7 @@ func (a AliOss) SignUrl(req *SignUrlRequest) (string, error) {
 			if err != nil {
 				return "", err
 			}
+			link.Scheme = cdnDomain.Scheme
 			link.Host = cdnDomain.Host
 		}
 	}
