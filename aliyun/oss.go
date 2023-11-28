@@ -83,6 +83,32 @@ func (a AliOss) MakePublicURL(domain, key string) (finalUrl string) {
 	return
 }
 
-func (a AliOss) SignUrl(objectKey string, method oss.HTTPMethod, expiredInSec int64, options ...oss.Option) (string, error) {
-	return a.bucket.SignURL(objectKey, method, expiredInSec, options...)
+type SignUrlRequest struct {
+	ObjectKey    string
+	Method       oss.HTTPMethod
+	ExpiredInSec int64
+	CdnDomain    *string
+	Options      []oss.Option
+}
+
+func (a AliOss) SignUrl(req *SignUrlRequest) (string, error) {
+	signUrl, err := a.bucket.SignURL(req.ObjectKey, req.Method, req.ExpiredInSec, req.Options...)
+	if err != nil {
+		return "", err
+	}
+	link, err := url.Parse(signUrl)
+	if err != nil {
+		return "", err
+	}
+	if req.CdnDomain != nil {
+		link.Host = *req.CdnDomain
+		if strings.Contains(*req.CdnDomain, "http://") || strings.Contains(*req.CdnDomain, "https://") {
+			cdnDomain, err := url.Parse(*req.CdnDomain)
+			if err != nil {
+				return "", err
+			}
+			link.Host = cdnDomain.Host
+		}
+	}
+	return link.String(), nil
 }
