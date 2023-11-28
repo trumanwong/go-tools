@@ -84,5 +84,5 @@ func (a AliOss) MakePublicURL(domain, key string) (finalUrl string) {
 }
 
 func (a AliOss) SignUrl(objectKey string, method oss.HTTPMethod, expiredInSec int64, options ...oss.Option) (string, error) {
-	return a.bucket.SignURL(objectKey, oss.HTTPGet, expiredInSec, options...)
+	return a.bucket.SignURL(objectKey, method, expiredInSec, options...)
 }
