@@ -3,7 +3,6 @@ package aliyun
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
 	green20220302 "github.com/alibabacloud-go/green-20220302/client"
 	util "github.com/alibabacloud-go/tea-utils/v2/service"
@@ -41,6 +40,9 @@ type ImageModerationRequest struct {
 	OssObjectName *string
 	// OSS Bucket所在区域，如oss-cn-hangzhou。
 	OssRegionID *string
+	// 风险标签, key为风险标签值，value为风险标签对应的分值，范围0-100，分值越高风险程度越高。
+	// https://help.aliyun.com/document_detail/467829.html?spm=a2c4g.467828.0.0.2fd42592WnfIdf
+	Labels map[string]float32
 }
 
 func (c GreenClient) ImageModeration(req *ImageModerationRequest) (err error) {
@@ -78,12 +80,15 @@ func (c GreenClient) ImageModeration(req *ImageModerationRequest) (err error) {
 		if tea.IntValue(tea.ToInt(body.Code)) == 200 {
 			result := imageModerationResponseData.Result
 			for i := 0; i < len(result); i++ {
-				fmt.Println("response label:" + tea.StringValue(result[i].Label))
-				fmt.Println("response confidence:" + tea.ToString(tea.Float32Value(result[i].Confidence)))
+				label := tea.StringValue(result[i].Label)
+				confidence := tea.Float32Value(result[i].Confidence)
+				if _, ok := req.Labels[label]; ok && confidence > req.Labels[label] {
+					return errors.New("invalid image. label:" + label + ", confidence:" + tea.ToString(confidence))
+				}
 			}
 			return nil
 		}
-		return errors.New("image moderation not success. status" + tea.ToString(body.Code))
+		return errors.New("image moderation not success. status" + tea.ToString(tea.ToInt(body.Code)))
 	}
 	return errors.New("image moderation failed. statusCode:" + tea.ToString(statusCode))
 }
