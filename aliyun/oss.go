@@ -29,7 +29,7 @@ func NewAliOss(endpoint, accessKeyId, accessKeySecret, bucketName string) (*AliO
 
 // PutObject put文件至OSS
 func (a AliOss) PutObject(objectName string, reader io.Reader, options ...oss.Option) error {
-	err := a.bucket.PutObject(objectName, reader)
+	err := a.bucket.PutObject(objectName, reader, options...)
 	return err
 }
 
