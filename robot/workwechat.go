@@ -38,15 +38,13 @@ func (robot *WorkWechatRobot) SendText(req *SentTextRequest) {
 	messages = append(messages, fmt.Sprintf("- 时间：%s", time.Now().Format("2006-01-02 15:04:05")))
 	messages = append(messages, fmt.Sprintf("- Level：%s", req.Level))
 	messages = append(messages, fmt.Sprintf("- 信息：%s", req.Content))
-	markdown := make(map[string]interface{})
-	markdown["title"] = "通知"
-	markdown["content"] = strings.Join(messages, "\n")
-	params["timestamp"] = time.Now().Unix()
-	params["msgtype"] = "markdown"
-	params["markdown"] = markdown
+	text := make(map[string]interface{})
+	text["content"] = strings.Join(messages, "\n")
 	if req.IsAtAll {
-		params["mentioned_mobile_list"] = []string{"@all"}
+		text["mentioned_list"] = []string{"@all"}
+		text["mentioned_mobile_list"] = []string{"@all"}
 	}
+	params["text"] = text
 	data, _ := json.Marshal(params)
 	request, err := http.NewRequest("POST", robot.url, bytes.NewReader(data))
 	if err != nil {
