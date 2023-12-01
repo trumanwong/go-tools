@@ -19,7 +19,7 @@ func NewWorkWechatRobot(url string) *WorkWechatRobot {
 	return &WorkWechatRobot{url: url}
 }
 
-func (robot *WorkWechatRobot) SendText(level, content string) {
+func (robot *WorkWechatRobot) SendText(level, content string, isAtAll bool) {
 	messages, params := make([]string, 0), make(map[string]interface{})
 	messages = append(messages, fmt.Sprintf("- 时间：%s", time.Now().Format("2006-01-02 15:04:05")))
 	messages = append(messages, fmt.Sprintf("- Level：%s", level))
@@ -30,7 +30,7 @@ func (robot *WorkWechatRobot) SendText(level, content string) {
 	params["timestamp"] = time.Now().Unix()
 	params["msgtype"] = "markdown"
 	params["markdown"] = markdown
-	if level == "error" {
+	if isAtAll {
 		params["mentioned_mobile_list"] = []string{"@all"}
 	}
 	data, _ := json.Marshal(params)
