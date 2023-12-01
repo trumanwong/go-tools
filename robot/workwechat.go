@@ -30,6 +30,9 @@ func (robot *WorkWechatRobot) SendText(level, content string) {
 	params["timestamp"] = time.Now().Unix()
 	params["msgtype"] = "markdown"
 	params["markdown"] = markdown
+	if level == "error" {
+		params["mentioned_mobile_list"] = []string{"@all"}
+	}
 	data, _ := json.Marshal(params)
 	request, err := http.NewRequest("POST", robot.url, bytes.NewReader(data))
 	if err != nil {
