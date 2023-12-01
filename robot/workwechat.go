@@ -19,18 +19,32 @@ func NewWorkWechatRobot(url string) *WorkWechatRobot {
 	return &WorkWechatRobot{url: url}
 }
 
-func (robot *WorkWechatRobot) SendText(level, content string, isAtAll bool) {
+type Level string
+
+const (
+	LevelInfo    Level = "info"
+	LevelWarning Level = "warning"
+	LevelError   Level = "error"
+)
+
+type SentTextRequest struct {
+	Level   Level  `json:"level"`
+	Content string `json:"content"`
+	IsAtAll bool   `json:"is_at_all"`
+}
+
+func (robot *WorkWechatRobot) SendText(req *SentTextRequest) {
 	messages, params := make([]string, 0), make(map[string]interface{})
 	messages = append(messages, fmt.Sprintf("- 时间：%s", time.Now().Format("2006-01-02 15:04:05")))
-	messages = append(messages, fmt.Sprintf("- Level：%s", level))
-	messages = append(messages, fmt.Sprintf("- 信息：%s", content))
+	messages = append(messages, fmt.Sprintf("- Level：%s", req.Level))
+	messages = append(messages, fmt.Sprintf("- 信息：%s", req.Content))
 	markdown := make(map[string]interface{})
 	markdown["title"] = "通知"
 	markdown["content"] = strings.Join(messages, "\n")
 	params["timestamp"] = time.Now().Unix()
 	params["msgtype"] = "markdown"
 	params["markdown"] = markdown
-	if isAtAll {
+	if req.IsAtAll {
 		params["mentioned_mobile_list"] = []string{"@all"}
 	}
 	data, _ := json.Marshal(params)
