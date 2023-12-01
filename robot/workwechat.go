@@ -44,6 +44,7 @@ func (robot *WorkWechatRobot) SendText(req *SentTextRequest) {
 		text["mentioned_list"] = []string{"@all"}
 		text["mentioned_mobile_list"] = []string{"@all"}
 	}
+	params["msgtype"] = "text"
 	params["text"] = text
 	data, _ := json.Marshal(params)
 	request, err := http.NewRequest("POST", robot.url, bytes.NewReader(data))
