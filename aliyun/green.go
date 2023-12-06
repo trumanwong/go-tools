@@ -3,6 +3,7 @@ package aliyun
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
 	green20220302 "github.com/alibabacloud-go/green-20220302/client"
 	util "github.com/alibabacloud-go/tea-utils/v2/service"
@@ -88,7 +89,7 @@ func (c GreenClient) ImageModeration(req *ImageModerationRequest) (err error) {
 			}
 			return nil
 		}
-		return errors.New("image moderation not success. status" + tea.ToString(tea.ToInt(body.Code)))
+		return errors.New("image moderation not success. status" + fmt.Sprintf("%d", tea.IntValue(tea.ToInt(body.Code))))
 	}
 	return errors.New("image moderation failed. statusCode:" + tea.ToString(statusCode))
 }
