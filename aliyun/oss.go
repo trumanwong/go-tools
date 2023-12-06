@@ -118,6 +118,10 @@ func (a AliOss) SignUrl(req *SignUrlRequest) (string, error) {
 // srcObjectKey: 源文件名
 // destObjectKey: 目标文件名
 // options: oss.Option
-func (a AliOss) Move(srcObjectKey, destObjectKey string, options ...oss.Option) (oss.CopyObjectResult, error) {
-	return a.bucket.CopyObject(srcObjectKey, destObjectKey, options...)
+func (a AliOss) Move(srcObjectKey, destObjectKey string, options ...oss.Option) error {
+	_, err := a.bucket.CopyObject(srcObjectKey, destObjectKey, options...)
+	if err != nil {
+		return err
+	}
+	return a.DeleteObjects([]string{srcObjectKey})
 }
