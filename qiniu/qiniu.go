@@ -16,20 +16,35 @@ import (
 	"time"
 )
 
+// Client is a struct that represents a Qiniu client.
+// It contains a Mac object for authentication, a CdnManager for CDN operations, and a BucketManager for bucket operations.
 type Client struct {
-	mac           *qbox.Mac
-	cdnManager    *cdn.CdnManager
+	// mac is a Mac object that contains the access key and secret key for authentication.
+	mac *qbox.Mac
+	// cdnManager is a CdnManager object that provides methods for CDN operations.
+	cdnManager *cdn.CdnManager
+	// bucketManager is a BucketManager object that provides methods for bucket operations.
 	bucketManager *storage.BucketManager
 }
 
+// NewClient is a function that creates a new Qiniu client.
+// It takes an access key and a secret key as parameters, and returns a pointer to a Client object.
+// The function creates a new Mac object with the access key and secret key, a new CdnManager with the Mac object,
+// and a new BucketManager with the Mac object and a Config object that enables HTTPS.
+// The function then creates a new Client object with the Mac object, the CdnManager, and the BucketManager, and returns a pointer to it.
 func NewClient(accessKey, secretKey string) *Client {
+	// Create a new Mac object with the access key and secret key.
 	mac := qbox.NewMac(accessKey, secretKey)
+	// Create a new CdnManager with the Mac object.
 	cdnManager := cdn.NewCdnManager(mac)
+	// Create a new Config object that enables HTTPS.
 	cfg := storage.Config{
 		// 是否使用https域名进行资源管理
 		UseHTTPS: true,
 	}
+	// Create a new BucketManager with the Mac object and the Config object.
 	bucketManager := storage.NewBucketManager(mac, &cfg)
+	// Create a new Client object with the Mac object, the CdnManager, and the BucketManager.
 	return &Client{mac: mac, cdnManager: cdnManager, bucketManager: bucketManager}
 }
 
@@ -78,17 +93,27 @@ func (c *Client) PutFile(ctx context.Context, req *PutFileRequest) (*PutRet, err
 	return &ret, nil
 }
 
+// RefreshUrls is a method of Client that refreshes the cache of the specified URLs.
+// It takes a slice of strings representing the URLs to refresh as a parameter.
+// The method calls the RefreshUrls method of the CdnManager object in the Client, passing the URLs to refresh.
+// The method returns an error if the RefreshUrls method of the CdnManager returns an error.
 func (c *Client) RefreshUrls(urlsToRefresh []string) error {
 	_, err := c.cdnManager.RefreshUrls(urlsToRefresh)
 	return err
 }
 
-// GetUploadToken 获取上传token
+// GetUploadToken is a method of Client that gets an upload token.
+// It takes a PutPolicy object as a parameter.
+// The method calls the UploadToken method of the PutPolicy object, passing the Mac object in the Client.
+// The method returns the upload token as a string.
 func (c *Client) GetUploadToken(putPolicy storage.PutPolicy) string {
 	return putPolicy.UploadToken(c.mac)
 }
 
-// Delete 删除指定文件
+// Delete is a method of Client that deletes a specified file.
+// It takes a string representing the bucket where the file is located and a string representing the key of the file as parameters.
+// The method calls the Delete method of the BucketManager object in the Client, passing the bucket and the key.
+// The method returns an error if the Delete method of the BucketManager returns an error.
 func (c *Client) Delete(bucket, key string) error {
 	return c.bucketManager.Delete(bucket, key)
 }

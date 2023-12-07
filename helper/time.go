@@ -2,6 +2,10 @@ package helper
 
 import "time"
 
+// ParseTime is a function that parses a string into a time.Time object.
+// It takes a string representing a time in the format "2006-01-02 15:04:05" as a parameter,
+// and returns a pointer to a time.Time object and an error.
+// If the string cannot be parsed into a time.Time object, the function returns nil and the error.
 func ParseTime(t string) (*time.Time, error) {
 	res, err := time.Parse("2006-01-02 15:04:05", t)
 	if err != nil {
@@ -10,8 +14,10 @@ func ParseTime(t string) (*time.Time, error) {
 	return &res, nil
 }
 
+// IntervalTimeType is a type that represents the type of a time interval.
 type IntervalTimeType int
 
+// Constants for the different types of time intervals.
 const (
 	Day IntervalTimeType = iota
 	Week
@@ -19,23 +25,31 @@ const (
 	Year
 )
 
+// GetIntervalTimeRequest is a struct that represents a request to get the start and end times of a time interval.
+// It contains the time that specifies the date, the type of the time interval, and the number that specifies the offset from the specified date.
 type GetIntervalTimeRequest struct {
-	// 指定日期
+	// Time is the time that specifies the date.
 	Time time.Time
+	// Type is the type of the time interval.
 	Type IntervalTimeType
-	// 如果类型为Day， 则Num为0指定日期的当天，-1指定日期的前一天，1指定日期的后一天以此类推
-	// 如果类型为Week， 则Num为0指定日期的当周,-1指定日期的上周，1指定日期的下周以此类推
-	// 如果类型为Month， 则Num为0指定日期的当月,-1指定日期的上月，1指定日期的下月以此类推
-	// 如果类型为Year， 则Num为0指定日期的当年,-1指定日期的去年，1指定日期的明年以此类推
+	// Num is the number that specifies the offset from the specified date.
 	Num int
 }
 
+// GetIntervalTimeResponse is a struct that represents the response to a GetIntervalTimeRequest.
+// It contains the start and end times of the time interval.
 type GetIntervalTimeResponse struct {
+	// StartAt is the start time of the time interval.
 	StartAt time.Time
-	EndAt   time.Time
+	// EndAt is the end time of the time interval.
+	EndAt time.Time
 }
 
-// GetIntervalTime 获取某天/周/月/年的开始和结束时间,d为0今天,-1昨天，1明天以此类推
+// GetIntervalTime is a function that gets the start and end times of a time interval.
+// It takes a pointer to a GetIntervalTimeRequest struct as a parameter,
+// and returns a pointer to a GetIntervalTimeResponse struct.
+// The function calculates the start and end times based on the type and number in the GetIntervalTimeRequest,
+// and sets them in the GetIntervalTimeResponse.
 func GetIntervalTime(req *GetIntervalTimeRequest) (resp *GetIntervalTimeResponse) {
 	resp = new(GetIntervalTimeResponse)
 	var offset int

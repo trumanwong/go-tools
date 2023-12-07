@@ -12,12 +12,15 @@ import (
 	"net/http"
 )
 
+// GreenClient is a struct that holds the client information for interacting with Alibaba Cloud's Green service.
 type GreenClient struct {
-	client *green20220302.Client
+	client *green20220302.Client // The Green service client
 }
 
-// NewGreenClient 创建GreenClient实例
-// 此处实例化的client请尽可能重复使用，避免重复建立连接，提升检测性能
+// NewGreenClient creates a new instance of GreenClient.
+// It takes the accessKeyId, accessKeySecret, and endpoint as parameters.
+// It returns a pointer to the created GreenClient instance and an error if any occurred during the creation.
+// The created client should be reused as much as possible to avoid repeatedly establishing connections and improve detection performance.
 func NewGreenClient(accessKeyId, accessKeySecret, endpoint string) (*GreenClient, error) {
 	config := &openapi.Config{
 		AccessKeyId:     tea.String(accessKeyId),
@@ -31,41 +34,44 @@ func NewGreenClient(accessKeyId, accessKeySecret, endpoint string) (*GreenClient
 	return &GreenClient{client: client}, nil
 }
 
+// ImageModerationRequest is a struct that holds the information needed for image moderation.
 type ImageModerationRequest struct {
-	// 待检测图片链接，公网可访问的URL。
+	// The URL of the image to be checked, which must be publicly accessible.
 	ImageUrl *string
-	// 使用OSS授权进行检测，必须同时传入ossBucketName、ossObjectName、ossRegionId。
-	// 已授权OSS空间的Bucket名,示例：bucket001
+	// To use OSS authorization for detection, ossBucketName, ossObjectName, and ossRegionId must be passed in at the same time.
+	// The name of the authorized OSS space, for example: bucket001
 	OssBucketName *string
-	// 已授权OSS空间的文件名,示例：image/001.jpg
+	// The file name of the authorized OSS space, for example: image/001.jpg
 	OssObjectName *string
-	// OSS Bucket所在区域，如oss-cn-hangzhou。
+	// The region where the OSS Bucket is located, such as oss-cn-hangzhou.
 	OssRegionID *string
-	// 风险标签, key为风险标签值，value为风险标签对应的分值，范围0-100，分值越高风险程度越高。
+	// Risk labels, where the key is the value of the risk label and the value is the corresponding score, ranging from 0-100. The higher the score, the higher the risk level.
 	// https://help.aliyun.com/document_detail/467829.html?spm=a2c4g.467828.0.0.2fd42592WnfIdf
 	Labels map[string]float32
 }
 
+// ImageModeration performs image moderation.
+// It takes an ImageModerationRequest as a parameter and returns an error if the moderation operation fails.
 func (c GreenClient) ImageModeration(req *ImageModerationRequest) (err error) {
-	//运行时参数设置，仅对使用了该运行时参数实例的请求有效
+	// Runtime parameter settings, only effective for requests using this runtime parameter instance
 	runtime := &util.RuntimeOptions{}
 
-	//构建图片检测请求。
+	// Build the image detection request.
 	m := map[string]interface{}{
-		//待检测数据的ID。
+		// The ID of the data to be checked.
 		"dataId": uuid.New(),
 	}
 	if req.ImageUrl != nil {
 		m["imageUrl"] = *req.ImageUrl
 	} else if req.OssBucketName != nil && req.OssObjectName != nil && req.OssRegionID != nil {
-		//使用OSS授权进行检测
+		// Use OSS authorization for detection
 		m["ossBucketName"] = *req.OssBucketName
 		m["ossObjectName"] = *req.OssObjectName
 		m["ossRegionId"] = *req.OssRegionID
 	}
 	serviceParameters, _ := json.Marshal(m)
 	imageModerationRequest := &green20220302.ImageModerationRequest{
-		//图片检测service：内容安全控制台图片增强版规则配置的serviceCode，示例：baselineCheck
+		// Image detection service: the serviceCode configured by the content security console image enhanced version rules, example: baselineCheck
 		Service:           tea.String("baselineCheck"),
 		ServiceParameters: tea.String(string(serviceParameters)),
 	}

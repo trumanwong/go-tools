@@ -13,7 +13,22 @@ import (
 	"strconv"
 )
 
-// CheckIdCard 检查身份证号码是否正确
+// CheckIdCard is a function that checks if a given string is a valid Chinese ID card number.
+// It supports both 15-digit and 18-digit ID card numbers, and the last digit of 18-digit ID card numbers can be 'X' or 'x'.
+//
+// The function uses regular expressions to match the input string with the pattern of a valid ID card number.
+// If the input string does not match the pattern, the function returns false.
+//
+// If the input string matches the pattern, the function then checks the last digit of the ID card number.
+// For 18-digit ID card numbers, the last digit is a check digit that is calculated based on the first 17 digits.
+// The function calculates the check digit and compares it with the actual last digit of the input string.
+// If they match, the function returns true; otherwise, it returns false.
+//
+// Parameters:
+// idCardStr: a string representing a Chinese ID card number.
+//
+// Returns:
+// A boolean value indicating whether the input string is a valid Chinese ID card number.
 func CheckIdCard(idCardStr string) bool {
 	//18位身份证 ^(\d{17})([0-9]|X)$
 	// 匹配规则
