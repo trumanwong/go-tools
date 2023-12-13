@@ -135,7 +135,7 @@ func DownloadFile(url, savePath string) error {
 	dirPath := filepath.Dir(savePath)
 	// 判断目录是否存在
 	if !PathExists(dirPath) {
-		err = os.MkdirAll(dirPath, 0666)
+		err = os.MkdirAll(dirPath, os.ModePerm)
 		if err != nil {
 			return err
 		}
