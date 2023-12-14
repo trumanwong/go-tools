@@ -48,6 +48,8 @@ type ImageModerationRequest struct {
 	// Risk labels, where the key is the value of the risk label and the value is the corresponding score, ranging from 0-100. The higher the score, the higher the risk level.
 	// https://help.aliyun.com/document_detail/467829.html?spm=a2c4g.467828.0.0.2fd42592WnfIdf
 	Labels map[string]float32
+	// 检测规则，可选值：baselineCheck（基础版检测）
+	Service *string
 }
 
 // ImageModeration performs image moderation.
@@ -70,9 +72,13 @@ func (c GreenClient) ImageModeration(req *ImageModerationRequest) (err error) {
 		m["ossRegionId"] = *req.OssRegionID
 	}
 	serviceParameters, _ := json.Marshal(m)
+	service := tea.String("baselineCheck")
+	if req.Service != nil {
+		service = req.Service
+	}
 	imageModerationRequest := &green20220302.ImageModerationRequest{
 		// Image detection service: the serviceCode configured by the content security console image enhanced version rules, example: baselineCheck
-		Service:           tea.String("baselineCheck"),
+		Service:           service,
 		ServiceParameters: tea.String(string(serviceParameters)),
 	}
 
