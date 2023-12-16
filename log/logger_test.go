@@ -9,5 +9,5 @@ import (
 func TestLogger_Debug(t *testing.T) {
 	logger := NewLogger(nil)
 	logger.WithTraceId(context.Background(), uuid.New().String())
-	logger.Error("hello")
+	logger.Info("hello")
 }

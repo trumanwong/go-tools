@@ -20,9 +20,6 @@ func NewLogger(traceKey *string) *Logger {
 	// Can be any io.Writer, see below for File example
 	logrus.SetOutput(os.Stdout)
 
-	// Only log the warning severity or above.
-	logrus.SetLevel(logrus.WarnLevel)
-
 	key := "X-Trace-Id"
 	if traceKey != nil {
 		key = *traceKey
