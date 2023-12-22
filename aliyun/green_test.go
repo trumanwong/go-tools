@@ -1,9 +1,10 @@
 package aliyun
 
 import (
-	"github.com/alibabacloud-go/tea/tea"
 	"os"
 	"testing"
+
+	"github.com/alibabacloud-go/tea/tea"
 )
 
 func TestGreenClient_ImageModeration(t *testing.T) {
@@ -12,7 +13,7 @@ func TestGreenClient_ImageModeration(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	err = client.ImageModeration(&ImageModerationRequest{
+	_, err = client.ImageModeration(&ImageModerationRequest{
 		OssBucketName: tea.String(os.Getenv("Bucket")),
 		OssObjectName: tea.String(os.Getenv("OssObjectName")),
 		OssRegionID:   tea.String(os.Getenv("OssRegion")),

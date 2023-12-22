@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
+
 	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
 	green20220302 "github.com/alibabacloud-go/green-20220302/client"
 	util "github.com/alibabacloud-go/tea-utils/v2/service"
 	"github.com/alibabacloud-go/tea/tea"
 	"github.com/google/uuid"
-	"net/http"
 )
 
 // GreenClient is a struct that holds the client information for interacting with Alibaba Cloud's Green service.
@@ -52,9 +53,15 @@ type ImageModerationRequest struct {
 	Service *string
 }
 
+// ImageModerationRequest is a struct that holds the information needed for image moderation.
+type ImageModerationInfo struct {
+	Label      string
+	Confidence float32
+}
+
 // ImageModeration performs image moderation.
 // It takes an ImageModerationRequest as a parameter and returns an error if the moderation operation fails.
-func (c GreenClient) ImageModeration(req *ImageModerationRequest) (err error) {
+func (c GreenClient) ImageModeration(req *ImageModerationRequest) (info *ImageModerationInfo, err error) {
 	// Runtime parameter settings, only effective for requests using this runtime parameter instance
 	runtime := &util.RuntimeOptions{}
 
@@ -84,7 +91,7 @@ func (c GreenClient) ImageModeration(req *ImageModerationRequest) (err error) {
 
 	response, err := c.client.ImageModerationWithOptions(imageModerationRequest, runtime)
 	if err != nil {
-		return err
+		return info, err
 	}
 	statusCode := tea.IntValue(tea.ToInt(response.StatusCode))
 	body := response.Body
@@ -96,12 +103,15 @@ func (c GreenClient) ImageModeration(req *ImageModerationRequest) (err error) {
 				label := tea.StringValue(result[i].Label)
 				confidence := tea.Float32Value(result[i].Confidence)
 				if _, ok := req.Labels[label]; ok && confidence > req.Labels[label] {
-					return errors.New("invalid image. label:" + label + ", confidence:" + tea.ToString(confidence))
+					return &ImageModerationInfo{
+						Label:      label,
+						Confidence: confidence,
+					}, errors.New("invalid image. label:" + label + ", confidence:" + tea.ToString(confidence))
 				}
 			}
-			return nil
+			return info, nil
 		}
-		return errors.New("image moderation not success. status" + fmt.Sprintf("%d", tea.IntValue(tea.ToInt(body.Code))))
+		return info, errors.New("image moderation not success. status" + fmt.Sprintf("%d", tea.IntValue(tea.ToInt(body.Code))))
 	}
-	return errors.New("image moderation failed. statusCode:" + tea.ToString(statusCode))
+	return info, errors.New("image moderation failed. statusCode:" + tea.ToString(statusCode))
 }
