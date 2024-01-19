@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"github.com/trumanwong/go-tools/crawler"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
+	"time"
 )
 
 type Server struct {
@@ -22,6 +24,9 @@ const promptApi = "/prompt"
 
 // 查询任务状态
 const historyApi = "/history/%s"
+
+// 查询队列
+const queueApi = "/queue"
 
 func NewServer(host string) *Server {
 	return &Server{
@@ -164,4 +169,51 @@ func (s Server) History(promptId string, keys ...string) ([]*ImageResult, error)
 		})
 	}
 	return result, nil
+}
+
+func (s Server) QueueIsRunning(promptId string) (bool, error) {
+	resp, err := crawler.Send(&crawler.Request{
+		Url:    s.host + queueApi,
+		Method: http.MethodGet,
+	})
+	if err != nil {
+		return false, err
+	}
+	m := make(map[string]interface{})
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return false, fmt.Errorf("read body error: %s", err.Error())
+	}
+	err = json.Unmarshal(b, &m)
+	if err != nil {
+		return false, fmt.Errorf("unmarshal error: %s, body: %s", err.Error(), b)
+	}
+	if _, ok := m["queue_running"]; !ok {
+		return false, fmt.Errorf("queue_running not found, body: %s", b)
+	}
+	for _, item := range m["queue_running"].([]interface{}) {
+		arr := item.([]interface{})
+		if arr[1].(string) == promptId {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
+func (s Server) Cancel(promptId ...string) error {
+	body, _ := json.Marshal(map[string]interface{}{
+		"delete": promptId,
+	})
+	log.Println(string(body))
+	resp, err := crawler.Send(&crawler.Request{
+		Url:     s.host + queueApi,
+		Method:  http.MethodPost,
+		Body:    bytes.NewReader(body),
+		Timeout: 60 * time.Second,
+	})
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	return nil
 }

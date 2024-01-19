@@ -73,3 +73,20 @@ func TestServer_History(t *testing.T) {
 		}
 	}
 }
+
+func TestServer_QueueIsRunning(t *testing.T) {
+	s := NewServer(os.Getenv("COMFY_HOST"))
+	resp, err := s.QueueIsRunning("78cc8638-160c-468e-8675-f462d61ca4d8")
+	if err != nil {
+		t.Fatal(err)
+	}
+	log.Println(resp)
+}
+
+func TestServer_Cancel(t *testing.T) {
+	s := NewServer(os.Getenv("COMFY_HOST"))
+	err := s.Cancel([]string{"78cc8638-160c-468e-8675-f462d61ca4d8"}...)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
