@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/trumanwong/go-tools/crawler"
 	"io"
-	"log"
 	"mime/multipart"
 	"net/http"
 	"time"
@@ -139,14 +138,14 @@ func (s Server) History(promptId string, keys ...string) ([]*ImageResult, error)
 	}
 	// 取出任务详情
 	task := m[promptId].(map[string]interface{})
-	if _, ok := task["status"]; !ok {
-		return nil, fmt.Errorf("status not found")
-	} else {
-		status := task["status"].(map[string]interface{})
-		if !status["completed"].(bool) || status["status_str"] != "success" {
-			return nil, fmt.Errorf("status is not success")
-		}
-	}
+	//if _, ok := task["status"]; !ok {
+	//	return nil, fmt.Errorf("status not found")
+	//} else {
+	//	status := task["status"].(map[string]interface{})
+	//	if !status["completed"].(bool) || status["status_str"] != "success" {
+	//		return nil, fmt.Errorf("status is not success")
+	//	}
+	//}
 	if _, ok := task["outputs"]; !ok {
 		return nil, fmt.Errorf("outputs not found")
 	}
@@ -204,7 +203,6 @@ func (s Server) Cancel(promptId ...string) error {
 	body, _ := json.Marshal(map[string]interface{}{
 		"delete": promptId,
 	})
-	log.Println(string(body))
 	resp, err := crawler.Send(&crawler.Request{
 		Url:     s.host + queueApi,
 		Method:  http.MethodPost,
