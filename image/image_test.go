@@ -6,7 +6,11 @@ import (
 )
 
 func TestReSave(t *testing.T) {
-	err := ReSave(os.Getenv("TEST_FILE_PATH"), os.Getenv("TEST_SAVE_PATH"))
+	f, err := os.Open(os.Getenv("TEST_FILE_PATH"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = ReSave(f, os.Getenv("TEST_SAVE_PATH"))
 	if err != nil {
 		t.Fatal(err)
 	}

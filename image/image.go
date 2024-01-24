@@ -4,16 +4,12 @@ import (
 	"bufio"
 	"image"
 	"image/png"
+	"io"
 	"os"
 )
 
-func ReSave(imagePath, savePath string) error {
-	f, err := os.Open(imagePath)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	img, _, err := image.Decode(f)
+func ReSave(reader io.Reader, savePath string) error {
+	img, _, err := image.Decode(reader)
 	if err != nil {
 		return err
 	}
@@ -21,7 +17,7 @@ func ReSave(imagePath, savePath string) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer saveFile.Close()
 	b := bufio.NewWriter(saveFile)
 	if err := png.Encode(b, img); err != nil {
 		return err
