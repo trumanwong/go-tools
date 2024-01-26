@@ -60,7 +60,7 @@ func TestServer_Prompt(t *testing.T) {
 
 func TestServer_History(t *testing.T) {
 	s := NewServer(os.Getenv("COMFY_HOST"))
-	resp, err := s.History("c6070c4a-cd1d-4c9f-8578-9542a8ea7356", []string{"40"}...)
+	resp, err := s.History("d7281953-9746-4990-91e0-f0e99dbafdef", []string{"58"}...)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -70,6 +70,10 @@ func TestServer_History(t *testing.T) {
 	for _, image := range resp {
 		for _, img := range image.Images {
 			log.Println(img.Filename)
+		}
+		for _, img := range image.Gifs {
+			log.Println(img.Filename)
+			log.Println(img.Format)
 		}
 	}
 }
