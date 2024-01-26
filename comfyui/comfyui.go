@@ -107,6 +107,7 @@ func (s Server) Prompt(clientId string, prompt map[string]interface{}, extraData
 }
 
 type Image struct {
+	KeyType   string `json:"key_type"`
 	Filename  string `json:"filename"`
 	SubFolder string `json:"subfolder"`
 	Type      string `json:"type"`
@@ -115,7 +116,6 @@ type Image struct {
 
 type ImageResult struct {
 	Images []*Image `json:"images"`
-	Gifs   []*Image `json:"gifs"`
 	Key    string   `json:"key"`
 }
 
@@ -159,14 +159,19 @@ func (s Server) History(promptId string, keys ...string) ([]*ImageResult, error)
 		}
 		keyImages := outputs[key].(map[string]interface{})
 		images := make([]*Image, 0)
-		gifs := make([]*Image, 0)
 		var b []byte
 		if _, ok := keyImages["images"]; ok {
 			b, _ = json.Marshal(keyImages["images"])
 			err = json.Unmarshal(b, &images)
+			for i, _ := range images {
+				images[i].KeyType = "images"
+			}
 		} else if _, ok := keyImages["gifs"]; ok {
 			b, _ = json.Marshal(keyImages["gifs"])
-			err = json.Unmarshal(b, &gifs)
+			err = json.Unmarshal(b, &images)
+			for i, _ := range images {
+				images[i].KeyType = "gifs"
+			}
 		} else {
 			return nil, fmt.Errorf("key images/gifs is not exists")
 		}
@@ -175,7 +180,6 @@ func (s Server) History(promptId string, keys ...string) ([]*ImageResult, error)
 		}
 		result = append(result, &ImageResult{
 			Images: images,
-			Gifs:   gifs,
 			Key:    key,
 		})
 	}

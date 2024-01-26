@@ -69,11 +69,7 @@ func TestServer_History(t *testing.T) {
 	}
 	for _, image := range resp {
 		for _, img := range image.Images {
-			log.Println(img.Filename)
-		}
-		for _, img := range image.Gifs {
-			log.Println(img.Filename)
-			log.Println(img.Format)
+			log.Println(img.Filename, img.KeyType)
 		}
 	}
 }
