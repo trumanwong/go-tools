@@ -122,40 +122,41 @@ type ImageResult struct {
 // History 查询任务状态
 // promptId 任务id
 // keys 要取的结果（outputs）的key
-func (s Server) History(promptId string, keys ...string) ([]*ImageResult, error) {
+func (s Server) History(promptId string, keys ...string) ([]*ImageResult, map[string]interface{}, error) {
 	resp, err := crawler.Send(&crawler.Request{
 		Url:    s.host + fmt.Sprintf(historyApi, promptId),
 		Method: http.MethodGet,
 	})
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	m := make(map[string]interface{})
 	err = json.NewDecoder(resp.Body).Decode(&m)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	if _, ok := m[promptId]; !ok {
-		return nil, fmt.Errorf("promptId: %s not found", promptId)
+		return nil, nil, fmt.Errorf("promptId: %s not found", promptId)
 	}
 	// 取出任务详情
 	task := m[promptId].(map[string]interface{})
-	//if _, ok := task["status"]; !ok {
-	//	return nil, fmt.Errorf("status not found")
-	//} else {
-	//	status := task["status"].(map[string]interface{})
-	//	if !status["completed"].(bool) || status["status_str"] != "success" {
-	//		return nil, fmt.Errorf("status is not success")
-	//	}
-	//}
+	var status map[string]interface{}
+	if _, ok := task["status"]; !ok {
+		return nil, nil, fmt.Errorf("status not found")
+	} else {
+		status = task["status"].(map[string]interface{})
+		if !status["completed"].(bool) || status["status_str"] != "success" {
+			return nil, status, fmt.Errorf("status is not success")
+		}
+	}
 	if _, ok := task["outputs"]; !ok {
-		return nil, fmt.Errorf("outputs not found")
+		return nil, status, fmt.Errorf("outputs not found")
 	}
 	outputs := task["outputs"].(map[string]interface{})
 	result := make([]*ImageResult, 0)
 	for _, key := range keys {
 		if _, ok := outputs[key]; !ok {
-			return nil, fmt.Errorf("key: %s not found", key)
+			return nil, status, fmt.Errorf("key: %s not found", key)
 		}
 		keyImages := outputs[key].(map[string]interface{})
 		images := make([]*Image, 0)
@@ -173,17 +174,17 @@ func (s Server) History(promptId string, keys ...string) ([]*ImageResult, error)
 				images[i].KeyType = "gifs"
 			}
 		} else {
-			return nil, fmt.Errorf("key images/gifs is not exists")
+			return nil, status, fmt.Errorf("key images/gifs is not exists")
 		}
 		if err != nil {
-			return nil, fmt.Errorf("key: %s unmarshal error, images: %s", key, b)
+			return nil, status, fmt.Errorf("key: %s unmarshal error, images: %s", key, b)
 		}
 		result = append(result, &ImageResult{
 			Images: images,
 			Key:    key,
 		})
 	}
-	return result, nil
+	return result, status, nil
 }
 
 func (s Server) QueueIsRunning(promptId string) (bool, error) {

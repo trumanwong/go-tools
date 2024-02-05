@@ -60,7 +60,7 @@ func TestServer_Prompt(t *testing.T) {
 
 func TestServer_History(t *testing.T) {
 	s := NewServer(os.Getenv("COMFY_HOST"))
-	resp, err := s.History("d7281953-9746-4990-91e0-f0e99dbafdef", []string{"58"}...)
+	resp, _, err := s.History("d7281953-9746-4990-91e0-f0e99dbafdef", []string{"58"}...)
 	if err != nil {
 		t.Fatal(err)
 	}
