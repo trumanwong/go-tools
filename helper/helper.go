@@ -73,6 +73,21 @@ func CheckIdCard(idCardStr string) bool {
 	return false
 }
 
+// Response is a function that sends a JSON response to the client.
+//
+// The function uses the gin package to send a JSON response with a given HTTP status code, message, and data.
+// The response is a JSON object with two properties: "message" and "data".
+// The "message" property is a string that represents the message to be sent to the client.
+// The "data" property is an interface{} that represents the data to be sent to the client.
+//
+// Parameters:
+// ctx: a pointer to a gin.Context that represents the context of the request.
+// data: an interface{} that represents the data to be sent to the client.
+// code: an int that represents the HTTP status code of the response.
+// message: a string that represents the message to be sent to the client.
+//
+// Returns:
+// The function does not return a value.
 func Response(ctx *gin.Context, data interface{}, code int, message string) {
 	ctx.JSON(code, gin.H{
 		"message": message,
@@ -80,7 +95,19 @@ func Response(ctx *gin.Context, data interface{}, code int, message string) {
 	})
 }
 
-// PathExists 判断路径是否存在
+// PathExists is a function that checks if a given path exists in the file system.
+//
+// The function uses the os package to get the file or directory information of the given path.
+// If there is an error in getting the information, the function checks if the error is because the file or directory exists.
+// If the file or directory exists, the function returns true; otherwise, it returns false.
+//
+// If there is no error in getting the information, the function returns true, indicating that the path exists.
+//
+// Parameters:
+// path: a string representing the path to be checked.
+//
+// Returns:
+// A boolean value indicating whether the given path exists in the file system.
 func PathExists(path string) bool {
 	_, err := os.Stat(path)
 	if err != nil {
@@ -92,6 +119,21 @@ func PathExists(path string) bool {
 	return true
 }
 
+// ConvertDownloadCount is a function that converts a download count to a string representation.
+// The function supports download counts up to 100 million and above.
+//
+// The function checks if the download count is greater than or equal to 100 million.
+// If it is, the function converts the download count to a float, divides it by 100 million, and formats it as a string with two decimal places followed by "亿次下载".
+//
+// If the download count is less than 100 million but greater than or equal to 10,000, the function divides it by 10,000 and formats it as a string followed by "万次下载".
+//
+// If the download count is less than 10,000, the function formats it as a string followed by "次下载".
+//
+// Parameters:
+// downloadCount: a uint64 representing the download count.
+//
+// Returns:
+// A string representing the download count in a more readable format.
 func ConvertDownloadCount(downloadCount uint64) string {
 	if downloadCount >= 100000000 {
 		return fmt.Sprintf("%.2f亿次下载", float64(downloadCount)/100000000)
@@ -101,6 +143,22 @@ func ConvertDownloadCount(downloadCount uint64) string {
 	return fmt.Sprintf("%d次下载", downloadCount)
 }
 
+// IP2Long is a function that converts an IP address to a big integer.
+// The function supports both IPv4 and IPv6 addresses.
+//
+// The function uses the net package to parse the input string into an IP address.
+// If the input string is not a valid IP address, the function returns nil.
+//
+// The function then checks if the IP address is an IPv6 address by looking for a colon in the input string.
+// If the IP address is an IPv6 address, the function converts it to a 16-byte representation and sets it to a big integer.
+// If the IP address is an IPv4 address, the function converts it to a 4-byte representation and sets it to a big integer.
+//
+// Parameters:
+// ipAddress: a string representing an IP address.
+//
+// Returns:
+// A pointer to a big integer representing the IP address.
+// If the input string is not a valid IP address, the function returns nil.
 func IP2Long(ipAddress string) *big.Int {
 	ip := net.ParseIP(ipAddress)
 	if ip == nil {
@@ -123,35 +181,78 @@ func IP2Long(ipAddress string) *big.Int {
 	return ipInt.SetBytes(ip.To4())
 }
 
-// DownloadFile 下载文件
-// url: 下载地址
-// savePath: 保存路径
+// DownloadFile is a function that downloads a file from a given URL and saves it to a specified path.
+// The function uses the http package to send a GET request to the URL and receive the response.
+// If there is an error in sending the request or receiving the response, the function returns the error.
+//
+// The function then gets the directory path of the save path.
+// If the directory does not exist, the function creates it.
+// If there is an error in creating the directory, the function returns the error.
+//
+// The function then creates a new file at the save path.
+// If there is an error in creating the file, the function returns the error.
+//
+// The function then writes the body of the response to the file.
+// If there is an error in writing to the file, the function returns the error.
+//
+// Parameters:
+// url: a string representing the URL of the file to be downloaded.
+// savePath: a string representing the path where the file is to be saved.
+//
+// Returns:
+// An error if there is any in the process; otherwise, nil.
 func DownloadFile(url, savePath string) error {
+	// Send a GET request to the URL.
 	resp, err := http.Get(url)
 	if err != nil {
 		return err
 	}
+	// Ensure the response body is closed after the function returns.
 	defer resp.Body.Close()
 
+	// Get the directory path of the save path.
 	dirPath := filepath.Dir(savePath)
-	// 判断目录是否存在
+	// If the directory does not exist, create it.
 	if !PathExists(dirPath) {
 		err = os.MkdirAll(dirPath, os.ModePerm)
 		if err != nil {
 			return err
 		}
 	}
+	// Create a new file at the save path.
 	out, err := os.Create(savePath)
 	if err != nil {
 		return err
 	}
+	// Ensure the file is closed after the function returns.
 	defer out.Close()
-	// 写入文件
+	// Write the body of the response to the file.
 	_, err = io.Copy(out, resp.Body)
 	return err
 }
 
-// InArray 判断元素是否在数组中
+// InArray is a function that checks if a given element (needle) is present in a given collection (haystack).
+// The function supports collections of type slice, array, and map.
+//
+// The function uses the reflect package to get the value of the haystack and its kind.
+// If the kind of the haystack is either a slice or an array, the function iterates over the elements of the haystack.
+// For each element, it checks if the element is deeply equal to the needle.
+// If it finds a match, it returns true.
+//
+// If the kind of the haystack is a map, the function iterates over the keys of the map.
+// For each key, it checks if the value associated with the key is deeply equal to the needle.
+// If it finds a match, it returns true.
+//
+// If the kind of the haystack is neither a slice, an array, nor a map, the function panics with a message.
+//
+// If the function does not find a match after checking all elements or values, it returns false.
+//
+// Parameters:
+// needle: an element to be searched in the haystack.
+// haystack: a collection where the needle is to be searched.
+//
+// Returns:
+// A boolean value indicating whether the needle is present in the haystack.
 func InArray(needle interface{}, haystack interface{}) bool {
 	val := reflect.ValueOf(haystack)
 	switch val.Kind() {
