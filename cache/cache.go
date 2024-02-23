@@ -3,7 +3,7 @@ package cache
 import (
 	"context"
 	"errors"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 	"time"
 )
 
@@ -273,7 +273,7 @@ func (c *Cache) ZRange(ctx context.Context, request *ZRangeRequest) ([]string, e
 // It contains the key of the sorted set, the members to add, and an optional custom prefix.
 type ZAddRequest struct {
 	Key     string
-	Members []*redis.Z
+	Members []redis.Z
 	Prefix  *string
 }
 
