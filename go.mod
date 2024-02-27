@@ -10,11 +10,14 @@ require (
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.4
 	github.com/aliyun/aliyun-oss-go-sdk v3.0.2+incompatible
 	github.com/gin-gonic/gin v1.9.1
+	github.com/go-pay/gopay v1.5.100
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/google/uuid v1.6.0
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/pkoukk/tiktoken-go v0.1.6
 	github.com/qiniu/go-sdk/v7 v7.19.0
 	github.com/rabbitmq/amqp091-go v1.9.0
+	github.com/redis/go-redis/v9 v9.5.1
 	github.com/sashabaranov/go-openai v1.19.4
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.8.4
@@ -44,6 +47,11 @@ require (
 	github.com/dlclark/regexp2 v1.10.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
+	github.com/go-pay/bm v0.0.1 // indirect
+	github.com/go-pay/crypto v0.0.1 // indirect
+	github.com/go-pay/xhttp v0.0.2 // indirect
+	github.com/go-pay/xlog v0.0.2 // indirect
+	github.com/go-pay/xtime v0.0.2 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.18.0 // indirect
@@ -56,7 +64,6 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/redis/go-redis/v9 v9.5.1 // indirect
 	github.com/tjfoc/gmsm v1.4.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect

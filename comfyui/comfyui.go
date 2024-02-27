@@ -122,11 +122,15 @@ type ImageResult struct {
 // History 查询任务状态
 // promptId 任务id
 // keys 要取的结果（outputs）的key
-func (s Server) History(promptId string, keys ...string) ([]*ImageResult, map[string]interface{}, error) {
-	resp, err := crawler.Send(&crawler.Request{
+func (s Server) History(promptId string, timeout *time.Duration, keys ...string) ([]*ImageResult, map[string]interface{}, error) {
+	req := &crawler.Request{
 		Url:    s.host + fmt.Sprintf(historyApi, promptId),
 		Method: http.MethodGet,
-	})
+	}
+	if timeout != nil {
+		req.Timeout = *timeout
+	}
+	resp, err := crawler.Send(req)
 	if err != nil {
 		return nil, nil, err
 	}
