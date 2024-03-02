@@ -12,6 +12,7 @@ import (
 	"reflect"
 	"regexp"
 	"strconv"
+	"time"
 )
 
 // CheckIdCard is a function that checks if a given string is a valid Chinese ID card number.
@@ -273,4 +274,46 @@ func InArray(needle interface{}, haystack interface{}) bool {
 	}
 
 	return false
+}
+
+// CheckPort is a function that checks if a given port on a given IP address is open.
+// It uses the net.DialTimeout function from the net package to attempt to establish a connection to the specified IP address and port within the specified timeout duration.
+// If the connection is successful, the function closes the connection and returns nil, indicating that the port is open.
+// If the connection is not successful, the function returns the error returned by net.DialTimeout, indicating that the port is not open or that there was a problem in establishing the connection.
+//
+// Parameters:
+// ip: a string representing the IP address to check.
+// port: a string representing the port to check.
+// timeout: a time.Duration representing the maximum amount of time to wait for the connection to be established.
+//
+// Returns:
+// An error if the connection could not be established within the specified timeout duration or if there was a problem in establishing the connection; otherwise, nil.
+func CheckPort(ip, port string, timeout time.Duration) error {
+	conn, err := net.DialTimeout("tcp", ip+":"+port, timeout)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+	return nil
+}
+
+// CheckHttp is a function that checks if a given URL is accessible via HTTP.
+// It uses the http.Head function from the net/http package to send a HEAD request to the URL.
+// A HEAD request is similar to a GET request, but it only requests the headers and not the body of the response.
+// This makes the function efficient for checking if a URL is accessible without downloading the entire content.
+//
+// If the HEAD request is successful, the function returns nil, indicating that the URL is accessible.
+// If the HEAD request is not successful, the function returns the error returned by http.Head, indicating that the URL is not accessible or that there was a problem in sending the request.
+//
+// Parameters:
+// link: a string representing the URL to check.
+//
+// Returns:
+// An error if the HEAD request could not be sent or if the URL is not accessible; otherwise, nil.
+func CheckHttp(link string) error {
+	_, err := http.Head(link)
+	if err != nil {
+		return err
+	}
+	return nil
 }
