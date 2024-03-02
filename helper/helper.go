@@ -3,6 +3,7 @@ package helper
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/trumanwong/go-tools/crawler"
 	"io"
 	"math/big"
 	"net"
@@ -310,8 +311,12 @@ func CheckPort(ip, port string, timeout time.Duration) error {
 //
 // Returns:
 // An error if the HEAD request could not be sent or if the URL is not accessible; otherwise, nil.
-func CheckHttp(link string) error {
-	_, err := http.Head(link)
+func CheckHttp(link string, timeout time.Duration) error {
+	_, err := crawler.Send(&crawler.Request{
+		Url:     link,
+		Method:  http.MethodHead,
+		Timeout: timeout,
+	})
 	if err != nil {
 		return err
 	}

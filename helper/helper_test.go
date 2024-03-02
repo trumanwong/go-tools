@@ -13,7 +13,7 @@ func TestCheckPort(t *testing.T) {
 }
 
 func TestCheckHttp(t *testing.T) {
-	err := CheckHttp("https://trumanwl.com")
+	err := CheckHttp("https://trumanwl.com", 30*time.Second)
 	if err != nil {
 		t.Fatal(err)
 	}
