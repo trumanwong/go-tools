@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"net/http"
 	"testing"
 	"time"
 )
@@ -13,8 +14,11 @@ func TestCheckPort(t *testing.T) {
 }
 
 func TestCheckHttp(t *testing.T) {
-	err := CheckHttp("https://trumanwl.com", 30*time.Second)
+	resp, err := CheckHttp("https://trumanwl.com", 30*time.Second)
 	if err != nil {
 		t.Fatal(err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		t.Fatal("status code not 200, status: ", resp.StatusCode)
 	}
 }
