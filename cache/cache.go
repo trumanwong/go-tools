@@ -417,3 +417,41 @@ type LRemRequest struct {
 func (c *Cache) LRem(ctx context.Context, request *LRemRequest) (int64, error) {
 	return c.client.LRem(ctx, c.prefixKey(request.Key, request.Prefix), request.Count, request.Value).Result()
 }
+
+type LRemByValueRequest struct {
+	Key    string
+	Value  string
+	Prefix *string
+}
+
+// LRemBeforeKey is a method of Cache that removes all elements in a list before a specified value.
+// It takes a context and a pointer to a LRemByValueRequest struct,
+// and returns an error if any occurs during the operation.
+//
+// The method uses the Redis LRANGE command to get all elements in the list,
+// then iterates over the list to find the specified value.
+// If the value is found at the start of the list, all elements are removed using the Redis DEL command.
+// If the value is found elsewhere in the list, all elements before it are removed using the Redis LTRIM command.
+func (c *Cache) LRemBeforeKey(ctx context.Context, request *LRemByValueRequest) error {
+	// Get all elements in the list
+	list, err := c.client.LRange(ctx, c.prefixKey(request.Key, request.Prefix), 0, -1).Result()
+	if err != nil {
+		return err
+	}
+	// Iterate over the list to find the specified value
+	for i := 0; i < len(list); i++ {
+		if list[i] == request.Value {
+			if i == 0 {
+				// If the value is found at the start of the list, remove all elements
+				_, err = c.client.Del(ctx, c.prefixKey(request.Key, request.Prefix)).Result()
+				return err
+			}
+			// If the value is found elsewhere in the list, remove all elements before it
+			_, err = c.client.LTrim(ctx, c.prefixKey(request.Key, request.Prefix), 0, int64(i-1)).Result()
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
