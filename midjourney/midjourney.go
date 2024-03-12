@@ -112,7 +112,7 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 			parameters["weird"] = val
 		case "niji":
 			if val != "4" && val != "5" && val != "6" {
-				return nil, errors.New("niji参数值范围必须是4或5")
+				return nil, errors.New("niji参数值范围必须是4、5或6")
 			}
 			parameters["niji"] = val
 		case "version", "v":
