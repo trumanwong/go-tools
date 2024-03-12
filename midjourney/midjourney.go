@@ -119,7 +119,7 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 			temp, err := strconv.ParseFloat(val, 10)
 			tempVal := int(temp * 10)
 			// "1", "2", "3", "4", "5.0", "5.1", "5.2", "6
-			if err != nil || temp < 1 || temp > 6 || (temp >= 5 && temp < 6 && tempVal > 52) {
+			if err != nil || temp < 1 || temp > 6 || (temp >= 5 && temp < 6 && tempVal != 50 && tempVal != 51 && tempVal != 52) {
 				return nil, fmt.Errorf("%s参数值必须是1, 2, 3, 4, 5.0, 5.1, 5.2或6", param)
 			}
 

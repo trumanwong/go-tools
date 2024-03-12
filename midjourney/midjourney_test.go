@@ -11,7 +11,7 @@ func TestGetPromptAndParameters(t *testing.T) {
 			Content: "This is a test content",
 		},
 		{
-			Content: "This is a test content--test ttt --version 5.4",
+			Content: "This is a test content--test ttt --version 5.2",
 		},
 		{
 			Content: "This is a test content --aspect test --ar 1 --invalid 11",
