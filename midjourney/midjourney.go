@@ -129,7 +129,7 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 		case "no", "style", "sref", "cref":
 			parameters[param] = val
 		default:
-			if helper.InArray(param, []string{"tile", "relax", "fast"}) {
+			if helper.InArray(param, []string{"tile", "relax", "fast", "turbo"}) {
 				parameters[param] = ""
 			}
 		}
