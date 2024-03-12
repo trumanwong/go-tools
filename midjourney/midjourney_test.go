@@ -1,7 +1,6 @@
 package midjourney
 
 import (
-	"github.com/stretchr/testify/assert"
 	"log"
 	"testing"
 )
@@ -12,7 +11,7 @@ func TestGetPromptAndParameters(t *testing.T) {
 			Content: "This is a test content",
 		},
 		{
-			Content: "This is a test content--test ttt",
+			Content: "This is a test content--test ttt --version 5.4",
 		},
 		{
 			Content: "This is a test content --aspect test --ar 1 --invalid 11",
@@ -21,7 +20,7 @@ func TestGetPromptAndParameters(t *testing.T) {
 	for _, req := range requests {
 		resp, err := GetPromptAndParameters(req)
 		if err != nil {
-			assert.Errorf(t, err, "GetPromptAndParameters() error = %v", err)
+			t.Errorf("GetPromptAndParameters() error = %v", err)
 		}
 		log.Println(resp)
 	}

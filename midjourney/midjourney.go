@@ -116,9 +116,13 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 			}
 			parameters["niji"] = val
 		case "version", "v":
-			if !helper.InArray(val, []string{"1", "2", "3", "4", "5.0", "5.1", "5.2", "6"}) {
+			temp, err := strconv.ParseFloat(val, 10)
+			tempVal := int(temp * 10)
+			// "1", "2", "3", "4", "5.0", "5.1", "5.2", "6
+			if err != nil || temp < 1 || temp > 6 || (temp >= 5 && temp < 6 && tempVal > 52) {
 				return nil, fmt.Errorf("%s参数值必须是1, 2, 3, 4, 5.0, 5.1, 5.2或6", param)
 			}
+
 			parameters["version"] = val
 		case "cw":
 			temp, err := strconv.ParseInt(val, 10, 64)
