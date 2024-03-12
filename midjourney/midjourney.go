@@ -52,7 +52,7 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 	for i := 1; i < len(arr); i++ {
 		paramValue := strings.Split(arr[i], " ")
 		if len(paramValue) <= 1 {
-			continue
+			paramValue = append(paramValue, "")
 		}
 		param := strings.TrimSpace(strings.ToLower(paramValue[0]))
 		if req.DisableParams != nil && helper.InArray(param, req.DisableParams) {

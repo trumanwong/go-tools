@@ -11,7 +11,8 @@ func TestGetPromptAndParameters(t *testing.T) {
 			Content: "This is a test content",
 		},
 		{
-			Content: "This is a test content--test ttt --version 6.0",
+			Content:       "This is a test content--test ttt --version 6.0 --turbo",
+			DisableParams: []string{"turbo"},
 		},
 		{
 			Content: "This is a test content --aspect test --ar 1 --invalid 11",
