@@ -14,7 +14,7 @@ import (
 // DisableParams is a map that represents the parameters to be disabled.
 type GetPromptAndParametersRequest struct {
 	Content       string
-	DisableParams map[string]string
+	DisableParams []string
 }
 
 // GetPromptAndParametersResponse is a struct that represents the response from the GetPromptAndParameters function.
@@ -55,6 +55,9 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 			continue
 		}
 		param := strings.TrimSpace(strings.ToLower(paramValue[0]))
+		if req.DisableParams != nil && helper.InArray(param, req.DisableParams) {
+			continue
+		}
 		val := strings.TrimSpace(strings.Join(paramValue[1:], " "))
 		switch param {
 		case "aspect", "ar":
@@ -126,7 +129,7 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 		case "no", "style", "sref", "cref":
 			parameters[param] = val
 		default:
-			if helper.InArray(param, []string{"tile", "relax"}) {
+			if helper.InArray(param, []string{"tile", "relax", "fast"}) {
 				parameters[param] = ""
 			}
 		}
