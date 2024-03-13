@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/trumanwong/go-tools/helper"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -130,7 +131,28 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 				return nil, fmt.Errorf("%s参数值范围必须在0~100之间", param)
 			}
 			parameters["cw"] = val
-		case "no", "style", "sref", "cref":
+		case "sref":
+			links := strings.Split(val, " ")
+			for _, link := range links {
+				if link == "" {
+					return nil, fmt.Errorf("%s参数值不能为空", param)
+				}
+				u, err := url.Parse(link)
+				if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
+					return nil, fmt.Errorf("%s参数值必须是一个有效的URL", param)
+				}
+			}
+			parameters[param] = val
+		case "cref":
+			if val == "" {
+				return nil, fmt.Errorf("%s参数值不能为空", param)
+			}
+			u, err := url.Parse(val)
+			if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
+				return nil, fmt.Errorf("%s参数值必须是一个有效的URL", param)
+			}
+			parameters[param] = val
+		case "no", "style":
 			parameters[param] = val
 		default:
 			if helper.InArray(param, []string{"tile", "relax", "fast", "turbo"}) {

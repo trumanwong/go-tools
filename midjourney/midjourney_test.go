@@ -17,6 +17,18 @@ func TestGetPromptAndParameters(t *testing.T) {
 		{
 			Content: "This is a test content --aspect test --ar 1 --invalid 11",
 		},
+		{
+			Content: "This is a test content --aspect test --ar 1 --chaos 11 --iw 1.0 --quality 0.5 --repeat 10 --seed 100",
+		},
+		{
+			Content: "This is a test content --aspect test --ar 1 --chaos 11 --sref https://google.com::100 https://google.com --cref https://www.test.com",
+		},
+		{
+			Content: "This is a test content --aspect test --ar 1 --chaos 11 --sref https://google.com::100 --cref",
+		},
+		{
+			Content: "This is a test content --aspect test --ar 1 --chaos 11 --sref --cref",
+		},
 	}
 	for _, req := range requests {
 		resp, err := GetPromptAndParameters(req)
