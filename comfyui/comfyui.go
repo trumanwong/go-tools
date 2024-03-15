@@ -116,6 +116,7 @@ type Image struct {
 
 type ImageResult struct {
 	Images []*Image `json:"images"`
+	Text   []string `json:"text"`
 	Key    string   `json:"key"`
 }
 
@@ -164,6 +165,7 @@ func (s Server) History(promptId string, timeout *time.Duration, keys ...string)
 		}
 		keyImages := outputs[key].(map[string]interface{})
 		images := make([]*Image, 0)
+		text := make([]string, 0)
 		var b []byte
 		if _, ok := keyImages["images"]; ok {
 			b, _ = json.Marshal(keyImages["images"])
@@ -179,7 +181,7 @@ func (s Server) History(promptId string, timeout *time.Duration, keys ...string)
 			}
 		} else if _, ok := keyImages["text"]; ok {
 			b, _ = json.Marshal(keyImages["text"])
-			err = json.Unmarshal(b, &images)
+			err = json.Unmarshal(b, &text)
 			for i, _ := range images {
 				images[i].KeyType = "text"
 			}
@@ -191,6 +193,7 @@ func (s Server) History(promptId string, timeout *time.Duration, keys ...string)
 		}
 		result = append(result, &ImageResult{
 			Images: images,
+			Text:   text,
 			Key:    key,
 		})
 	}
