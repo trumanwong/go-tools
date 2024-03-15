@@ -185,6 +185,12 @@ func (s Server) History(promptId string, timeout *time.Duration, keys ...string)
 			for i, _ := range images {
 				images[i].KeyType = "text"
 			}
+		} else if _, ok := keyImages["string"]; ok {
+			b, _ = json.Marshal(keyImages["string"])
+			err = json.Unmarshal(b, &text)
+			for i, _ := range images {
+				images[i].KeyType = "string"
+			}
 		} else {
 			return nil, status, fmt.Errorf("key images/gifs/text is not exists")
 		}
