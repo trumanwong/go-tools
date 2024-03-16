@@ -6,6 +6,7 @@ require (
 	github.com/alibabacloud-go/darabonba-openapi/v2 v2.0.5
 	github.com/alibabacloud-go/docmind-api-20220711 v1.2.1
 	github.com/alibabacloud-go/green-20220302 v1.3.1
+	github.com/alibabacloud-go/imageseg-20191230/v3 v3.0.0
 	github.com/alibabacloud-go/tea v1.2.2
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.4
 	github.com/aliyun/aliyun-oss-go-sdk v3.0.2+incompatible
