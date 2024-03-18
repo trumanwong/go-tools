@@ -22,3 +22,11 @@ func TestCheckHttp(t *testing.T) {
 		t.Fatal("status code not 200, status: ", resp.StatusCode)
 	}
 }
+
+func TestGenerateShortUrl(t *testing.T) {
+	url, err := GenerateShortUrl("https://short.trumanwl.com", "https://trumanwl.com/xxx")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(url)
+}

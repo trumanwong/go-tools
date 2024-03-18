@@ -3,6 +3,7 @@ package aliyun
 import (
 	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
 	imageseg20191230 "github.com/alibabacloud-go/imageseg-20191230/v3/client"
+	util "github.com/alibabacloud-go/tea-utils/v2/service"
 	"github.com/alibabacloud-go/tea/tea"
 )
 
@@ -51,4 +52,8 @@ func (s SegmentationClient) SegmentHDBody(req *imageseg20191230.SegmentHDBodyReq
 func (s SegmentationClient) SegmentCommodity(req *imageseg20191230.SegmentCommodityRequest) (*imageseg20191230.SegmentCommodityResponse, error) {
 	resp, err := s.client.SegmentCommodity(req)
 	return resp, err
+}
+
+func (s SegmentationClient) SegmentCommodityAdvance(req *imageseg20191230.SegmentCommodityAdvanceRequest, runtime *util.RuntimeOptions) (*imageseg20191230.SegmentCommodityResponse, error) {
+	return s.client.SegmentCommodityAdvance(req, runtime)
 }

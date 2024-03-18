@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"crypto/sha1"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/trumanwong/go-tools/crawler"
@@ -13,6 +14,7 @@ import (
 	"reflect"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -317,4 +319,16 @@ func CheckHttp(link string, timeout time.Duration) (*http.Response, error) {
 		Method:  http.MethodHead,
 		Timeout: timeout,
 	})
+}
+
+// GenerateShortUrl GenerateShortUrlKey is a function that generates a short URL key from a given URL.
+func GenerateShortUrl(shortLinkPrefix string, link string) (string, error) {
+	if shortLinkPrefix == "" {
+		return "", fmt.Errorf("short link prefix is empty")
+	}
+	hasher := sha1.New()
+	hasher.Write([]byte(link))
+	sha := hasher.Sum(nil)
+	shortUrl := fmt.Sprintf("%x", sha)
+	return strings.TrimLeft(shortLinkPrefix, "/") + "/" + shortUrl[:8], nil
 }
