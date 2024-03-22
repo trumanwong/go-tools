@@ -36,6 +36,12 @@ func (s SegmentationClient) SegmentCommonImage(req *imageseg20191230.SegmentComm
 	return resp, err
 }
 
+// SegmentCommonImage 通用分割
+func (s SegmentationClient) SegmentCommonImageAdvance(req *imageseg20191230.SegmentCommonImageAdvanceRequest, runtime *util.RuntimeOptions) (*imageseg20191230.SegmentCommonImageResponse, error) {
+	resp, err := s.client.SegmentCommonImageAdvance(req, runtime)
+	return resp, err
+}
+
 // SegmentBody 人体分割
 func (s SegmentationClient) SegmentBody(req *imageseg20191230.SegmentBodyRequest) (*imageseg20191230.SegmentBodyResponse, error) {
 	resp, err := s.client.SegmentBody(req)
