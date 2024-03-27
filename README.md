@@ -1,5 +1,4 @@
 [![GoDoc](http://godoc.org/github.com/trumanwong/go-tools?status.png)](http://godoc.org/github.com/trumanwong/go-tools)
-[![Build Status](https://travis-ci.org/trumanwong/go-tools.svg?branch=main)](https://travis-ci.org/trumanwong/go-tools)
 
 # go-tools
 
