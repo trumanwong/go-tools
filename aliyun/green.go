@@ -116,6 +116,12 @@ func (c GreenClient) ImageModeration(req *ImageModerationRequest) (info *ImageMo
 	return info, errors.New("image moderation failed. statusCode:" + tea.ToString(statusCode))
 }
 
+// ImageModerationAdvance is a method on the GreenClient struct.
+// It performs advanced image moderation by checking the image against a set of predefined labels.
+// The method takes an ImageModerationRequest as a parameter, which includes the image URL or OSS details and the labels to check against.
+// The method returns a list of ImageModerationInfo instances, each representing a label that the image was found to match with a confidence score higher than the predefined score.
+// The method also returns an error if the image moderation operation fails.
+// The method uses the Alibaba Cloud's Green service for image moderation.
 func (c GreenClient) ImageModerationAdvance(req *ImageModerationRequest) (list []*ImageModerationInfo, err error) {
 	// Runtime parameter settings, only effective for requests using this runtime parameter instance
 	runtime := &util.RuntimeOptions{}
