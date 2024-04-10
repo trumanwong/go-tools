@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/trumanwong/go-tools/crawler"
 	"io"
+	"math"
 	"math/big"
 	"net"
 	"net/http"
@@ -331,4 +332,26 @@ func GenerateShortUrl(shortLinkPrefix string, link string) (string, error) {
 	sha := hasher.Sum(nil)
 	shortUrl := fmt.Sprintf("%x", sha)
 	return strings.TrimLeft(shortLinkPrefix, "/") + "/" + shortUrl[:8], nil
+}
+
+func PaginateData(list interface{}, total int64, page, pageSize int) map[string]interface{} {
+	if page <= 0 {
+		page = 1
+	}
+
+	switch {
+	case pageSize > 100:
+		pageSize = 100
+	case pageSize <= 0:
+		pageSize = 10
+	}
+	res := map[string]interface{}{
+		"list":  list,
+		"total": total,
+	}
+	res["current_page"] = page
+	res["first_page"] = 1
+	res["page_size"] = pageSize
+	res["last_page"] = int64(math.Ceil(float64(total) / float64(pageSize)))
+	return res
 }
