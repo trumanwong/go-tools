@@ -25,11 +25,11 @@ type IPN struct {
 	useLocalCerts bool
 }
 
-func NewPaypalIPN() (*IPN, error) {
+func NewPaypalIPN() *IPN {
 	return &IPN{
 		useSandbox:    false,
 		useLocalCerts: true,
-	}, nil
+	}
 }
 
 func (p *IPN) UseSandbox() {
