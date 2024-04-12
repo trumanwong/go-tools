@@ -6,7 +6,6 @@ import (
 	"github.com/trumanwong/go-tools/crawler"
 	"io"
 	"net/http"
-	"net/url"
 	"strings"
 )
 
@@ -24,32 +23,17 @@ const (
 type IPN struct {
 	useSandbox    bool
 	useLocalCerts bool
-	postData      map[string]string
 }
 
-func NewPaypalIPN(body []byte) (*IPN, error) {
-	postData, err := readBody(body)
-	if err != nil {
-		return nil, fmt.Errorf("read body failed: %v", err)
-	}
-
-	if len(postData) == 0 {
-		return nil, errors.New("missing POST data")
-	}
-
+func NewPaypalIPN() (*IPN, error) {
 	return &IPN{
 		useSandbox:    false,
 		useLocalCerts: true,
-		postData:      postData,
 	}, nil
 }
 
 func (p *IPN) UseSandbox() {
 	p.useSandbox = true
-}
-
-func (p *IPN) GetPostData() map[string]string {
-	return p.postData
 }
 
 func (p *IPN) GetPaypalURI() string {
@@ -59,28 +43,8 @@ func (p *IPN) GetPaypalURI() string {
 	return VerifyURI
 }
 
-func readBody(body []byte) (map[string]string, error) {
-	var err error
-	payload := make(map[string]string)
-	arr := strings.Split(string(body), "&")
-	for _, v := range arr {
-		keyVal := strings.Split(v, "=")
-		if len(keyVal) != 2 {
-			continue
-		}
-		payload[keyVal[0]], err = url.QueryUnescape(keyVal[1])
-		if err != nil {
-			return nil, fmt.Errorf("could not unescape: %v", err)
-		}
-	}
-	return payload, nil
-}
-
-func (p *IPN) VerifyIPN() (bool, error) {
-	reqBody := "cmd=_notify-validate"
-	for key, value := range p.postData {
-		reqBody += "&" + key + "=" + url.QueryEscape(value)
-	}
+func (p *IPN) VerifyIPN(body string) (bool, error) {
+	reqBody := "cmd=_notify-validate&" + body
 
 	resp, err := crawler.Send(&crawler.Request{
 		Url:    p.GetPaypalURI(),
