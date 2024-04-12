@@ -48,6 +48,10 @@ func (p *IPN) UseSandbox() {
 	p.useSandbox = true
 }
 
+func (p *IPN) GetPostData() map[string]string {
+	return p.postData
+}
+
 func (p *IPN) GetPaypalURI() string {
 	if p.useSandbox {
 		return SandboxVerifyURI
