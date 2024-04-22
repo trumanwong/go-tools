@@ -39,9 +39,6 @@ func (c SmsClient) SendMessage(signatureId, templateId string, mobiles []string,
 	if err != nil {
 		return nil, err
 	}
-	if err != nil {
-		return nil, err
-	}
 	req.Header.Set("Content-Type", "application/json")
 	req.ContentLength = int64(len(params))
 	err = c.credentials.AddToken(auth.TokenQiniu, req)

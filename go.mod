@@ -3,6 +3,7 @@ module github.com/trumanwong/go-tools
 go 1.21
 
 require (
+	github.com/alibabacloud-go/alidns-20150109/v4 v4.2.0
 	github.com/alibabacloud-go/darabonba-openapi/v2 v2.0.6
 	github.com/alibabacloud-go/docmind-api-20220711 v1.2.1
 	github.com/alibabacloud-go/green-20220302 v1.3.1
@@ -21,7 +22,6 @@ require (
 	github.com/sashabaranov/go-openai v1.20.4
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.9.0
-	github.com/trumanwong/cryptogo v1.0.4
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.18
 )
 
@@ -74,6 +74,7 @@ require (
 	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

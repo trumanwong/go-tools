@@ -6,6 +6,7 @@ import (
 	"crypto/md5"
 	"errors"
 	"fmt"
+	"github.com/qiniu/go-sdk/v7/auth"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
 	"github.com/qiniu/go-sdk/v7/cdn"
 	"github.com/qiniu/go-sdk/v7/sms/rpc"
@@ -15,6 +16,8 @@ import (
 	"strings"
 	"time"
 )
+
+const Host = "https://api.qiniu.com"
 
 // Client is a struct that represents a Qiniu client.
 // It contains a Mac object for authentication, a CdnManager for CDN operations, and a BucketManager for bucket operations.
@@ -73,7 +76,7 @@ type PutRet struct {
 }
 
 // PutFile 上传文件
-func (c *Client) PutFile(ctx context.Context, req *PutFileRequest) (*PutRet, error) {
+func (c Client) PutFile(ctx context.Context, req *PutFileRequest) (*PutRet, error) {
 	token := c.GetUploadToken(req.PutPolicy)
 
 	formUploader := storage.NewFormUploader(req.Config)
@@ -97,7 +100,7 @@ func (c *Client) PutFile(ctx context.Context, req *PutFileRequest) (*PutRet, err
 // It takes a slice of strings representing the URLs to refresh as a parameter.
 // The method calls the RefreshUrls method of the CdnManager object in the Client, passing the URLs to refresh.
 // The method returns an error if the RefreshUrls method of the CdnManager returns an error.
-func (c *Client) RefreshUrls(urlsToRefresh []string) error {
+func (c Client) RefreshUrls(urlsToRefresh []string) error {
 	_, err := c.cdnManager.RefreshUrls(urlsToRefresh)
 	return err
 }
@@ -106,7 +109,7 @@ func (c *Client) RefreshUrls(urlsToRefresh []string) error {
 // It takes a PutPolicy object as a parameter.
 // The method calls the UploadToken method of the PutPolicy object, passing the Mac object in the Client.
 // The method returns the upload token as a string.
-func (c *Client) GetUploadToken(putPolicy storage.PutPolicy) string {
+func (c Client) GetUploadToken(putPolicy storage.PutPolicy) string {
 	return putPolicy.UploadToken(c.mac)
 }
 
@@ -114,7 +117,7 @@ func (c *Client) GetUploadToken(putPolicy storage.PutPolicy) string {
 // It takes a string representing the bucket where the file is located and a string representing the key of the file as parameters.
 // The method calls the Delete method of the BucketManager object in the Client, passing the bucket and the key.
 // The method returns an error if the Delete method of the BucketManager returns an error.
-func (c *Client) Delete(bucket, key string) error {
+func (c Client) Delete(bucket, key string) error {
 	return c.bucketManager.Delete(bucket, key)
 }
 
@@ -144,7 +147,7 @@ type BatchFilesRequest struct {
 }
 
 // BatchFiles 批量移动/复制文件
-func (c *Client) BatchFiles(req *BatchFilesRequest) error {
+func (c Client) BatchFiles(req *BatchFilesRequest) error {
 	if len(req.SrcKeys) != len(req.DstKeys) {
 		return errors.New("srcKeys length must equal destKeys length")
 	}
@@ -177,7 +180,7 @@ func (c *Client) BatchFiles(req *BatchFilesRequest) error {
 }
 
 // ListFiles 列举文件，每次最大1000
-func (c *Client) ListFiles(bucket, prefix, delimiter, marker string, limit int) ([]storage.ListItem, []string, string, bool, error) {
+func (c Client) ListFiles(bucket, prefix, delimiter, marker string, limit int) ([]storage.ListItem, []string, string, bool, error) {
 	entries, commonPrefixes, nextMarker, hasNext, err := c.bucketManager.ListFiles(
 		bucket,
 		prefix,
@@ -189,11 +192,11 @@ func (c *Client) ListFiles(bucket, prefix, delimiter, marker string, limit int) 
 }
 
 // MakePublicUrl 公开空间访问链接
-func (c *Client) MakePublicUrl(domain, key string) string {
+func (c Client) MakePublicUrl(domain, key string) string {
 	return storage.MakePublicURL(domain, key)
 }
 
-func (c *Client) GetTimestampSignUrl(urlPath url.URL, secretKey string, expiration time.Duration) string {
+func (c Client) GetTimestampSignUrl(urlPath url.URL, secretKey string, expiration time.Duration) string {
 	t := fmt.Sprintf("%x", time.Now().Add(expiration).Unix())
 	encodePath := strings.ReplaceAll(url.QueryEscape(urlPath.Path), "%2F", "/")
 	sign := strings.ToLower(fmt.Sprintf("%x", md5.Sum([]byte(secretKey+encodePath+t))))
@@ -206,6 +209,22 @@ func (c *Client) GetTimestampSignUrl(urlPath url.URL, secretKey string, expirati
 }
 
 // VerifyCallback 验证上传回调请求是否来自七牛
-func (c *Client) VerifyCallback(req *http.Request) (bool, error) {
+func (c Client) VerifyCallback(req *http.Request) (bool, error) {
 	return qbox.VerifyCallback(c.mac, req)
+}
+
+func requestQiniu(method, apiUrl string, credentials *auth.Credentials, body []byte) (*http.Response, error) {
+	var reader *bytes.Reader
+	if body != nil {
+		reader = bytes.NewReader(body)
+	}
+	req, err := http.NewRequest(method, Host+apiUrl, reader)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.ContentLength = int64(len(body))
+	err = credentials.AddToken(auth.TokenQiniu, req)
+	client := http.Client{}
+	return client.Do(req)
 }
