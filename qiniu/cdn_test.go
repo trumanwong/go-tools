@@ -36,3 +36,15 @@ func TestCdnClient_ModifyHttpsConf(t *testing.T) {
 		t.Error(resp.Error)
 	}
 }
+
+func TestCdnClient_GetDomain(t *testing.T) {
+	cdnClient := NewCdnClient(os.Getenv("QINIU_ACCESS_KEY"), os.Getenv("QINIU_SECRET_KEY"))
+	resp, err := cdnClient.GetDomain(&GetDomainRequest{
+		Name: os.Getenv("QINIU_DOMAIN_NAME"),
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(resp.HTTPS.CertID)
+}

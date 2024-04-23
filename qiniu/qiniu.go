@@ -214,11 +214,13 @@ func (c Client) VerifyCallback(req *http.Request) (bool, error) {
 }
 
 func requestQiniu(method, apiUrl string, credentials *auth.Credentials, body []byte) (*http.Response, error) {
-	var reader *bytes.Reader
+	var req *http.Request
+	var err error
 	if body != nil {
-		reader = bytes.NewReader(body)
+		req, err = http.NewRequest(method, Host+apiUrl, bytes.NewReader(body))
+	} else {
+		req, err = http.NewRequest(method, Host+apiUrl, nil)
 	}
-	req, err := http.NewRequest(method, Host+apiUrl, reader)
 	if err != nil {
 		return nil, err
 	}
