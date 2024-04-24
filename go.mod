@@ -4,7 +4,9 @@ go 1.21
 
 require (
 	github.com/alibabacloud-go/alidns-20150109/v4 v4.2.0
+	github.com/alibabacloud-go/cdn-20180510/v4 v4.3.0
 	github.com/alibabacloud-go/darabonba-openapi/v2 v2.0.6
+	github.com/alibabacloud-go/dcdn-20180115/v3 v3.4.0
 	github.com/alibabacloud-go/docmind-api-20220711 v1.2.1
 	github.com/alibabacloud-go/green-20220302 v1.3.1
 	github.com/alibabacloud-go/imageseg-20191230/v3 v3.0.0
