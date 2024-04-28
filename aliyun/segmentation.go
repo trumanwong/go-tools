@@ -63,3 +63,9 @@ func (s SegmentationClient) SegmentCommodity(req *imageseg20191230.SegmentCommod
 func (s SegmentationClient) SegmentCommodityAdvance(req *imageseg20191230.SegmentCommodityAdvanceRequest, runtime *util.RuntimeOptions) (*imageseg20191230.SegmentCommodityResponse, error) {
 	return s.client.SegmentCommodityAdvance(req, runtime)
 }
+
+// SegmentBodyAdvance 人体分割
+func (s *SegmentationClient) SegmentBodyAdvance(req *imageseg20191230.SegmentBodyAdvanceRequest, runtime *util.RuntimeOptions) (*imageseg20191230.SegmentBodyResponse, error) {
+	resp, err := s.client.SegmentBodyAdvance(req, runtime)
+	return resp, err
+}
