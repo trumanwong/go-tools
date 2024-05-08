@@ -202,17 +202,14 @@ func IP2Long(ipAddress string) *big.Int {
 // If there is an error in writing to the file, the function returns the error.
 //
 // Parameters:
-// url: a string representing the URL of the file to be downloaded.
+// request: a pointer to a crawler.Request representing the request to be sent.
 // savePath: a string representing the path where the file is to be saved.
 //
 // Returns:
 // The size of the downloaded file and an error if there was a problem in downloading or saving the file.
-func DownloadFile(url, savePath string) (int64, error) {
+func DownloadFile(request *crawler.Request, savePath string) (int64, error) {
 	// Send a GET request to the URL.
-	resp, err := http.Get(url)
-	if err != nil {
-		return 0, errors.New("failed to send GET request: " + err.Error())
-	}
+	resp, err := crawler.Send(request)
 	// Ensure the response body is closed after the function returns.
 	defer resp.Body.Close()
 
