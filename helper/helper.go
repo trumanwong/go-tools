@@ -210,6 +210,9 @@ func IP2Long(ipAddress string) *big.Int {
 func DownloadFile(request *crawler.Request, savePath string) (int64, error) {
 	// Send a GET request to the URL.
 	resp, err := crawler.Send(request)
+	if err != nil {
+		return 0, errors.New("failed to send request: " + err.Error())
+	}
 	// Ensure the response body is closed after the function returns.
 	defer resp.Body.Close()
 
