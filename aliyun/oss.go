@@ -349,3 +349,9 @@ func (a AliOss) verifySignature(bytePublicKey []byte, byteMd5 []byte, authorizat
 
 	return nil
 }
+
+// PutObjectFromFile uploads a file to OSS from a local file.
+func (a AliOss) PutObjectFromFile(objectName, filePath string, options ...oss.Option) error {
+	err := a.bucket.PutObjectFromFile(objectName, filePath, options...)
+	return err
+}
