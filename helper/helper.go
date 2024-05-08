@@ -2,6 +2,7 @@ package helper
 
 import (
 	"crypto/sha1"
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/trumanwong/go-tools/crawler"
@@ -210,7 +211,7 @@ func DownloadFile(url, savePath string) error {
 	// Send a GET request to the URL.
 	resp, err := http.Get(url)
 	if err != nil {
-		return err
+		return errors.New("failed to send GET request: " + err.Error())
 	}
 	// Ensure the response body is closed after the function returns.
 	defer resp.Body.Close()
@@ -221,19 +222,22 @@ func DownloadFile(url, savePath string) error {
 	if !PathExists(dirPath) {
 		err = os.MkdirAll(dirPath, os.ModePerm)
 		if err != nil {
-			return err
+			return errors.New("failed to create directory: " + err.Error())
 		}
 	}
 	// Create a new file at the save path.
 	out, err := os.Create(savePath)
 	if err != nil {
-		return err
+		return errors.New("failed to create file: " + err.Error())
 	}
 	// Ensure the file is closed after the function returns.
 	defer out.Close()
 	// Write the body of the response to the file.
 	_, err = io.Copy(out, resp.Body)
-	return err
+	if err != nil {
+		return errors.New("failed to write to file: " + err.Error())
+	}
+	return nil
 }
 
 // InArray is a function that checks if a given element (needle) is present in a given collection (haystack).
