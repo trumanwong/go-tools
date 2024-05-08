@@ -206,12 +206,12 @@ func IP2Long(ipAddress string) *big.Int {
 // savePath: a string representing the path where the file is to be saved.
 //
 // Returns:
-// An error if there is any in the process; otherwise, nil.
-func DownloadFile(url, savePath string) error {
+// The size of the downloaded file and an error if there was a problem in downloading or saving the file.
+func DownloadFile(url, savePath string) (int64, error) {
 	// Send a GET request to the URL.
 	resp, err := http.Get(url)
 	if err != nil {
-		return errors.New("failed to send GET request: " + err.Error())
+		return 0, errors.New("failed to send GET request: " + err.Error())
 	}
 	// Ensure the response body is closed after the function returns.
 	defer resp.Body.Close()
@@ -222,22 +222,22 @@ func DownloadFile(url, savePath string) error {
 	if !PathExists(dirPath) {
 		err = os.MkdirAll(dirPath, os.ModePerm)
 		if err != nil {
-			return errors.New("failed to create directory: " + err.Error())
+			return 0, errors.New("failed to create directory: " + err.Error())
 		}
 	}
 	// Create a new file at the save path.
 	out, err := os.Create(savePath)
 	if err != nil {
-		return errors.New("failed to create file: " + err.Error())
+		return 0, errors.New("failed to create file: " + err.Error())
 	}
 	// Ensure the file is closed after the function returns.
 	defer out.Close()
 	// Write the body of the response to the file.
-	_, err = io.Copy(out, resp.Body)
+	size, err := io.Copy(out, resp.Body)
 	if err != nil {
-		return errors.New("failed to write to file: " + err.Error())
+		return 0, errors.New("failed to write to file: " + err.Error())
 	}
-	return nil
+	return size, nil
 }
 
 // InArray is a function that checks if a given element (needle) is present in a given collection (haystack).
