@@ -234,6 +234,9 @@ func DownloadFile(request *crawler.Request, savePath string) (int64, error) {
 	if err != nil {
 		return 0, errors.New("failed to write to file: " + err.Error())
 	}
+	if size != resp.ContentLength {
+		return size, errors.New("downloaded file size does not match content length")
+	}
 	return size, nil
 }
 
