@@ -31,13 +31,13 @@ func NewPagination(defaultPageSize, maxPageSize uint64) *Pagination {
 func (p *Pagination) Handle() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// Parse the "page" query parameter.
-		page, err := strconv.ParseUint(ctx.Query("page"), 10, 64)
+		page, err := strconv.ParseUint(ctx.Request.URL.Query().Get("page"), 10, 64)
 		// If the "page" query parameter is not provided or is not a valid positive integer, default to 1.
 		if err != nil || page == 0 {
 			page = 1
 		}
 		// Parse the "page_size" query parameter.
-		pageSize, err := strconv.ParseUint(ctx.Query("page_size"), 10, 64)
+		pageSize, err := strconv.ParseUint(ctx.Request.URL.Query().Get("page_size"), 10, 64)
 		// If the "page_size" query parameter is not provided or is not a valid positive integer, default to the default page size.
 		if err != nil || pageSize == 0 {
 			pageSize = p.defaultPageSize
