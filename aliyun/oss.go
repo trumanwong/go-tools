@@ -355,3 +355,7 @@ func (a AliOss) PutObjectFromFile(objectName, filePath string, options ...oss.Op
 	err := a.bucket.PutObjectFromFile(objectName, filePath, options...)
 	return err
 }
+
+func (a AliOss) IsObjectExist(objectName string, options ...oss.Option) (bool, error) {
+	return a.bucket.IsObjectExist(objectName, options...)
+}
