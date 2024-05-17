@@ -24,8 +24,9 @@ type RabbitMQ struct {
 	// 服务器传递的最大容量
 	prefetchSize int
 	// 如果为true 对channel可用, false则只对当前队列可用
-	global  bool
-	consume func(<-chan amqp.Delivery)
+	global    bool
+	consume   func(<-chan amqp.Delivery)
+	arguments amqp.Table
 }
 
 const (
@@ -52,6 +53,7 @@ type Options struct {
 	PrefetchSize  int
 	Global        bool
 	Consume       func(<-chan amqp.Delivery)
+	Arguments     amqp.Table
 }
 
 // NewRabbitMQ creates a new consumer state instance, and automatically
@@ -65,6 +67,7 @@ func NewRabbitMQ(option *Options) *RabbitMQ {
 		prefetchCount: option.PrefetchCount,
 		prefetchSize:  option.PrefetchSize,
 		global:        option.Global,
+		arguments:     option.Arguments,
 	}
 	go rabbitMQ.handleReconnect(option.Addr)
 	return &rabbitMQ
@@ -155,11 +158,11 @@ func (rabbitMQ *RabbitMQ) init(conn *amqp.Connection) error {
 	}
 	_, err = ch.QueueDeclare(
 		rabbitMQ.name,
-		true,  // Durable
-		false, // Delete when unused
-		false, // Exclusive
-		false, // No-wait
-		nil,   // Arguments
+		true,               // Durable
+		false,              // Delete when unused
+		false,              // Exclusive
+		false,              // No-wait
+		rabbitMQ.arguments, // Arguments
 	)
 
 	if rabbitMQ.prefetchCount > 0 {
@@ -217,7 +220,10 @@ func (rabbitMQ *RabbitMQ) Push(data []byte) error {
 		return errors.New("failed to push push: not connected")
 	}
 	for {
-		err := rabbitMQ.UnsafePush(data)
+		err := rabbitMQ.UnsafePush(amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        data,
+		})
 		if err != nil {
 			rabbitMQ.logger.Println("Push failed. Retrying...")
 			select {
@@ -243,7 +249,7 @@ func (rabbitMQ *RabbitMQ) Push(data []byte) error {
 // confirmation. It returns an error if it fails to connect.
 // No guarantees are provided for whether the server will
 // recieve the message.
-func (rabbitMQ *RabbitMQ) UnsafePush(data []byte) error {
+func (rabbitMQ *RabbitMQ) UnsafePush(msg amqp.Publishing) error {
 	if !rabbitMQ.isReady {
 		return errNotConnected
 	}
@@ -253,11 +259,35 @@ func (rabbitMQ *RabbitMQ) UnsafePush(data []byte) error {
 		rabbitMQ.name, // Routing key
 		false,         // Mandatory
 		false,         // Immediate
-		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        data,
-		},
+		msg,
 	)
+}
+
+func (rabbitMQ *RabbitMQ) PushV2(msg amqp.Publishing) error {
+	if !rabbitMQ.isReady {
+		return errors.New("failed to push push: not connected")
+	}
+	for {
+		err := rabbitMQ.UnsafePush(msg)
+		if err != nil {
+			rabbitMQ.logger.Println("Push failed. Retrying...")
+			select {
+			case <-rabbitMQ.done:
+				return errShutdown
+			case <-time.After(resendDelay):
+			}
+			continue
+		}
+		select {
+		case confirm := <-rabbitMQ.notifyConfirm:
+			if confirm.Ack {
+				rabbitMQ.logger.Println("Push confirmed!")
+				return nil
+			}
+		case <-time.After(resendDelay):
+		}
+		rabbitMQ.logger.Println("Push didn't confirm. Retrying...")
+	}
 }
 
 // Stream will continuously put queue items on the channel.
@@ -270,12 +300,12 @@ func (rabbitMQ *RabbitMQ) Stream() (<-chan amqp.Delivery, error) {
 	}
 	return rabbitMQ.channel.Consume(
 		rabbitMQ.name,
-		"",    // Consumer
-		false, // Auto-Ack
-		false, // Exclusive
-		false, // No-local
-		false, // No-Wait
-		nil,   // Args
+		"",                 // Consumer
+		false,              // Auto-Ack
+		false,              // Exclusive
+		false,              // No-local
+		false,              // No-Wait
+		rabbitMQ.arguments, // Args
 	)
 }
 
