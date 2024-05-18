@@ -14,12 +14,13 @@ func TestNewRabbitMQ(t *testing.T) {
 	NewRabbitMQ(&Options{
 		Name:          os.Getenv("RABBITMQ_QUEUE_NAME"),
 		Addr:          os.Getenv("RABBITMQ_ADDR"),
-		PrefetchCount: 0,
+		PrefetchCount: 1,
 		PrefetchSize:  0,
 		Global:        false,
 		Consume: func(msgs <-chan amqp.Delivery) {
 			for d := range msgs {
 				fmt.Println("receive data: ", string(d.Body))
+				time.Sleep(10 * time.Second)
 				_ = d.Ack(false)
 			}
 		},
@@ -44,13 +45,13 @@ func TestRabbitMQ_PushV2(t *testing.T) {
 	// Attempt to push a message every 2 seconds
 	for _, message := range messages {
 		for {
-			time.Sleep(time.Second * 3)
 			if err := queue.PushV2(amqp.Publishing{
 				ContentType: "text/plain",
 				Body:        []byte(message),
 				Priority:    0,
 			}); err != nil {
 				fmt.Printf("Push failed: %s\n", err)
+				time.Sleep(time.Second * 3)
 			} else {
 				fmt.Println("Push succeeded!")
 				break
@@ -58,12 +59,12 @@ func TestRabbitMQ_PushV2(t *testing.T) {
 		}
 	}
 	for {
-		time.Sleep(time.Second * 3)
 		if err := queue.PushV2(amqp.Publishing{
 			ContentType: "text/plain",
 			Body:        []byte("Test Priority"),
 			Priority:    9,
 		}); err != nil {
+			time.Sleep(time.Second * 3)
 			fmt.Printf("Push failed: %s\n", err)
 		} else {
 			fmt.Println("Push succeeded!")
