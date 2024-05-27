@@ -24,6 +24,8 @@ require (
 	github.com/sashabaranov/go-openai v1.20.4
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.9.0
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.929
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.929
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.18
 )
 
