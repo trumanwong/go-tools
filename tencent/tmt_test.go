@@ -8,7 +8,7 @@ import (
 )
 
 func TestTmtClient_TextTranslate(t *testing.T) {
-	client, err := NewTmtClient(os.Getenv("TENCENT_SECRET_ID"), os.Getenv("TENCENT_SECRET_KEY"))
+	client, err := NewTmtClient(os.Getenv("TENCENT_SECRET_ID"), os.Getenv("TENCENT_SECRET_KEY"), "ap-guangzhou")
 	if err != nil {
 		t.Error(err)
 		return

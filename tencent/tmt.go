@@ -13,7 +13,7 @@ type TmtClient struct {
 	client *tmt.Client
 }
 
-func NewTmtClient(secretId, secretKey string) (*TmtClient, error) {
+func NewTmtClient(secretId, secretKey, region string) (*TmtClient, error) {
 	log.Println("=="+secretId+"===", "=="+secretKey+"===")
 	credential := common.NewCredential(
 		secretId,
@@ -23,7 +23,7 @@ func NewTmtClient(secretId, secretKey string) (*TmtClient, error) {
 	cpf := profile.NewClientProfile()
 	cpf.HttpProfile.Endpoint = "tmt.tencentcloudapi.com"
 	// 实例化要请求产品的client对象,clientProfile是可选的
-	client, err := tmt.NewClient(credential, "ap-guangzhou", cpf)
+	client, err := tmt.NewClient(credential, region, cpf)
 	if err != nil {
 		return nil, err
 	}
