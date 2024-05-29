@@ -379,10 +379,9 @@ func PaginateData(list interface{}, total int64, page, pageSize int) map[string]
 //
 // Returns:
 // An array of type T representing the shuffled array.
-func ShuffleArray[T any](arr []T) []T {
+func ShuffleArray[T any](arr []T) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	r.Shuffle(len(arr), func(i, j int) {
 		arr[i], arr[j] = arr[j], arr[i]
 	})
-	return arr
 }
