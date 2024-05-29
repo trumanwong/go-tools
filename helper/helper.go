@@ -9,6 +9,7 @@ import (
 	"io"
 	"math"
 	"math/big"
+	"math/rand"
 	"net"
 	"net/http"
 	"os"
@@ -361,4 +362,27 @@ func PaginateData(list interface{}, total int64, page, pageSize int) map[string]
 	res["page_size"] = pageSize
 	res["last_page"] = int64(math.Ceil(float64(total) / float64(pageSize)))
 	return res
+}
+
+// ShuffleArray is a function that shuffles the elements of a given array.
+// The function uses the math/rand package to generate a new random source based on the current time.
+// It then uses this random source to shuffle the elements of the array.
+//
+// The function uses a type parameter T, which means it can be used with arrays of any type.
+// The function takes an array of type T as a parameter and returns an array of type T.
+//
+// The function uses a closure in the call to the Shuffle method.
+// This closure swaps the elements at the provided indices.
+//
+// Parameters:
+// arr: an array of type T representing the array to be shuffled.
+//
+// Returns:
+// An array of type T representing the shuffled array.
+func ShuffleArray[T any](arr []T) []T {
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	r.Shuffle(len(arr), func(i, j int) {
+		arr[i], arr[j] = arr[j], arr[i]
+	})
+	return arr
 }

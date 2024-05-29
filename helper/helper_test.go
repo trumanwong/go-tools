@@ -30,3 +30,9 @@ func TestGenerateShortUrl(t *testing.T) {
 	}
 	t.Log(url)
 }
+
+func TestShuffleArray(t *testing.T) {
+	arr := []int{1, 2, 3, 4, 5}
+	ShuffleArray(arr)
+	t.Log(arr)
+}
