@@ -27,6 +27,7 @@ type RabbitMQ struct {
 	global    bool
 	consume   func(<-chan amqp.Delivery)
 	arguments amqp.Table
+	queue     *amqp.Queue
 }
 
 const (
@@ -156,7 +157,7 @@ func (rabbitMQ *RabbitMQ) init(conn *amqp.Connection) error {
 	if err != nil {
 		return err
 	}
-	_, err = ch.QueueDeclare(
+	queue, err := ch.QueueDeclare(
 		rabbitMQ.name,
 		true,               // Durable
 		false,              // Delete when unused
@@ -179,6 +180,7 @@ func (rabbitMQ *RabbitMQ) init(conn *amqp.Connection) error {
 
 	rabbitMQ.changeChannel(ch)
 	rabbitMQ.isReady = true
+	rabbitMQ.queue = &queue
 
 	if rabbitMQ.consume != nil {
 		go func() {
@@ -330,4 +332,24 @@ func (rabbitMQ *RabbitMQ) Close() error {
 // GetIsReady returns whether the queue is ready to be used.
 func (rabbitMQ *RabbitMQ) GetIsReady() bool {
 	return rabbitMQ.isReady
+}
+
+// GetQueueMessages is a method on the RabbitMQ struct.
+// It returns the number of messages in the queue.
+// If the queue is not initialized (nil), the method returns 0.
+func (rabbitMQ *RabbitMQ) GetQueueMessages() int {
+	if rabbitMQ.queue == nil {
+		return 0
+	}
+	return rabbitMQ.queue.Messages
+}
+
+// GetQueueConsumers is a method on the RabbitMQ struct.
+// It returns the number of consumers in the queue.
+// If the queue is not initialized (nil), the method returns 0.
+func (rabbitMQ *RabbitMQ) GetQueueConsumers() int {
+	if rabbitMQ.queue == nil {
+		return 0
+	}
+	return rabbitMQ.queue.Consumers
 }

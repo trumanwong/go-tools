@@ -128,3 +128,24 @@ func TestRabbitMQ_PushV2(t *testing.T) {
 		}
 	}
 }
+
+func TestRabbitMQ_GetQueueMessages(t *testing.T) {
+	arguments := make(amqp.Table)
+	arguments["x-max-priority"] = int64(9)
+	rabbitMQ := NewRabbitMQ(&Options{
+		Name:          os.Getenv("RABBITMQ_QUEUE_NAME"),
+		Addr:          os.Getenv("RABBITMQ_ADDR"),
+		PrefetchCount: 0,
+		PrefetchSize:  0,
+		Global:        false,
+		Consume:       nil,
+		Arguments:     arguments,
+	})
+	for {
+		if rabbitMQ.GetQueueMessages() == 0 {
+			continue
+		}
+		t.Log(rabbitMQ.GetQueueMessages())
+		time.Sleep(1 * time.Second)
+	}
+}
