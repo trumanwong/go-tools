@@ -70,3 +70,7 @@ func (c *TikTokenClient) NumTokensFromMessages(messages []openai.ChatCompletionM
 func (c *TikTokenClient) Encode(content string) []int {
 	return c.tikToken.Encode(content, nil, nil)
 }
+
+func (c *TikTokenClient) Decode(tokens []int) string {
+	return c.tikToken.Decode(tokens)
+}
