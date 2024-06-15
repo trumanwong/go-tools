@@ -7,15 +7,23 @@ import (
 	"strings"
 )
 
-// NumTokensFromMessages
-// OpenAI Cookbook: https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
-func NumTokensFromMessages(messages []openai.ChatCompletionMessage, model string) (numTokens int, err error) {
+type TikTokenClient struct {
+	tikToken *tiktoken.Tiktoken
+}
+
+func NewTikTokenClient(model string) (*TikTokenClient, error) {
 	tkm, err := tiktoken.EncodingForModel(model)
 	if err != nil {
-		err = fmt.Errorf("encoding for model: %v", err)
-		return
+		return nil, fmt.Errorf("encoding for model: %v", err)
 	}
+	return &TikTokenClient{
+		tikToken: tkm,
+	}, nil
+}
 
+// NumTokensFromMessages
+// OpenAI Cookbook: https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
+func (c *TikTokenClient) NumTokensFromMessages(messages []openai.ChatCompletionMessage, model string) (numTokens int, err error) {
 	var tokensPerMessage, tokensPerName int
 	switch model {
 	case openai.GPT432K0613,
@@ -37,9 +45,9 @@ func NumTokensFromMessages(messages []openai.ChatCompletionMessage, model string
 		tokensPerName = -1   // if there's a name, the role is omitted
 	default:
 		if strings.Contains(model, "gpt-3.5-turbo") {
-			return NumTokensFromMessages(messages, "gpt-3.5-turbo-0613")
+			return c.NumTokensFromMessages(messages, "gpt-3.5-turbo-0613")
 		} else if strings.Contains(model, "gpt-4") {
-			return NumTokensFromMessages(messages, "gpt-4-0613")
+			return c.NumTokensFromMessages(messages, "gpt-4-0613")
 		} else {
 			err = fmt.Errorf("num_tokens_from_messages() is not implemented for model %s. See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens", model)
 			return
@@ -48,9 +56,9 @@ func NumTokensFromMessages(messages []openai.ChatCompletionMessage, model string
 
 	for _, message := range messages {
 		numTokens += tokensPerMessage
-		numTokens += len(tkm.Encode(message.Content, nil, nil))
-		numTokens += len(tkm.Encode(message.Role, nil, nil))
-		numTokens += len(tkm.Encode(message.Name, nil, nil))
+		numTokens += len(c.tikToken.Encode(message.Content, nil, nil))
+		numTokens += len(c.tikToken.Encode(message.Role, nil, nil))
+		numTokens += len(c.tikToken.Encode(message.Name, nil, nil))
 		if message.Name != "" {
 			numTokens += tokensPerName
 		}
