@@ -66,3 +66,7 @@ func (c *TikTokenClient) NumTokensFromMessages(messages []openai.ChatCompletionM
 	numTokens += 3 // every reply is primed with <|start|>assistant<|message|>
 	return numTokens, nil
 }
+
+func (c *TikTokenClient) Encode(content string) []int {
+	return c.tikToken.Encode(content, nil, nil)
+}
