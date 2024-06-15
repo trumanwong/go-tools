@@ -24,10 +24,10 @@ func TestGetPromptAndParameters(t *testing.T) {
 			Content: "This is a test content --aspect test --ar 1 --chaos 11 --sref https://google.com::100 https://google.com --cref https://www.test.com",
 		},
 		{
-			Content: "This is a test content --aspect test --ar 1 --chaos 11 --sref https://google.com::100 --cref",
+			Content: "This is a test content --aspect test --ar 1 --chaos 11 --p",
 		},
 		{
-			Content: "This is a test content --aspect test --ar 1 --chaos 11 --sref --cref",
+			Content: "This is a test content --aspect test --ar 1 --chaos 11 --p shortcode",
 		},
 	}
 	for _, req := range requests {

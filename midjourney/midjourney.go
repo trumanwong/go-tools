@@ -152,6 +152,8 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 				return nil, fmt.Errorf("%s参数值必须是一个有效的URL", param)
 			}
 			parameters[param] = val
+		case "p", "personalize":
+			parameters["p"] = val
 		case "no", "style":
 			parameters[param] = val
 		default:
