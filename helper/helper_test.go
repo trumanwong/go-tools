@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"github.com/trumanwong/go-tools/crawler"
 	"net/http"
 	"testing"
 	"time"
@@ -35,4 +36,14 @@ func TestShuffleArray(t *testing.T) {
 	arr := []int{1, 2, 3, 4, 5}
 	ShuffleArray(arr)
 	t.Log(arr)
+}
+
+func TestDownloadFile(t *testing.T) {
+	_, err := DownloadFile(&crawler.Request{
+		Url:    "https://cdn.trumanwl.com/favicon.ico",
+		Method: http.MethodGet,
+	}, "favicon.ico", false)
+	if err != nil {
+		t.Fatal(err)
+	}
 }

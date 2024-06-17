@@ -189,7 +189,7 @@ func IP2Long(ipAddress string) *big.Int {
 }
 
 // DownloadFile is a function that downloads a file from a given URL and saves it to a specified path.
-// The function uses the http package to send a GET request to the URL and receive the response.
+// It uses the http package to send a GET request to the URL and receive the response.
 // If there is an error in sending the request or receiving the response, the function returns the error.
 //
 // The function then gets the directory path of the save path.
@@ -205,10 +205,11 @@ func IP2Long(ipAddress string) *big.Int {
 // Parameters:
 // request: a pointer to a crawler.Request representing the request to be sent.
 // savePath: a string representing the path where the file is to be saved.
+// checkContentLength: a boolean indicating whether to check if the downloaded file size matches the content length.
 //
 // Returns:
 // The size of the downloaded file and an error if there was a problem in downloading or saving the file.
-func DownloadFile(request *crawler.Request, savePath string) (int64, error) {
+func DownloadFile(request *crawler.Request, savePath string, checkContentLength bool) (int64, error) {
 	// Send a GET request to the URL.
 	resp, err := crawler.Send(request)
 	if err != nil {
@@ -217,28 +218,13 @@ func DownloadFile(request *crawler.Request, savePath string) (int64, error) {
 	// Ensure the response body is closed after the function returns.
 	defer resp.Body.Close()
 
-	// Get the directory path of the save path.
-	dirPath := filepath.Dir(savePath)
-	// If the directory does not exist, create it.
-	if !PathExists(dirPath) {
-		err = os.MkdirAll(dirPath, os.ModePerm)
-		if err != nil {
-			return 0, errors.New("failed to create directory: " + err.Error())
-		}
-	}
-	// Create a new file at the save path.
-	out, err := os.Create(savePath)
-	if err != nil {
-		return 0, errors.New("failed to create file: " + err.Error())
-	}
-	// Ensure the file is closed after the function returns.
-	defer out.Close()
 	// Write the body of the response to the file.
-	size, err := io.Copy(out, resp.Body)
+	size, err := SaveFile(resp.Body, savePath)
 	if err != nil {
 		return 0, errors.New("failed to write to file: " + err.Error())
 	}
-	if size != resp.ContentLength {
+	// If checkContentLength is true, compare the downloaded file size with the content length.
+	if checkContentLength && size != resp.ContentLength {
 		return size, fmt.Errorf("downloaded file size [%d] does not match content length [%d]", size, resp.ContentLength)
 	}
 	return size, nil
@@ -384,4 +370,41 @@ func ShuffleArray[T any](arr []T) {
 	r.Shuffle(len(arr), func(i, j int) {
 		arr[i], arr[j] = arr[j], arr[i]
 	})
+}
+
+// SaveFile is a function that saves the content read from an io.Reader to a specified file path.
+// The function first checks if the directory of the save path exists, if not, it creates it.
+// Then, it creates a new file at the save path.
+// After that, it writes the content read from the io.Reader to the file.
+// If there is an error at any step, the function returns the error and the number of bytes written so far.
+//
+// Parameters:
+// reader: an io.Reader from which the content is read.
+// savePath: a string representing the path where the content is to be saved.
+//
+// Returns:
+// The number of bytes written to the file and an error if there was a problem in creating the directory, creating the file, or writing to the file.
+func SaveFile(reader io.Reader, savePath string) (int64, error) {
+	// Get the directory path of the save path.
+	dirPath := filepath.Dir(savePath)
+	// If the directory does not exist, create it.
+	if !PathExists(dirPath) {
+		err := os.MkdirAll(dirPath, os.ModePerm)
+		if err != nil {
+			return 0, errors.New("failed to create directory: " + err.Error())
+		}
+	}
+	// Create a new file at the save path.
+	out, err := os.Create(savePath)
+	if err != nil {
+		return 0, errors.New("failed to create file: " + err.Error())
+	}
+	// Ensure the file is closed after the function returns.
+	defer out.Close()
+	// Write the body of the response to the file.
+	size, err := io.Copy(out, reader)
+	if err != nil {
+		return 0, errors.New("failed to write to file: " + err.Error())
+	}
+	return size, nil
 }
