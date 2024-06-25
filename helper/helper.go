@@ -2,6 +2,7 @@ package helper
 
 import (
 	"crypto/sha1"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -407,4 +408,21 @@ func SaveFile(reader io.Reader, savePath string) (int64, error) {
 		return 0, errors.New("failed to write to file: " + err.Error())
 	}
 	return size, nil
+}
+
+func GetSSLExpireDate(domain string) (*time.Time, error) {
+	conn, err := tls.Dial("tcp", domain+":443", nil)
+	if err != nil {
+		return nil, fmt.Errorf("server doesn't support SSL certificate err:: %v", err)
+	}
+	defer conn.Close()
+	err = conn.VerifyHostname(domain)
+	if err != nil {
+		return nil, fmt.Errorf("hostname doesn't match with certificate: : %v", err)
+	}
+	certs := conn.ConnectionState().PeerCertificates
+	if len(certs) == 0 {
+		return nil, fmt.Errorf("no certificate found")
+	}
+	return &certs[0].NotAfter, nil
 }

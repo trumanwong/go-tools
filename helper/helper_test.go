@@ -2,6 +2,7 @@ package helper
 
 import (
 	"github.com/trumanwong/go-tools/crawler"
+	"log"
 	"net/http"
 	"testing"
 	"time"
@@ -46,4 +47,12 @@ func TestDownloadFile(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+}
+
+func TestGetSSLExpireDate(t *testing.T) {
+	expire, err := GetSSLExpireDate("gc1.midjourny.cn")
+	if err != nil {
+		t.Error(err)
+	}
+	log.Println(expire)
 }
