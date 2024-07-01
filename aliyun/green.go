@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
-	green20220302 "github.com/alibabacloud-go/green-20220302/client"
+	green20220302 "github.com/alibabacloud-go/green-20220302/v2/client"
 	util "github.com/alibabacloud-go/tea-utils/v2/service"
 	"github.com/alibabacloud-go/tea/tea"
 	"github.com/google/uuid"
@@ -53,7 +53,7 @@ type ImageModerationRequest struct {
 	Service *string
 }
 
-// ImageModerationRequest is a struct that holds the information needed for image moderation.
+// ImageModerationInfo is a struct that holds the information needed for image moderation.
 type ImageModerationInfo struct {
 	Label      string
 	Confidence float32
@@ -179,4 +179,21 @@ func (c GreenClient) ImageModerationAdvance(req *ImageModerationRequest) (list [
 		return list, errors.New("image moderation not success. status" + fmt.Sprintf("%d", tea.IntValue(tea.ToInt(body.Code))))
 	}
 	return list, errors.New("image moderation failed. statusCode:" + tea.ToString(statusCode))
+}
+
+func (c GreenClient) TextModerationPlusWithOptions(req *green20220302.TextModerationPlusRequest, runtime *util.RuntimeOptions) (*green20220302.TextModerationPlusResponse, error) {
+	response, err := c.client.TextModerationPlusWithOptions(req, runtime)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func (c GreenClient) VoiceModerationWithOptions(req *green20220302.VoiceModerationRequest, runtime *util.RuntimeOptions) (*green20220302.VoiceModerationResponse, error) {
+	response, err := c.client.VoiceModerationWithOptions(req, runtime)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
+
 }
