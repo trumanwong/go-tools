@@ -190,10 +190,10 @@ func (c GreenClient) TextModerationPlusWithOptions(req *green20220302.TextModera
 }
 
 func (c GreenClient) VoiceModerationWithOptions(req *green20220302.VoiceModerationRequest, runtime *util.RuntimeOptions) (*green20220302.VoiceModerationResponse, error) {
+	// 调用阿里音频审核sdk
 	response, err := c.client.VoiceModerationWithOptions(req, runtime)
 	if err != nil {
 		return nil, err
 	}
 	return response, nil
-
 }
