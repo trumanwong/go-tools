@@ -197,3 +197,12 @@ func (c GreenClient) VoiceModerationWithOptions(req *green20220302.VoiceModerati
 	}
 	return response, nil
 }
+
+func (c GreenClient) VoiceModerationResult(req *green20220302.VoiceModerationResultRequest, runtime *util.RuntimeOptions) (*green20220302.VoiceModerationResultResponse, error) {
+	// 调用阿里音频审核sdk
+	response, err := c.client.VoiceModerationResult(req)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
+}
