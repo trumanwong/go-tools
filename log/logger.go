@@ -48,16 +48,17 @@ type Options struct {
 //	}
 //	logger := log.NewLogger(loggerOptions)
 func NewLogger(options *Options) *Logger {
+	logger := logrus.New()
 	if options.Formatter != nil {
-		logrus.SetFormatter(options.Formatter)
+		logger.SetFormatter(options.Formatter)
 	} else {
-		logrus.SetFormatter(&logrus.JSONFormatter{})
+		logger.SetFormatter(&logrus.JSONFormatter{})
 	}
 
 	if options.Output != nil {
-		logrus.SetOutput(options.Output)
+		logger.SetOutput(options.Output)
 	} else {
-		logrus.SetOutput(os.Stdout)
+		logger.SetOutput(os.Stdout)
 	}
 
 	key := "X-Trace-Id"
@@ -68,7 +69,7 @@ func NewLogger(options *Options) *Logger {
 	return &Logger{
 		ctx:      context.Background(),
 		traceKey: key,
-		logger:   logrus.New(),
+		logger:   logger,
 	}
 }
 
