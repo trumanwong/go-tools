@@ -22,9 +22,12 @@ type Logger struct {
 // The function configures the logrus library to log as JSON and output to stdout.
 // It then creates a new Logger instance with a background context, the provided or default traceKey, and a new logrus logger.
 // The newly created Logger instance is then returned.
-func NewLogger(traceKey *string) *Logger {
+func NewLogger(traceKey *string, formatter *logrus.Formatter) *Logger {
 	// Log as JSON instead of the default ASCII formatter.
 	logrus.SetFormatter(&logrus.JSONFormatter{})
+	if formatter != nil {
+		logrus.SetFormatter(*formatter)
+	}
 
 	// Output to stdout instead of the default stderr
 	// Can be any io.Writer, see below for File example
