@@ -24,9 +24,10 @@ type Logger struct {
 // The newly created Logger instance is then returned.
 func NewLogger(traceKey *string, formatter logrus.Formatter) *Logger {
 	// Log as JSON instead of the default ASCII formatter.
-	logrus.SetFormatter(&logrus.JSONFormatter{})
 	if formatter != nil {
 		logrus.SetFormatter(formatter)
+	} else {
+		logrus.SetFormatter(&logrus.JSONFormatter{})
 	}
 
 	// Output to stdout instead of the default stderr
