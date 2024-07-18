@@ -3,6 +3,7 @@ package log
 import (
 	"context"
 	"github.com/sirupsen/logrus"
+	"io"
 	"os"
 )
 
@@ -17,30 +18,53 @@ type Logger struct {
 	logger   *logrus.Logger  // The underlying logrus logger.
 }
 
-// NewLogger is a function that creates a new instance of the Logger struct.
-// It takes an optional traceKey as an argument. If no traceKey is provided, it defaults to "X-Trace-Id".
-// The function configures the logrus library to log as JSON and output to stdout.
-// It then creates a new Logger instance with a background context, the provided or default traceKey, and a new logrus logger.
-// The newly created Logger instance is then returned.
-func NewLogger(traceKey *string, formatter logrus.Formatter) *Logger {
-	// Log as JSON instead of the default ASCII formatter.
-	if formatter != nil {
-		logrus.SetFormatter(formatter)
+type Options struct {
+	TraceKey  *string
+	Formatter logrus.Formatter
+	Output    io.Writer
+}
+
+// NewLogger creates a new Logger instance with configurable options.
+//
+// This function initializes a new logrus logger with options to customize the trace key, output format, and output destination.
+// It allows for detailed and structured logging in JSON format by default, aiming to improve log readability and processing.
+// The logger operates within a background context, but this can be modified later to include specific trace IDs or other context-related information.
+//
+// Parameters:
+//   - options: A pointer to an Options struct that may specify a custom trace key, log formatter, and output destination.
+//     If the formatter is not specified, it defaults to JSON formatting.
+//     If the output destination is not specified, it defaults to stdout.
+//     The trace key is used for context-based logging, defaulting to "X-Trace-Id" if not provided.
+//
+// Returns:
+// - A pointer to the newly created Logger instance.
+//
+// Example:
+//
+//	loggerOptions := &log.Options{
+//	  TraceKey:  pointer.ToString("My-Custom-Trace-Key"),
+//	  Formatter: &logrus.TextFormatter{},
+//	  Output:    os.Stderr,
+//	}
+//	logger := log.NewLogger(loggerOptions)
+func NewLogger(options *Options) *Logger {
+	if options.Formatter != nil {
+		logrus.SetFormatter(options.Formatter)
 	} else {
 		logrus.SetFormatter(&logrus.JSONFormatter{})
 	}
 
-	// Output to stdout instead of the default stderr
-	// Can be any io.Writer, see below for File example
-	logrus.SetOutput(os.Stdout)
-
-	// Default traceKey is "X-Trace-Id". If a traceKey is provided, use it instead.
-	key := "X-Trace-Id"
-	if traceKey != nil {
-		key = *traceKey
+	if options.Output != nil {
+		logrus.SetOutput(options.Output)
+	} else {
+		logrus.SetOutput(os.Stdout)
 	}
 
-	// Create a new Logger instance with a background context, the provided or default traceKey, and a new logrus logger.
+	key := "X-Trace-Id"
+	if options.TraceKey != nil {
+		key = *options.TraceKey
+	}
+
 	return &Logger{
 		ctx:      context.Background(),
 		traceKey: key,
