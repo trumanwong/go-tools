@@ -84,10 +84,20 @@ func (a AliOss) ListObjects(prefix string) ([]oss.ObjectProperties, error) {
 	return fileList, nil
 }
 
-// GetSignUrl generates a signed URL for a file in the OSS bucket.
-// It takes the objectName as a parameter and returns the signed URL and an error if the operation fails.
-func (a AliOss) GetSignUrl(objectName string) (string, error) {
-	signedUrl, err := a.bucket.SignURL(objectName, oss.HTTPGet, 3600*8)
+// GetSignUrl generates a signed URL for accessing a file in the OSS bucket with limited time access.
+//
+// This method creates a URL that grants temporary access to an object in the OSS bucket. The access duration is defined by the expiredInSec parameter, after which the URL becomes invalid. This is particularly useful for scenarios where you need to share files with users without giving them direct access to your OSS bucket or requiring them to have an OSS account.
+//
+// Parameters:
+// - objectName: The name of the object for which the signed URL is generated. This should include any path prefixes related to the object's location within the bucket.
+// - expiredInSec: The duration in seconds for which the generated URL remains valid. After this period, the URL will no longer grant access to the object.
+// - options: Additional options that can be passed to the SignURL method. These options allow for further customization of the signed URL, such as specifying response headers.
+//
+// Returns:
+// - A string containing the signed URL. This URL can be used to access the specified object in the OSS bucket until it expires.
+// - An error if the signed URL could not be generated, which could occur due to issues with the OSS client configuration, invalid object names, or problems communicating with the OSS service.
+func (a AliOss) GetSignUrl(objectName string, expiredInSec int64, options ...oss.Option) (string, error) {
+	signedUrl, err := a.bucket.SignURL(objectName, oss.HTTPGet, expiredInSec, options...)
 	if err != nil {
 		return "", err
 	}
