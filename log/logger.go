@@ -48,6 +48,9 @@ type Options struct {
 //	}
 //	logger := log.NewLogger(loggerOptions)
 func NewLogger(options *Options) *Logger {
+	if options == nil {
+		options = &Options{}
+	}
 	logger := logrus.New()
 	if options.Formatter != nil {
 		logger.SetFormatter(options.Formatter)
