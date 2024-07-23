@@ -5,39 +5,38 @@ import (
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
-	tmt "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt/v20180321"
+	hunyuan "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan/v20230901"
 )
 
-type TmtClient struct {
-	client *tmt.Client
+type HunYuanClient struct {
+	client *hunyuan.Client
 }
 
-func NewTmtClient(secretId, secretKey, region string) (*TmtClient, error) {
+func NewHunYuanClient(secretId, secretKey, region string) (*HunYuanClient, error) {
 	credential := common.NewCredential(
 		secretId,
 		secretKey,
 	)
 	// 实例化一个client选项，可选的，没有特殊需求可以跳过
 	cpf := profile.NewClientProfile()
-	cpf.HttpProfile.Endpoint = "tmt.tencentcloudapi.com"
+	cpf.HttpProfile.Endpoint = "hunyuan.tencentcloudapi.com"
 	// 实例化要请求产品的client对象,clientProfile是可选的
-	client, err := tmt.NewClient(credential, region, cpf)
+	client, err := hunyuan.NewClient(credential, region, cpf)
 	if err != nil {
 		return nil, err
 	}
-	return &TmtClient{
+	return &HunYuanClient{
 		client: client,
 	}, nil
 }
 
-func (t TmtClient) TextTranslate(req *tmt.TextTranslateRequest) (string, error) {
-	response, err := t.client.TextTranslate(req)
+func (c HunYuanClient) ChatCompletions(req *hunyuan.ChatCompletionsRequest) (*hunyuan.ChatCompletionsResponse, error) {
+	response, err := c.client.ChatCompletions(req)
 	if _, ok := err.(*errors.TencentCloudSDKError); ok {
-		return "", fmt.Errorf("an api error has returned: %s", err)
-
+		return nil, fmt.Errorf("an api error has returned: %s", err)
 	}
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return *response.Response.TargetText, nil
+	return response, nil
 }

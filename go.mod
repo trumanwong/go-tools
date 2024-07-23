@@ -24,7 +24,8 @@ require (
 	github.com/sashabaranov/go-openai v1.26.2
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.9.0
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.955
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.969
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.969
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.955
 	github.com/trumanwong/cryptogo v1.0.5
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.18
