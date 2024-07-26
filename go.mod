@@ -3,30 +3,31 @@ module github.com/trumanwong/go-tools
 go 1.22
 
 require (
-	github.com/alibabacloud-go/alidns-20150109/v4 v4.5.0
+	github.com/alibabacloud-go/alidns-20150109/v4 v4.5.1
 	github.com/alibabacloud-go/cdn-20180510/v4 v4.3.0
 	github.com/alibabacloud-go/darabonba-openapi/v2 v2.0.8
 	github.com/alibabacloud-go/dcdn-20180115/v3 v3.4.0
 	github.com/alibabacloud-go/docmind-api-20220711 v1.3.1
-	github.com/alibabacloud-go/green-20220302/v2 v2.2.7
-	github.com/alibabacloud-go/imageseg-20191230/v3 v3.0.0
+	github.com/alibabacloud-go/green-20220302/v2 v2.2.10
+	github.com/alibabacloud-go/imageseg-20191230/v3 v3.0.1
 	github.com/alibabacloud-go/tea v1.2.2
-	github.com/alibabacloud-go/tea-utils/v2 v2.0.5
+	github.com/alibabacloud-go/tea-utils/v2 v2.0.6
 	github.com/aliyun/aliyun-oss-go-sdk v3.0.2+incompatible
 	github.com/gin-gonic/gin v1.10.0
-	github.com/go-pay/gopay v1.5.102
+	github.com/go-pay/gopay v1.5.103
 	github.com/google/uuid v1.6.0
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/pkoukk/tiktoken-go v0.1.7
 	github.com/qiniu/go-sdk/v7 v7.21.1
 	github.com/rabbitmq/amqp091-go v1.10.0
-	github.com/redis/go-redis/v9 v9.5.3
-	github.com/sashabaranov/go-openai v1.26.2
+	github.com/redis/go-redis/v9 v9.6.1
+	github.com/sashabaranov/go-openai v1.27.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.9.0
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.969
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.969
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.955
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.972
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/faceid v1.0.972
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.972
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.972
 	github.com/trumanwong/cryptogo v1.0.5
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.18
 )
@@ -44,7 +45,7 @@ require (
 	github.com/alibabacloud-go/tea-oss-utils v1.1.0 // indirect
 	github.com/alibabacloud-go/tea-utils v1.4.5 // indirect
 	github.com/alibabacloud-go/tea-xml v1.1.3 // indirect
-	github.com/aliyun/credentials-go v1.3.4 // indirect
+	github.com/aliyun/credentials-go v1.3.6 // indirect
 	github.com/bytedance/sonic v1.11.9 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -53,18 +54,18 @@ require (
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
-	github.com/dlclark/regexp2 v1.11.0 // indirect
+	github.com/dlclark/regexp2 v1.11.2 // indirect
 	github.com/emmansun/gmsm v0.27.4 // indirect
-	github.com/gabriel-vasile/mimetype v1.4.4 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.5 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-pay/crypto v0.0.1 // indirect
-	github.com/go-pay/xlog v0.0.2 // indirect
+	github.com/go-pay/xlog v0.0.3 // indirect
 	github.com/go-pay/xtime v0.0.2 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.22.0 // indirect
 	github.com/goccy/go-json v0.10.3 // indirect
-	github.com/gofrs/flock v0.12.0 // indirect
+	github.com/gofrs/flock v0.12.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.8 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
@@ -79,7 +80,7 @@ require (
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	golang.org/x/arch v0.8.0 // indirect
 	golang.org/x/crypto v0.25.0 // indirect
-	golang.org/x/net v0.26.0 // indirect
+	golang.org/x/net v0.27.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
