@@ -23,4 +23,25 @@ func TestFaceIDClient_DectectAuth(t *testing.T) {
 		return
 	}
 	log.Println(*resp.Response.Url)
+	log.Println(*resp.Response.BizToken)
+}
+
+func TestFaceIDClient_GetDetectInfoEnhanced(t *testing.T) {
+	client, err := NewFaceIDClient(os.Getenv("TencentSecretId"), os.Getenv("TencentSecretKey"))
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	request := faceid.NewGetDetectInfoEnhancedRequest()
+	request.RuleId = common.StringPtr(os.Getenv("TencentFaceIDRuleId"))
+	request.BizToken = common.StringPtr(os.Getenv("TencentFaceIDBizToken"))
+	request.InfoType = common.StringPtr("0")
+	resp, err := client.GetDetectInfoEnhanced(request)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	//log.Println(*resp.Response.IdCardData.OcrFront)
+	log.Println(*resp.Response.Text.Name)
+	log.Println(*resp.Response.Text.IdCard)
 }

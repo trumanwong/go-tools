@@ -39,3 +39,14 @@ func (c FaceIDClient) DectectAuth(request *faceid.DetectAuthRequest) (*faceid.De
 	}
 	return resp, nil
 }
+
+func (c FaceIDClient) GetDetectInfoEnhanced(request *faceid.GetDetectInfoEnhancedRequest) (*faceid.GetDetectInfoEnhancedResponse, error) {
+	resp, err := c.client.GetDetectInfoEnhanced(request)
+	if err != nil {
+		if _, ok := err.(*errors.TencentCloudSDKError); ok {
+			return nil, fmt.Errorf("an api error has returned: %s", err)
+		}
+		return nil, err
+	}
+	return resp, nil
+}
