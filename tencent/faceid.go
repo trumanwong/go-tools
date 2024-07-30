@@ -29,7 +29,7 @@ func NewFaceIDClient(secretId, secretKey string) (*FaceIDClient, error) {
 	}, nil
 }
 
-func (c FaceIDClient) DectectAuth(request *faceid.DetectAuthRequest) (*faceid.DetectAuthResponse, error) {
+func (c FaceIDClient) DetectAuth(request *faceid.DetectAuthRequest) (*faceid.DetectAuthResponse, error) {
 	resp, err := c.client.DetectAuth(request)
 	if err != nil {
 		if _, ok := err.(*errors.TencentCloudSDKError); ok {
