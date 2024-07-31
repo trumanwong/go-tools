@@ -29,6 +29,8 @@ require (
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.972
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.972
 	github.com/trumanwong/cryptogo v1.0.5
+	github.com/volcengine/ve-tos-golang-sdk/v2 v2.7.0
+	github.com/volcengine/volc-sdk-golang v1.0.170
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.18
 )
 
@@ -48,6 +50,7 @@ require (
 	github.com/aliyun/credentials-go v1.3.6 // indirect
 	github.com/bytedance/sonic v1.11.9 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
+	github.com/cenkalti/backoff/v4 v4.1.2 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/clbanning/mxj/v2 v2.7.0 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
@@ -85,7 +88,6 @@ require (
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
