@@ -3,10 +3,11 @@ package midjourney
 import (
 	"errors"
 	"fmt"
-	"github.com/trumanwong/go-tools/helper"
 	"net/url"
 	"strconv"
 	"strings"
+
+	"github.com/trumanwong/go-tools/helper"
 )
 
 // GetPromptAndParametersRequest is a struct that represents the request for the GetPromptAndParameters function.
@@ -77,8 +78,8 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 			parameters["iw"] = val
 		case "quality", "q":
 			temp, err := strconv.ParseFloat(val, 64)
-			if err != nil || temp < 0 || temp > 1 {
-				return nil, errors.New("quality值范围必须在0~1之间")
+			if err != nil || temp < 0 || temp > 2 {
+				return nil, errors.New("quality值范围必须在0~2之间")
 			}
 			parameters["quality"] = val
 		case "repeat", "r":
@@ -119,9 +120,9 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 		case "version", "v":
 			temp, err := strconv.ParseFloat(val, 10)
 			tempVal := int(temp * 10)
-			// "1", "2", "3", "4", "5.0", "5.1", "5.2", "6
-			if err != nil || temp < 1 || temp > 6 || tempVal > 60 || (temp >= 5 && temp < 6 && tempVal != 50 && tempVal != 51 && tempVal != 52) {
-				return nil, fmt.Errorf("%s参数值必须是1, 2, 3, 4, 5.0, 5.1, 5.2或6", param)
+			// "1", "2", "3", "4", "5.0", "5.1", "5.2", "6", "6.1"
+			if err != nil || (temp != 40 && temp != 50 && tempVal != 51 && tempVal != 52 && tempVal != 60 && tempVal != 61) {
+				return nil, fmt.Errorf("%s参数值必须是4, 5, 5.1, 5.2，6，6.1", param)
 			}
 
 			parameters["version"] = val
