@@ -76,3 +76,8 @@ func (c CdnClient) DescribeContentQuota(options ...cdn.OptionArg) (*cdn.Describe
 func (c CdnClient) DescribeCdnAccessLog(req *cdn.DescribeCdnAccessLogRequest, options ...cdn.OptionArg) (*cdn.DescribeCdnAccessLogResponse, error) {
 	return c.instance.DescribeCdnAccessLog(req, options...)
 }
+
+// DescribeCdnData 获取访问统计的细分数据
+func (c CdnClient) DescribeCdnData(req *cdn.DescribeCdnDataRequest, options ...cdn.OptionArg) (*cdn.DescribeCdnDataResponse, error) {
+	return c.instance.DescribeCdnData(req, options...)
+}
