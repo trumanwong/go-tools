@@ -75,5 +75,4 @@ func (c CdnClient) DescribeContentQuota(options ...cdn.OptionArg) (*cdn.Describe
 // DescribeCdnAccessLog 获取访问日志的下载链接
 func (c CdnClient) DescribeCdnAccessLog(req *cdn.DescribeCdnAccessLogRequest, options ...cdn.OptionArg) (*cdn.DescribeCdnAccessLogResponse, error) {
 	return c.instance.DescribeCdnAccessLog(req, options...)
-
 }

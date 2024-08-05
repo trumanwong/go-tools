@@ -40,3 +40,7 @@ func (c CdnClient) SetCdnDomainSSLCertificate(req *cdn20180510.SetCdnDomainSSLCe
 func (c CdnClient) RefreshObjectCachesWithOptions(req *cdn20180510.RefreshObjectCachesRequest, runtime *util.RuntimeOptions) (*cdn20180510.RefreshObjectCachesResponse, error) {
 	return c.client.RefreshObjectCachesWithOptions(req, runtime)
 }
+
+func (c CdnClient) DescribeDomainUsageData(req *cdn20180510.DescribeDomainUsageDataRequest, runtime *util.RuntimeOptions) (*cdn20180510.DescribeDomainUsageDataResponse, error) {
+	return c.client.DescribeDomainUsageDataWithOptions(req, runtime)
+}

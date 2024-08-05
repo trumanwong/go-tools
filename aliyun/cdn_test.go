@@ -5,8 +5,10 @@ import (
 	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
 	util "github.com/alibabacloud-go/tea-utils/v2/service"
 	"github.com/alibabacloud-go/tea/tea"
+	"github.com/trumanwong/go-tools/helper"
 	"log"
 	"os"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -77,4 +79,34 @@ func TestCdnClient_SetCdnDomainSSLCertificate(t *testing.T) {
 		return
 	}
 	log.Println(*resp.Body.RequestId)
+}
+
+func TestCdnClient_DescribeDomainUsageData(t *testing.T) {
+	client, err := NewCdnClient(&openapi.Config{
+		AccessKeyId:     tea.String(os.Getenv("AccessKeyId")),
+		AccessKeySecret: tea.String(os.Getenv("AccessKeySecret")),
+		Endpoint:        tea.String(os.Getenv("Endpoint")),
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	resp, err := client.DescribeDomainUsageData(&cdn20180510.DescribeDomainUsageDataRequest{
+		DomainName: tea.String(os.Getenv("DomainName")),
+		StartTime:  tea.String(time.Now().UTC().AddDate(0, 0, -30).Format("2006-01-02T15:04:05Z")),
+		EndTime:    tea.String(time.Now().UTC().Format("2006-01-02T15:04:05Z")),
+		Field:      tea.String("traf"),
+		Interval:   tea.String("86400"),
+	}, &util.RuntimeOptions{})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	var total int64
+	for _, v := range resp.Body.UsageDataPerInterval.DataModule {
+		flux, _ := strconv.ParseInt(*v.Value, 10, 64)
+		total += flux
+	}
+	log.Println(helper.FormatByte(float64(total), 1024))
 }

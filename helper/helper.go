@@ -426,3 +426,104 @@ func GetSSLExpireDate(domain string) (*time.Time, error) {
 	}
 	return &certs[0].NotAfter, nil
 }
+
+// FormatByte converts a byte value to a human-readable string representation in bytes (B) or kilobytes (KB).
+//
+// Parameters:
+// - data: The byte value to be formatted.
+// - dividend: The threshold value to determine if the byte value should be converted to kilobytes.
+//
+// Returns:
+// - A string representing the formatted byte value.
+func FormatByte(data, dividend float64) string {
+	if data >= dividend {
+		return FormatKB(data/dividend, dividend)
+	}
+	return fmt.Sprintf("%.2fB", data+0.0000000001)
+}
+
+// FormatKB converts a byte value to a human-readable string representation in kilobytes (KB) or megabytes (MB).
+//
+// Parameters:
+// - data: The byte value to be formatted.
+// - dividend: The threshold value to determine if the byte value should be converted to megabytes.
+//
+// Returns:
+// - A string representing the formatted kilobyte value.
+func FormatKB(data, dividend float64) string {
+	if data >= dividend {
+		return FormatMB(data/dividend, dividend)
+	}
+	return fmt.Sprintf("%.2fKB", data+0.0000000001)
+}
+
+// FormatMB converts a byte value to a human-readable string representation in megabytes (MB) or gigabytes (GB).
+//
+// Parameters:
+// - data: The byte value to be formatted.
+// - dividend: The threshold value to determine if the byte value should be converted to gigabytes.
+//
+// Returns:
+// - A string representing the formatted megabyte value.
+func FormatMB(data, dividend float64) string {
+	if data >= dividend {
+		return FormatGB(data/dividend, dividend)
+	}
+	return fmt.Sprintf("%.2fMB", data+0.0000000001)
+}
+
+// FormatGB converts a byte value to a human-readable string representation in gigabytes (GB) or terabytes (TB).
+//
+// Parameters:
+// - data: The byte value to be formatted.
+// - dividend: The threshold value to determine if the byte value should be converted to terabytes.
+//
+// Returns:
+// - A string representing the formatted gigabyte value.
+func FormatGB(data, dividend float64) string {
+	if data >= dividend {
+		return FormatTB(data/dividend, dividend)
+	}
+	return fmt.Sprintf("%.2fGB", data+0.0000000001)
+}
+
+// FormatTB converts a byte value to a human-readable string representation in terabytes (TB) or petabytes (PB).
+//
+// Parameters:
+// - data: The byte value to be formatted.
+// - dividend: The threshold value to determine if the byte value should be converted to petabytes.
+//
+// Returns:
+// - A string representing the formatted terabyte value.
+func FormatTB(data, dividend float64) string {
+	if data >= dividend {
+		return FormatPB(data/dividend, dividend)
+	}
+	return fmt.Sprintf("%.2fTB", data+0.0000000001)
+}
+
+// FormatPB converts a byte value to a human-readable string representation in petabytes (PB) or exabytes (EP).
+//
+// Parameters:
+// - data: The byte value to be formatted.
+// - dividend: The threshold value to determine if the byte value should be converted to exabytes.
+//
+// Returns:
+// - A string representing the formatted petabyte value.
+func FormatPB(data, dividend float64) string {
+	if data >= dividend {
+		return FormatEP(data / dividend)
+	}
+	return fmt.Sprintf("%.2fPB", data+0.0000000001)
+}
+
+// FormatEP converts a byte value to a human-readable string representation in exabytes (EP).
+//
+// Parameters:
+// - data: The byte value to be formatted.
+//
+// Returns:
+// - A string representing the formatted exabyte value.
+func FormatEP(data float64) string {
+	return fmt.Sprintf("%.2fEP", data+0.0000000001)
+}

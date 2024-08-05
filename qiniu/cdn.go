@@ -233,7 +233,12 @@ type HTTPS struct {
 }
 
 func (c CdnClient) GetDomain(request *GetDomainRequest) (*GetDomainResponse, error) {
-	resp, err := requestQiniu(http.MethodGet, "/domain/"+request.Name, c.credentials, nil)
+	resp, err := requestQiniu(&Request{
+		Method:      http.MethodGet,
+		ApiUrl:      Host + "/domain/" + request.Name,
+		Body:        nil,
+		Credentials: c.credentials,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -278,7 +283,12 @@ type Domains struct {
 
 func (c CdnClient) GetDomains(req *GetDomainsRequest) (*GetDomainsResponse, error) {
 	body, _ := json.Marshal(req)
-	resp, err := requestQiniu(http.MethodGet, "/domain", c.credentials, body)
+	resp, err := requestQiniu(&Request{
+		Method:      http.MethodGet,
+		ApiUrl:      Host + "/domain",
+		Body:        body,
+		Credentials: c.credentials,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -314,7 +324,12 @@ type ModifyHttpsConfResponse struct {
 
 func (c CdnClient) ModifyHttpsConf(req *ModifyHttpsConfRequest) (*ModifyHttpsConfResponse, error) {
 	body, _ := json.Marshal(req)
-	resp, err := requestQiniu(http.MethodPut, fmt.Sprintf("/domain/%s/httpsconf", req.Name), c.credentials, body)
+	resp, err := requestQiniu(&Request{
+		Method:      http.MethodPut,
+		ApiUrl:      Host + fmt.Sprintf("/domain/%s/httpsconf", req.Name),
+		Body:        body,
+		Credentials: c.credentials,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -324,6 +339,53 @@ func (c CdnClient) ModifyHttpsConf(req *ModifyHttpsConfRequest) (*ModifyHttpsCon
 		return nil, fmt.Errorf("read response body failed: %s", err)
 	}
 	var response ModifyHttpsConfResponse
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		return nil, fmt.Errorf("unmarshal response body failed: %s", err)
+	}
+	return &response, nil
+}
+
+type FluxRequest struct {
+	// 开始日期，例如：2016-07-01
+	StartDate string `json:"startDate"`
+	// 结束日期，例如：2016-07-03
+	EndDate string `json:"endDate"`
+	// 时间粒度，取值为5min/hour/day
+	Granularity string `json:"granularity"`
+	// 域名列表，以 ；分割
+	Domains string `json:"domains"`
+}
+
+type FluxResponse struct {
+	Code  int                             `json:"code"`
+	Error string                          `json:"error"`
+	Time  []string                        `json:"time"`
+	Data  map[string]FluxResponseDataItem `json:"data"`
+}
+
+type FluxResponseDataItem struct {
+	China   []int64 `json:"china"`
+	Oversea []int64 `json:"oversea"`
+}
+
+func (c CdnClient) Flux(req *FluxRequest) (*FluxResponse, error) {
+	body, _ := json.Marshal(req)
+	resp, err := requestQiniu(&Request{
+		Method:      http.MethodPost,
+		ApiUrl:      fusionHost + "/v2/tune/flux",
+		Body:        body,
+		Credentials: c.credentials,
+	})
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read response body failed: %s", err)
+	}
+	var response FluxResponse
 	err = json.Unmarshal(b, &response)
 	if err != nil {
 		return nil, fmt.Errorf("unmarshal response body failed: %s", err)

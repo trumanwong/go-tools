@@ -38,7 +38,12 @@ type CreateSslCertResponse struct {
 // CreateSslCert 上传证书
 func (s SslClient) CreateSslCert(ctx context.Context, request *CreateSslCertRequest) (*CreateSslCertResponse, error) {
 	body, _ := json.Marshal(request)
-	resp, err := requestQiniu(http.MethodPost, "/sslcert", s.credentials, body)
+	resp, err := requestQiniu(&Request{
+		Method:      http.MethodPost,
+		ApiUrl:      Host + "/sslcert",
+		Body:        body,
+		Credentials: s.credentials,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +106,12 @@ type Cert struct {
 
 // GetSslCert 用户获取单个证书的接口
 func (s SslClient) GetSslCert(ctx context.Context, request *GetSslCertRequest) (*GetSslCertResponse, error) {
-	resp, err := requestQiniu(http.MethodGet, "/sslcert/"+request.CertID, s.credentials, nil)
+	resp, err := requestQiniu(&Request{
+		Method:      http.MethodGet,
+		ApiUrl:      Host + "/sslcert/" + request.CertID,
+		Body:        nil,
+		Credentials: s.credentials,
+	})
 	if err != nil {
 		return nil, err
 	}

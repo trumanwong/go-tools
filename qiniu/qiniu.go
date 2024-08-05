@@ -19,6 +19,8 @@ import (
 
 const Host = "https://api.qiniu.com"
 
+const fusionHost = "https://fusion.qiniuapi.com"
+
 // Client is a struct that represents a Qiniu client.
 // It contains a Mac object for authentication, a CdnManager for CDN operations, and a BucketManager for bucket operations.
 type Client struct {
@@ -213,20 +215,27 @@ func (c Client) VerifyCallback(req *http.Request) (bool, error) {
 	return qbox.VerifyCallback(c.mac, req)
 }
 
-func requestQiniu(method, apiUrl string, credentials *auth.Credentials, body []byte) (*http.Response, error) {
+type Request struct {
+	Method      string
+	ApiUrl      string
+	Body        []byte
+	Credentials *auth.Credentials
+}
+
+func requestQiniu(request *Request) (*http.Response, error) {
 	var req *http.Request
 	var err error
-	if body != nil {
-		req, err = http.NewRequest(method, Host+apiUrl, bytes.NewReader(body))
+	if request.Body != nil {
+		req, err = http.NewRequest(request.Method, request.ApiUrl, bytes.NewReader(request.Body))
 	} else {
-		req, err = http.NewRequest(method, Host+apiUrl, nil)
+		req, err = http.NewRequest(request.Method, request.ApiUrl, nil)
 	}
 	if err != nil {
 		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json")
-	req.ContentLength = int64(len(body))
-	err = credentials.AddToken(auth.TokenQiniu, req)
+	req.ContentLength = int64(len(request.Body))
+	err = request.Credentials.AddToken(auth.TokenQiniu, req)
 	client := http.Client{}
 	return client.Do(req)
 }
