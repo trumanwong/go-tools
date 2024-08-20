@@ -1,11 +1,11 @@
 module github.com/trumanwong/go-tools
 
-go 1.22
+go 1.23
 
 require (
-	github.com/alibabacloud-go/alidns-20150109/v4 v4.5.1
+	github.com/alibabacloud-go/alidns-20150109/v4 v4.5.3
 	github.com/alibabacloud-go/cdn-20180510/v4 v4.3.0
-	github.com/alibabacloud-go/darabonba-openapi/v2 v2.0.8
+	github.com/alibabacloud-go/darabonba-openapi/v2 v2.0.9
 	github.com/alibabacloud-go/dcdn-20180115/v3 v3.4.0
 	github.com/alibabacloud-go/docmind-api-20220711 v1.3.1
 	github.com/alibabacloud-go/green-20220302/v2 v2.2.10
@@ -21,16 +21,16 @@ require (
 	github.com/qiniu/go-sdk/v7 v7.21.1
 	github.com/rabbitmq/amqp091-go v1.10.0
 	github.com/redis/go-redis/v9 v9.6.1
-	github.com/sashabaranov/go-openai v1.27.0
+	github.com/sashabaranov/go-openai v1.28.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.9.0
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.972
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/faceid v1.0.972
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.972
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.972
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.983
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/faceid v1.0.983
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.983
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.983
 	github.com/trumanwong/cryptogo v1.0.5
-	github.com/volcengine/ve-tos-golang-sdk/v2 v2.7.0
-	github.com/volcengine/volc-sdk-golang v1.0.170
+	github.com/volcengine/ve-tos-golang-sdk/v2 v2.7.2
+	github.com/volcengine/volc-sdk-golang v1.0.171
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.18
 )
 
@@ -48,8 +48,8 @@ require (
 	github.com/alibabacloud-go/tea-utils v1.4.5 // indirect
 	github.com/alibabacloud-go/tea-xml v1.1.3 // indirect
 	github.com/aliyun/credentials-go v1.3.6 // indirect
-	github.com/bytedance/sonic v1.11.9 // indirect
-	github.com/bytedance/sonic/loader v0.1.1 // indirect
+	github.com/bytedance/sonic v1.12.1 // indirect
+	github.com/bytedance/sonic/loader v0.2.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.2 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/clbanning/mxj/v2 v2.7.0 // indirect
@@ -57,7 +57,7 @@ require (
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
-	github.com/dlclark/regexp2 v1.11.2 // indirect
+	github.com/dlclark/regexp2 v1.11.4 // indirect
 	github.com/emmansun/gmsm v0.27.4 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.5 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
@@ -81,13 +81,13 @@ require (
 	github.com/tjfoc/gmsm v1.4.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
-	golang.org/x/arch v0.8.0 // indirect
-	golang.org/x/crypto v0.25.0 // indirect
-	golang.org/x/net v0.27.0 // indirect
-	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
-	golang.org/x/text v0.16.0 // indirect
-	golang.org/x/time v0.5.0 // indirect
+	golang.org/x/arch v0.9.0 // indirect
+	golang.org/x/crypto v0.26.0 // indirect
+	golang.org/x/net v0.28.0 // indirect
+	golang.org/x/sync v0.8.0 // indirect
+	golang.org/x/sys v0.24.0 // indirect
+	golang.org/x/text v0.17.0 // indirect
+	golang.org/x/time v0.6.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

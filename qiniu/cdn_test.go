@@ -50,6 +50,7 @@ func TestCdnClient_GetDomain(t *testing.T) {
 		return
 	}
 	t.Log(resp.HTTPS.CertID)
+	t.Log(resp.IPACL.IPACLValues)
 }
 
 func TestCdnClient_Flux(t *testing.T) {
@@ -75,4 +76,55 @@ func TestCdnClient_Flux(t *testing.T) {
 		}
 	}
 	log.Println(helper.FormatByte(float64(total), 1024))
+}
+
+func TestCdnClient_GetTopTrafficIp(t *testing.T) {
+	cdnClient := NewCdnClient(os.Getenv("QINIU_ACCESS_KEY"), os.Getenv("QINIU_SECRET_KEY"))
+	resp, err := cdnClient.GetTopTrafficIp(&GetTopTrafficIpRequest{
+		StartDate: time.Now().Format("2006-01-02"),
+		EndDate:   time.Now().Format("2006-01-02"),
+		Region:    "global",
+		Domains:   []string{os.Getenv("QINIU_DOMAIN_NAME")},
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	for i, v := range resp.Data.Ips {
+		t.Log(v, helper.FormatByte(float64(resp.Data.Traffic[i]), 1024))
+	}
+}
+
+func TestCdnClient_GetTopCountIp(t *testing.T) {
+	cdnClient := NewCdnClient(os.Getenv("QINIU_ACCESS_KEY"), os.Getenv("QINIU_SECRET_KEY"))
+	resp, err := cdnClient.GetTopCountIp(&GetTopCountIpRequest{
+		StartDate: time.Now().Format("2006-01-02"),
+		EndDate:   time.Now().Format("2006-01-02"),
+		Region:    "global",
+		Domains:   []string{os.Getenv("QINIU_DOMAIN_NAME")},
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	for i, v := range resp.Data.Ips {
+		t.Log(v, resp.Data.Count[i])
+	}
+}
+
+func TestCdnClient_UpdateIpACL(t *testing.T) {
+	cdnClient := NewCdnClient(os.Getenv("QINIU_ACCESS_KEY"), os.Getenv("QINIU_SECRET_KEY"))
+	_, err := cdnClient.UpdateIpACL(&UpdateIpACLRequest{
+		Domain: os.Getenv("QINIU_DOMAIN_NAME"),
+		IpAcl: IPACL{
+			IPACLType: "black",
+			IPACLValues: []interface{}{
+				"39.144.0.75",
+			},
+		},
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
 }

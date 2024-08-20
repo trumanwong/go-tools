@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/qiniu/go-sdk/v7/auth"
 	"io"
+	"log"
 	"net/http"
 	"time"
 )
@@ -391,4 +392,115 @@ func (c CdnClient) Flux(req *FluxRequest) (*FluxResponse, error) {
 		return nil, fmt.Errorf("unmarshal response body failed: %s", err)
 	}
 	return &response, nil
+}
+
+type GetTopTrafficIpRequest struct {
+	Domains   []string `json:"domains"`
+	Region    string   `json:"region"`
+	StartDate string   `json:"startDate"`
+	EndDate   string   `json:"endDate"`
+}
+
+type GetTopTrafficIpResponse struct {
+	Code  int                         `json:"code"`
+	Error string                      `json:"error"`
+	Data  GetTopTrafficIpResponseData `json:"data"`
+}
+
+type GetTopTrafficIpResponseData struct {
+	Traffic []int64  `json:"traffic"`
+	Ips     []string `json:"ips"`
+}
+
+func (c CdnClient) GetTopTrafficIp(req *GetTopTrafficIpRequest) (*GetTopTrafficIpResponse, error) {
+	body, _ := json.Marshal(req)
+	log.Println(string(body))
+	resp, err := requestQiniu(&Request{
+		Method:      http.MethodPost,
+		ApiUrl:      fusionHost + "/v2/tune/loganalyze/toptrafficip",
+		Body:        body,
+		Credentials: c.credentials,
+	})
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read response body failed: %s", err)
+	}
+	var response GetTopTrafficIpResponse
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		return nil, fmt.Errorf("unmarshal response body failed: %s", err)
+	}
+	return &response, nil
+}
+
+type GetTopCountIpRequest struct {
+	Domains   []string `json:"domains"`
+	Region    string   `json:"region"`
+	StartDate string   `json:"startDate"`
+	EndDate   string   `json:"endDate"`
+}
+
+type GetTopCountIpResponse struct {
+	Code  int                       `json:"code"`
+	Error string                    `json:"error"`
+	Data  GetTopCountIpResponseData `json:"data"`
+}
+
+type GetTopCountIpResponseData struct {
+	Count []int64  `json:"count"`
+	Ips   []string `json:"ips"`
+}
+
+func (c CdnClient) GetTopCountIp(req *GetTopCountIpRequest) (*GetTopCountIpResponse, error) {
+	body, _ := json.Marshal(req)
+	resp, err := requestQiniu(&Request{
+		Method:      http.MethodPost,
+		ApiUrl:      fusionHost + "/v2/tune/loganalyze/topcountip",
+		Body:        body,
+		Credentials: c.credentials,
+	})
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read response body failed: %s", err)
+	}
+	var response GetTopCountIpResponse
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		return nil, fmt.Errorf("unmarshal response body failed: %s", err)
+	}
+	return &response, nil
+}
+
+type UpdateIpACLRequest struct {
+	Domain string
+	IpAcl  IPACL
+}
+
+type UpdateIpACLResponse struct{}
+
+func (c CdnClient) UpdateIpACL(req *UpdateIpACLRequest) (*UpdateIpACLResponse, error) {
+	body, _ := json.Marshal(req.IpAcl)
+	resp, err := requestQiniu(&Request{
+		Method:      http.MethodPut,
+		ApiUrl:      Host + "/domain/" + req.Domain + "/ipacl",
+		Body:        body,
+		Credentials: c.credentials,
+	})
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	_, err = io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read response body failed: %s", err)
+	}
+	return &UpdateIpACLResponse{}, nil
 }
