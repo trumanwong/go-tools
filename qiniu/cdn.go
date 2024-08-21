@@ -251,7 +251,7 @@ func (c CdnClient) GetDomain(request *GetDomainRequest) (*GetDomainResponse, err
 	var response GetDomainResponse
 	err = json.Unmarshal(b, &response)
 	if err != nil {
-		return nil, fmt.Errorf("unmarshal response body failed: %s", err)
+		return nil, fmt.Errorf("unmarshal response body [%s] failed: %s", b, err)
 	}
 	return &response, nil
 }
@@ -301,7 +301,7 @@ func (c CdnClient) GetDomains(req *GetDomainsRequest) (*GetDomainsResponse, erro
 	var response GetDomainsResponse
 	err = json.Unmarshal(b, &response)
 	if err != nil {
-		return nil, fmt.Errorf("unmarshal response body failed: %s", err)
+		return nil, fmt.Errorf("unmarshal response body [%s] failed: %s", b, err)
 	}
 	return &response, nil
 
@@ -342,7 +342,7 @@ func (c CdnClient) ModifyHttpsConf(req *ModifyHttpsConfRequest) (*ModifyHttpsCon
 	var response ModifyHttpsConfResponse
 	err = json.Unmarshal(b, &response)
 	if err != nil {
-		return nil, fmt.Errorf("unmarshal response body failed: %s", err)
+		return nil, fmt.Errorf("unmarshal response body [%s] failed: %s", b, err)
 	}
 	return &response, nil
 }
@@ -389,7 +389,7 @@ func (c CdnClient) Flux(req *FluxRequest) (*FluxResponse, error) {
 	var response FluxResponse
 	err = json.Unmarshal(b, &response)
 	if err != nil {
-		return nil, fmt.Errorf("unmarshal response body failed: %s", err)
+		return nil, fmt.Errorf("unmarshal response body [%s] failed: %s", b, err)
 	}
 	return &response, nil
 }
@@ -432,7 +432,7 @@ func (c CdnClient) GetTopTrafficIp(req *GetTopTrafficIpRequest) (*GetTopTrafficI
 	var response GetTopTrafficIpResponse
 	err = json.Unmarshal(b, &response)
 	if err != nil {
-		return nil, fmt.Errorf("unmarshal response body failed: %s", err)
+		return nil, fmt.Errorf("unmarshal response body [%s] failed: %s", b, err)
 	}
 	return &response, nil
 }
@@ -474,7 +474,7 @@ func (c CdnClient) GetTopCountIp(req *GetTopCountIpRequest) (*GetTopCountIpRespo
 	var response GetTopCountIpResponse
 	err = json.Unmarshal(b, &response)
 	if err != nil {
-		return nil, fmt.Errorf("unmarshal response body failed: %s", err)
+		return nil, fmt.Errorf("unmarshal response body [%s] failed: %s", b, err)
 	}
 	return &response, nil
 }
