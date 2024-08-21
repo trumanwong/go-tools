@@ -223,8 +223,8 @@ type TimeACL struct {
 	Verification          Verification `json:"verification"`
 }
 type IPACL struct {
-	IPACLType   string        `json:"ipACLType"`
-	IPACLValues []interface{} `json:"ipACLValues"`
+	IPACLType   string   `json:"ipACLType"`
+	IPACLValues []string `json:"ipACLValues"`
 }
 type HTTPS struct {
 	CertID      string `json:"certId"`
