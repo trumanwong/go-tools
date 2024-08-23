@@ -118,7 +118,7 @@ func TestCdnClient_UpdateIpACL(t *testing.T) {
 		Domain: os.Getenv("QINIU_DOMAIN_NAME"),
 		IpAcl: IPACL{
 			IPACLType: "black",
-			IPACLValues: []interface{}{
+			IPACLValues: []string{
 				"39.144.0.75",
 			},
 		},
