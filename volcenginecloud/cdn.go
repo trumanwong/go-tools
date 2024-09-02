@@ -81,3 +81,17 @@ func (c CdnClient) DescribeCdnAccessLog(req *cdn.DescribeCdnAccessLogRequest, op
 func (c CdnClient) DescribeCdnData(req *cdn.DescribeCdnDataRequest, options ...cdn.OptionArg) (*cdn.DescribeCdnDataResponse, error) {
 	return c.instance.DescribeCdnData(req, options...)
 }
+
+// DescribeDistrictSummary 获取访问统计的汇总数据
+func (c CdnClient) DescribeDistrictSummary(req *cdn.DescribeDistrictSummaryRequest) (*cdn.DescribeDistrictSummaryResponse, error) {
+	return c.instance.DescribeDistrictSummary(req)
+}
+
+// DescribeDistrictData 获取访问统计的细分数据
+func (c CdnClient) DescribeDistrictData(req *cdn.DescribeDistrictDataRequest) (*cdn.DescribeDistrictDataResponse, error) {
+	return c.instance.DescribeDistrictData(req)
+}
+
+func (c CdnClient) DescribeStatisticalRanking(req *cdn.DescribeStatisticalRankingRequest) (*cdn.DescribeStatisticalRankingResponse, error) {
+	return c.instance.DescribeStatisticalRanking(req)
+}
