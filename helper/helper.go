@@ -527,3 +527,13 @@ func FormatPB(data, dividend float64) string {
 func FormatEP(data float64) string {
 	return fmt.Sprintf("%.2fEP", data+0.0000000001)
 }
+
+// Ternary is a function that implements the ternary operator in Go.
+// It takes a boolean condition and two values as input.
+// If the condition is true, it returns the first value; otherwise, it returns the second value.
+func Ternary(condition bool, trueVal, falseVal interface{}) interface{} {
+	if condition {
+		return trueVal
+	}
+	return falseVal
+}

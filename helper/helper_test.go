@@ -56,3 +56,12 @@ func TestGetSSLExpireDate(t *testing.T) {
 	}
 	log.Println(expire)
 }
+
+func TestTernary(t *testing.T) {
+	if Ternary(true, 1, 2) != 1 {
+		t.Fatal("Ternary error")
+	}
+	if Ternary(false, 1, 2) != 2 {
+		t.Fatal("Ternary error")
+	}
+}
