@@ -219,6 +219,10 @@ func DownloadFile(request *crawler.Request, savePath string, checkContentLength 
 	// Ensure the response body is closed after the function returns.
 	defer resp.Body.Close()
 
+	if resp.StatusCode != http.StatusOK {
+		return 0, fmt.Errorf("status code not 200, status: %d", resp.StatusCode)
+	}
+
 	// Write the body of the response to the file.
 	size, err := SaveFile(resp.Body, savePath)
 	if err != nil {
