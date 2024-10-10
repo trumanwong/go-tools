@@ -1,6 +1,8 @@
 package volcenginecloud
 
 import (
+	"fmt"
+	"github.com/trumanwong/go-tools/crawler"
 	"github.com/trumanwong/go-tools/helper"
 	"github.com/trumanwong/go-tools/trans"
 	"github.com/volcengine/volc-sdk-golang/service/cdn"
@@ -127,5 +129,44 @@ func TestCdnClient_DescribeStatisticalRanking(t *testing.T) {
 	}
 	for _, item := range resp.Result.RankingDataList {
 		log.Println(item.ItemKey, item.Value)
+	}
+}
+
+func TestCdnClient_DescribeCdnAccessLog(t *testing.T) {
+	cdnClient := NewCdnClient(os.Getenv("VOLC_ACCESS_KEY"), os.Getenv("VOLC_SECRET_KEY"))
+	intervalTime := helper.GetIntervalTime(&helper.GetIntervalTimeRequest{
+		Time: time.Now(),
+		Type: helper.Day,
+		Num:  -1,
+	})
+	resp, err := cdnClient.DescribeCdnAccessLog(&cdn.DescribeCdnAccessLogRequest{
+		Domain:    os.Getenv("VOLC_DOMAIN"),
+		StartTime: intervalTime.StartAt.Unix(),
+		EndTime:   intervalTime.EndAt.Unix(),
+		PageSize:  trans.Int64(100),
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	for _, item := range resp.Result.DomainLogDetails {
+		_, err = helper.DownloadFile(&crawler.Request{
+			Url: item.LogPath,
+		}, fmt.Sprintf("temp/%s_%d_%d.gz", os.Getenv("VOLC_DOMAIN"), item.StartTime, item.EndTime), true)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+	}
+}
+
+func TestCdnClient_AnalyzeCdnAccessLog(t *testing.T) {
+	cdnClient := NewCdnClient(os.Getenv("VOLC_ACCESS_KEY"), os.Getenv("VOLC_SECRET_KEY"))
+	err := cdnClient.AnalyzeCdnAccessLog("temp", func(accessLog *CdnAccessLog) error {
+		log.Println(accessLog.RespSize)
+		return nil
+	})
+	if err != nil {
+		t.Error(err)
 	}
 }
