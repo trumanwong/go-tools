@@ -182,8 +182,8 @@ func verifySignature(publicKey []byte, signMd5 []byte, sign []byte) error {
 	return nil
 }
 
-// UploadCallbackHandler 校验上传回调并返回body
-func UploadCallbackHandler(r *http.Request) ([]byte, error) {
+// GetUploadCallbackParams 校验上传回调并返回body
+func GetUploadCallbackParams(r *http.Request) ([]byte, error) {
 	// 获取签名
 	sign, err := getSignature(r)
 	if err != nil {
