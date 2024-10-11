@@ -455,3 +455,41 @@ func (c *Cache) LRemBeforeKey(ctx context.Context, request *LRemByValueRequest) 
 	}
 	return nil
 }
+
+type RememberRequest struct {
+	Key      string
+	Seconds  int64
+	Callback func() ([]byte, error)
+	Prefix   *string
+}
+
+// Remember is a method of Cache that retrieves a value from the cache if it exists,
+// or sets it using a callback function if it does not.
+// It takes a context and a pointer to a RememberRequest struct,
+// and returns the value as a byte slice and an error.
+func (c *Cache) Remember(ctx context.Context, request *RememberRequest) ([]byte, error) {
+	// Get the value from the cache
+	value, err := c.Get(ctx, &GetCacheRequest{
+		Key:    request.Key,
+		Prefix: request.Prefix,
+	})
+	if err != nil {
+		// If the value is not in the cache, call the callback function to get the value
+		val, err := request.Callback()
+		if err != nil {
+			return nil, err
+		}
+		// Set the value in the cache
+		err = c.Set(ctx, &SetCacheRequest{
+			Key:     request.Key,
+			Value:   val,
+			Seconds: request.Seconds,
+			Prefix:  request.Prefix,
+		})
+		if err != nil {
+			return nil, err
+		}
+		return val, nil
+	}
+	return []byte(value), nil
+}

@@ -2,6 +2,7 @@ package cache
 
 import (
 	"context"
+	"fmt"
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
 	"os"
@@ -51,4 +52,30 @@ func TestCache_LRemBeforeKey(t *testing.T) {
 		Prefix: nil,
 	})
 	assert.NoError(t, err)
+}
+
+func TestCache_Remember(t *testing.T) {
+	options := &redis.Options{
+		Addr:     os.Getenv("REDIS_ADDR"),
+		Password: os.Getenv("REDIS_PASSWORD"),
+		DB:       0,
+	}
+
+	cache, err := NewCache(options, "")
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	ret, err := cache.Remember(context.Background(), &RememberRequest{
+		Key:     "remember",
+		Seconds: 600,
+		Callback: func() ([]byte, error) {
+			fmt.Println("callback")
+			return []byte("test"), nil
+		},
+		Prefix: nil,
+	})
+	assert.NoError(t, err)
+	assert.Equal(t, "test", string(ret))
 }
