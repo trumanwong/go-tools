@@ -33,7 +33,7 @@ func NewOssClient(accessKey, secretKey, endpoint, region string) (*OssClient, er
 	return &OssClient{client: client}, nil
 }
 
-// HeadObject 判断对象是否存在
+// HeadObject 查询对象元数据信息（判断对象是否存在）
 func (c OssClient) HeadObject(ctx context.Context, req *tos.HeadObjectV2Input) (*tos.HeadObjectV2Output, error) {
 	return c.client.HeadObjectV2(ctx, req)
 }
