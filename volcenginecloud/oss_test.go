@@ -30,9 +30,9 @@ func TestOssClient_PreSignedPostSignature(t *testing.T) {
 
 	log.Println(callback)
 	log.Println(callbackVar)
+	operator := "starts-with"
 	output, err := client.PreSignedPostSignature(context.Background(), &tos.PreSingedPostSignatureInput{
 		Bucket:  os.Getenv("VOLC_OSS_BUCKET"),
-		Key:     "test.jpg",
 		Expires: 3600,
 		Conditions: []tos.PostSignatureCondition{
 			{
@@ -42,6 +42,11 @@ func TestOssClient_PreSignedPostSignature(t *testing.T) {
 			{
 				Key:   "x-tos-callback-var",
 				Value: base64.StdEncoding.EncodeToString([]byte(callbackVar)),
+			},
+			{
+				Key:      "key",
+				Value:    "test/",
+				Operator: &operator,
 			},
 		},
 	})
