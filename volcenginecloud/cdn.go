@@ -4,10 +4,15 @@ import (
 	"bufio"
 	"compress/gzip"
 	"fmt"
+	"github.com/google/uuid"
+	"github.com/trumanwong/cryptogo"
 	"github.com/volcengine/volc-sdk-golang/service/cdn"
+	"net/url"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type CdnClient struct {
@@ -210,4 +215,105 @@ func (c CdnClient) AnalyzeCdnAccessLog(logPath string, handler func(*CdnAccessLo
 		}
 	}
 	return nil
+}
+
+// GenTypeAUrl generates a signed URL of type A.
+// It takes a link, key, signName, uid, and timestamp as input parameters.
+// The function parses the URL, generates a random string, and creates a hash using the provided parameters.
+// It then constructs the signed URL with the generated hash and returns it.
+// For more details, refer to the documentation: https://www.volcengine.com/docs/6454/99849#%E7%AD%BE%E5%90%8D%E8%AE%A1%E7%AE%97%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81
+func GenTypeAUrl(link string, key string, signName string, uid string, timestamp int64) (string, error) {
+	parseUrl, err := url.Parse(link)
+	if err != nil {
+		return "", err
+	}
+
+	randStr := strings.ReplaceAll(uuid.New().String(), "-", "")
+	hash := cryptogo.MD5([]byte(fmt.Sprintf("%s-%d-%s-%s-%s", parseUrl.Path, timestamp, randStr, uid, key)))
+	authArg := fmt.Sprintf("%s=%d-%s-%s-%s", signName, timestamp, randStr, uid, hash)
+	parseUrl.RawQuery = fmt.Sprintf("%s&%s", parseUrl.RawQuery, authArg)
+	return parseUrl.String(), nil
+}
+
+// splitUrl splits a URL into its components using a regular expression.
+// It returns a slice of strings containing the matched components.
+func splitUrl(url string) []string {
+	reg := regexp.MustCompile("^(http://|https://)?([^/?]+)(/[^?]*)?(\\?.*)?$")
+	return reg.FindStringSubmatch(url)
+}
+
+// GenTypeBUrl generates a signed URL of type B.
+// It takes a link, key, and timestamp as input parameters.
+// The function parses the URL, formats the timestamp, and creates a hash using the provided parameters.
+// It then constructs the signed URL with the generated hash and returns it.
+func GenTypeBUrl(link string, key string, timestamp int64) (string, error) {
+	parseUrl, err := url.Parse(link)
+	if err != nil {
+		return "", err
+	}
+	tsStr := time.Unix(timestamp, 0).Format("200601021504")
+	hash := cryptogo.MD5([]byte(fmt.Sprintf("%s%s%s", key, tsStr, parseUrl.Path)))
+	return fmt.Sprintf(
+		"%s://%s/%s/%s%s%s",
+		parseUrl.Scheme,
+		parseUrl.Host,
+		tsStr,
+		hash,
+		parseUrl.Path,
+		parseUrl.RawQuery,
+	), nil
+}
+
+// GenTypeCUrl generates a signed URL of type C.
+// It takes a link, key, and timestamp as input parameters.
+// The function parses the URL, converts the timestamp to a hexadecimal string, and creates a hash using the provided parameters.
+// It then constructs the signed URL with the generated hash and returns it.
+func GenTypeCUrl(link string, key string, timestamp int64) (string, error) {
+	parseUrl, err := url.Parse(link)
+	if err != nil {
+		return "", err
+	}
+	tsStr := strconv.FormatInt(timestamp, 16)
+	hash := cryptogo.MD5([]byte(fmt.Sprintf("%s%s%s", key, parseUrl.Path, tsStr)))
+	return fmt.Sprintf(
+		"%s://%s/%s/%s%s%s",
+		parseUrl.Scheme,
+		parseUrl.Host,
+		hash,
+		tsStr,
+		parseUrl.Path,
+		parseUrl.RawQuery,
+	), nil
+}
+
+// GenTypeDUrl generates a signed URL of type D.
+// It takes a link, key, signName, timeName, timestamp, and base as input parameters.
+// The function parses the URL, converts the timestamp to a string in the specified base, and creates a hash using the provided parameters.
+// It then constructs the signed URL with the generated hash and returns it.
+func GenTypeDUrl(link, key, signName, timeName string, timestamp int64, base int) (string, error) {
+	parseUrl, err := url.Parse(link)
+	if err != nil {
+		return "", err
+	}
+	tsStr := strconv.FormatInt(timestamp, base)
+	hash := cryptogo.MD5([]byte(fmt.Sprintf("%s%s%s", key, parseUrl.Path, tsStr)))
+	authArg := fmt.Sprintf("%s=%s&%s=%s", signName, hash, timeName, tsStr)
+	parseUrl.RawQuery = fmt.Sprintf("%s&%s", parseUrl.RawQuery, authArg)
+	return parseUrl.String(), nil
+}
+
+// GenTypeEUrl generates a signed URL of type E by custom rule (e.g., key+domain+uri+timestamp).
+// It takes a link, key, signName, tsName, timestamp, and base as input parameters.
+// The function parses the URL, converts the timestamp to a string in the specified base, and creates a hash using the provided parameters.
+// It then constructs the signed URL with the generated hash and returns it.
+func GenTypeEUrl(link, key, signName, tsName string, timestamp int64, base int) (string, error) {
+	parseUrl, err := url.Parse(link)
+	if err != nil {
+		return "", err
+	}
+	tsStr := strconv.FormatInt(timestamp, base)
+	hash := cryptogo.MD5([]byte(fmt.Sprintf("%s%s%s%s", key, parseUrl.Host, parseUrl.Path, tsStr)))
+	authArg := fmt.Sprintf("%s=%s&%s=%s", signName, hash, tsName, tsStr)
+	parseUrl.RawQuery = fmt.Sprintf("%s&%s", parseUrl.RawQuery, authArg)
+	return parseUrl.String(), nil
 }

@@ -170,3 +170,76 @@ func TestCdnClient_AnalyzeCdnAccessLog(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestGenTypeAUrl(t *testing.T) {
+	link, err := GenTypeAUrl(
+		os.Getenv("CDN_URL"),
+		os.Getenv("CDN_TIMESTAMP_KEY"),
+		os.Getenv("CDN_SIGN_NAME"),
+		"0",
+		time.Now().Add(1*time.Minute).Unix(),
+	)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(link)
+}
+
+func TestGenTypeBUrl(t *testing.T) {
+	link, err := GenTypeBUrl(
+		os.Getenv("CDN_URL"),
+		os.Getenv("CDN_TIMESTAMP_KEY"),
+		time.Now().Add(-29*time.Minute).Unix(),
+	)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(link)
+}
+
+func TestGenTypeCUrl(t *testing.T) {
+	link, err := GenTypeCUrl(
+		os.Getenv("CDN_URL"),
+		os.Getenv("CDN_TIMESTAMP_KEY"),
+		time.Now().Add(-29*time.Minute).Unix(),
+	)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(link)
+}
+
+func TestGenTypeDUrl(t *testing.T) {
+	link, err := GenTypeDUrl(
+		os.Getenv("CDN_URL"),
+		os.Getenv("CDN_TIMESTAMP_KEY"),
+		os.Getenv("CDN_SIGN_NAME"),
+		os.Getenv("CDN_T_NAME"),
+		time.Now().Add(-29*time.Minute).Unix(),
+		10,
+	)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(link)
+}
+
+func TestGenTypeEUrl(t *testing.T) {
+	link, err := GenTypeEUrl(
+		os.Getenv("CDN_URL"),
+		os.Getenv("CDN_TIMESTAMP_KEY"),
+		os.Getenv("CDN_SIGN_NAME"),
+		os.Getenv("CDN_T_NAME"),
+		time.Now().Add(-29*time.Minute).Unix(),
+		10,
+	)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(link)
+}
