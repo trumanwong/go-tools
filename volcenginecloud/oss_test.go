@@ -18,7 +18,7 @@ func TestOssClient_PreSignedPostSignature(t *testing.T) {
 
 	callback := `
     {
-       "callbackBody" : "{\"bucket\": ${bucket}, \"object\": ${object}, \"key1\": ${x:key1}}",
+       "callbackBody" : "{\"bucket\": ${bucket}, \"object\": ${object}, \"size\": ${size}, \"key1\": ${x:key1}}",
        "callbackBodyType" : "application/json",
        "callbackUrl" : "` + os.Getenv("VOLC_OSS_CALLBACK_URL") + `"
     }`
