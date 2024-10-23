@@ -87,7 +87,7 @@ func (m *prometheusMiddleware) Handle() gin.HandlerFunc {
 			ctx.Request.RequestURI,
 			ctx.HandlerName(),
 			status,
-		).Observe(time.Since(start).Seconds())
+		).Observe(float64(time.Since(start).Milliseconds()))
 		m.requestSize.WithLabelValues(
 			ctx.Request.Method,
 			ctx.Request.RequestURI,
