@@ -7,7 +7,7 @@ import (
 
 // Pagination is a struct that represents the pagination configuration.
 // It contains the default page size and the maximum page size.
-type Pagination struct {
+type pagination struct {
 	// defaultPageSize is the default number of items per page when the "page_size" query parameter is not provided or is not a valid positive integer.
 	defaultPageSize uint64
 	// maxPageSize is the maximum number of items per page when the "page_size" query parameter is greater than this value.
@@ -17,8 +17,8 @@ type Pagination struct {
 // NewPagination is a function that creates a new Pagination object.
 // It takes the default page size and the maximum page size as parameters,
 // and returns a pointer to the created Pagination object.
-func NewPagination(defaultPageSize, maxPageSize uint64) *Pagination {
-	return &Pagination{defaultPageSize: defaultPageSize, maxPageSize: maxPageSize}
+func NewPagination(defaultPageSize, maxPageSize uint64) Middleware {
+	return &pagination{defaultPageSize: defaultPageSize, maxPageSize: maxPageSize}
 }
 
 // Handle is a method of Pagination that returns a gin.HandlerFunc for handling pagination.
@@ -28,7 +28,7 @@ func NewPagination(defaultPageSize, maxPageSize uint64) *Pagination {
 // If the "page_size" query parameter is greater than the maximum page size, it is set to the maximum page size.
 // The gin.HandlerFunc then sets the "page" and "page_size" values in the gin.Context,
 // and calls the next handler in the chain.
-func (p *Pagination) Handle() gin.HandlerFunc {
+func (p *pagination) Handle() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// Parse the "page" query parameter.
 		page, err := strconv.ParseUint(ctx.Request.URL.Query().Get("page"), 10, 64)

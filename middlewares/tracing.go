@@ -6,26 +6,26 @@ import (
 	"github.com/trumanwong/go-tools/log"
 )
 
-type Tracing struct {
+type tracing struct {
 	Logger *log.Logger
 	Key    *string
 }
 
-func NewTracing(key *string, logger *log.Logger) *Tracing {
-	return &Tracing{
+func NewTracing(key *string, logger *log.Logger) Middleware {
+	return &tracing{
 		Logger: logger,
 		Key:    key,
 	}
 }
 
-func (p *Tracing) getKey() string {
+func (p *tracing) getKey() string {
 	if p.Key != nil {
 		return *p.Key
 	}
 	return "X-Trace-Id"
 }
 
-func (p *Tracing) Handle() gin.HandlerFunc {
+func (p *tracing) Handle() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		traceId := ctx.GetHeader(p.getKey())
 		if traceId == "" {
