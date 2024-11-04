@@ -244,24 +244,30 @@ func (a AliOss) GetPolicyToken(expireSeconds int64, ossHost string, directoryPre
 	return response, nil
 }
 
-// VerifyCallbackSignature 校验回调请求的签名是否合法
-func (a AliOss) VerifyCallbackSignature(r *http.Request) error {
+// VerifyCallbackSignature 校验回调请求的签名是否合法，并返回body
+func (a AliOss) VerifyCallbackSignature(r *http.Request) ([]byte, error) {
 	// Get PublicKey bytes
 	bytePublicKey, err := a.getPublicKey(r)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	// Get Authorization bytes : decode from Base64String
 	byteAuthorization, err := a.getAuthorization(r)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	// Get MD5 bytes from Newly Constructed Authorization String.
-	byteMD5, err := a.getMD5FromNewAuthString(r)
+	// Construct the New Auth String from URI+Query+Body
+	bodyContent, err := io.ReadAll(r.Body)
 	if err != nil {
-		return err
+		return nil, fmt.Errorf("Read Request Body failed : %s \n", err.Error())
 	}
-	return a.verifySignature(bytePublicKey, byteMD5, byteAuthorization)
+	r.Body.Close()
+	// Get MD5 bytes from Newly Constructed Authorization String.
+	byteMD5, err := a.getMD5FromNewAuthString(r, string(bodyContent))
+	if err != nil {
+		return nil, err
+	}
+	return bodyContent, a.verifySignature(bytePublicKey, byteMD5, byteAuthorization)
 }
 
 // getPublicKey : Get PublicKey bytes from Request.URL
@@ -298,19 +304,13 @@ func (a AliOss) getAuthorization(r *http.Request) ([]byte, error) {
 }
 
 // getMD5FromNewAuthString : Get MD5 bytes from Newly Constructed Authorization String.
-func (a AliOss) getMD5FromNewAuthString(r *http.Request) ([]byte, error) {
+func (a AliOss) getMD5FromNewAuthString(r *http.Request, bodyContent string) ([]byte, error) {
 	var byteMD5 []byte
-	// Construct the New Auth String from URI+Query+Body
-	bodyContent, err := io.ReadAll(r.Body)
-	r.Body.Close()
-	if err != nil {
-		return byteMD5, fmt.Errorf("Read Request Body failed : %s \n", err.Error())
-	}
 	strCallbackBody := string(bodyContent)
 	// fmt.Printf("r.URL.RawPath={%s}, r.URL.Query()={%s}, strCallbackBody={%s}\n", r.URL.RawPath, r.URL.Query(), strCallbackBody)
 	strURLPathDecode, errUnescape := encoding.UnescapePath(r.URL.Path, encoding.EncodePathSegment) //url.PathUnescape(r.URL.Path) for Golang v1.8.2+
 	if errUnescape != nil {
-		fmt.Printf("url.PathUnescape failed : URL.Path=%s, error=%s \n", r.URL.Path, err.Error())
+		fmt.Printf("url.PathUnescape failed : URL.Path=%s \n", r.URL.Path)
 		return byteMD5, errUnescape
 	}
 
