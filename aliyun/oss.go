@@ -369,3 +369,19 @@ func (a AliOss) PutObjectFromFile(objectName, filePath string, options ...oss.Op
 func (a AliOss) IsObjectExist(objectName string, options ...oss.Option) (bool, error) {
 	return a.bucket.IsObjectExist(objectName, options...)
 }
+
+func (a AliOss) CopyObjectFrom(srcBucketName, srcObjectName, dstObjectName string, options ...oss.Option) error {
+	_, err := a.bucket.CopyObjectFrom(srcBucketName, srcObjectName, dstObjectName, options...)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (a AliOss) MoveObjectFrom(srcBucketName, srcObjectName, dstObjectName string, options ...oss.Option) error {
+	err := a.CopyObjectFrom(srcBucketName, srcObjectName, dstObjectName, options...)
+	if err != nil {
+		return err
+	}
+	return a.DeleteObjects([]string{srcObjectName})
+}
