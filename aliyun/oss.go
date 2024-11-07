@@ -385,3 +385,7 @@ func (a AliOss) MoveObjectFrom(srcBucketName, srcObjectName, dstObjectName strin
 	}
 	return a.DeleteObjects([]string{srcObjectName})
 }
+
+func (a AliOss) Bucket(bucket string) (*oss.Bucket, error) {
+	return a.client.Bucket(bucket)
+}
