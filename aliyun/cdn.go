@@ -88,7 +88,7 @@ type CdnAccessLog struct {
 	IP string
 }
 
-func (c CdnClient) AnalyzeCdnAccessLog(logPath string, handler func(...interface{}) error) error {
+func (c CdnClient) AnalyzeCdnAccessLog(logPath string, handler func(interface{}) error) error {
 	fileInfoList, err := os.ReadDir(logPath)
 	if err != nil {
 		return err
