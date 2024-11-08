@@ -557,7 +557,7 @@ type CdnAccessLog struct {
 	UserAgent string
 }
 
-func (c CdnClient) AnalyzeCdnAccessLog(logPath string, handler func(*CdnAccessLog) error) error {
+func (c CdnClient) AnalyzeCdnAccessLog(logPath string, handler func(...interface{}) error) error {
 	fileInfoList, err := os.ReadDir(logPath)
 	if err != nil {
 		return err
