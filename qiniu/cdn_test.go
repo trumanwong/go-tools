@@ -1,9 +1,14 @@
 package qiniu
 
 import (
+	"fmt"
+	"github.com/trumanwong/go-tools/crawler"
 	"github.com/trumanwong/go-tools/helper"
 	"log"
+	"net/http"
+	"net/url"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 )
@@ -126,5 +131,38 @@ func TestCdnClient_UpdateIpACL(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 		return
+	}
+}
+
+func TestCdnClient_GetCdnLogList(t *testing.T) {
+	cdnClient := NewCdnClient(os.Getenv("QINIU_ACCESS_KEY"), os.Getenv("QINIU_SECRET_KEY"))
+	logListResult, err := cdnClient.GetCdnLogList(time.Now().AddDate(0, 0, -1).Format(time.DateOnly), []string{os.Getenv("QINIU_DOMAIN")})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	for domain, logList := range logListResult.Data {
+		for _, v := range logList {
+			u, _ := url.Parse(v.URL)
+			savePath := fmt.Sprintf("temp/%s/%s", domain, filepath.Base(u.Path))
+			_, err = helper.DownloadFile(&crawler.Request{
+				Url:    v.URL,
+				Method: http.MethodGet,
+			}, savePath, false)
+			if err != nil {
+				t.Error(err)
+				break
+			}
+		}
+	}
+}
+
+func TestCdnClient_AnalyzeCdnAccessLog(t *testing.T) {
+	cdnClient := NewCdnClient(os.Getenv("QINIU_ACCESS_KEY"), os.Getenv("QINIU_SECRET_KEY"))
+	err := cdnClient.AnalyzeCdnAccessLog(os.Getenv("QINIU_LOG_PATH"), func(accessLog *CdnAccessLog) error {
+		return nil
+	})
+	if err != nil {
+		t.Error(err)
 	}
 }

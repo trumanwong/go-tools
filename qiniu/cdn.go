@@ -1,23 +1,35 @@
 package qiniu
 
 import (
+	"bufio"
+	"compress/gzip"
 	"encoding/json"
 	"fmt"
 	"github.com/qiniu/go-sdk/v7/auth"
+	"github.com/qiniu/go-sdk/v7/auth/qbox"
+	"github.com/qiniu/go-sdk/v7/cdn"
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"regexp"
+	"strconv"
+	"strings"
 	"time"
 )
 
 type CdnClient struct {
 	credentials *auth.Credentials
+	cdnManager  *cdn.CdnManager
 }
 
 func NewCdnClient(accessKey, secretKey string) *CdnClient {
+	mac := qbox.NewMac(accessKey, secretKey)
 	credentials := auth.New(accessKey, secretKey)
+	cdnManager := cdn.NewCdnManager(mac)
 	return &CdnClient{
 		credentials: credentials,
+		cdnManager:  cdnManager,
 	}
 }
 
@@ -503,4 +515,118 @@ func (c CdnClient) UpdateIpACL(req *UpdateIpACLRequest) (*UpdateIpACLResponse, e
 		return nil, fmt.Errorf("read response body failed: %s", err)
 	}
 	return &UpdateIpACLResponse{}, nil
+}
+
+// GetCdnLogList 获取CDN域名访问日志的下载链接
+func (c CdnClient) GetCdnLogList(day string, domains []string) (listLogResult cdn.ListLogResult, err error) {
+	return c.cdnManager.GetCdnLogList(day, domains)
+}
+
+// GetFluxData 方法用来获取域名访问流量数据
+//
+//	StartDate	string		必须	开始日期，例如：2016-07-01
+//	EndDate		string		必须	结束日期，例如：2016-07-03
+//	Granularity	string		必须	粒度，取值：5min ／ hour ／day
+//	Domains		[]string	必须	域名列表
+//	Opts                            非必须   可选项
+func (c CdnClient) GetFluxData(startDate, endDate, granularity string, domainList []string, opts ...cdn.FluxOption) (cdn.TrafficResp, error) {
+	return c.cdnManager.GetFluxData(startDate, endDate, granularity, domainList, opts...)
+}
+
+type CdnAccessLog struct {
+	ClientIp string
+	// 命中信息
+	StatusHit string
+	// 响应时间
+	RespTime float64
+	// 请求时间
+	ReqTime string
+	// 请求方法
+	Method string
+	// 请求URL
+	Url string
+	// 请求协议
+	Protocol string
+	// 请求状态码
+	StatusCode int64
+	// 	响应大小
+	RespSize int64
+	// HTTP请求头中的Referer。
+	Referer string
+	// 请求中 User-Agent 头部的值。如果请求不包含该头部，该字段的值是 -
+	UserAgent string
+}
+
+func (c CdnClient) AnalyzeCdnAccessLog(logPath string, handler func(*CdnAccessLog) error) error {
+	fileInfoList, err := os.ReadDir(logPath)
+	if err != nil {
+		return err
+	}
+
+	for i := 0; i < len(fileInfoList); i++ {
+		err = func(i int) error {
+			file, err := os.Open(logPath + "/" + fileInfoList[i].Name())
+			if err != nil {
+				return err
+			}
+			defer file.Close()
+
+			gz, err := gzip.NewReader(file)
+			if err != nil {
+				return err
+			}
+			defer gz.Close()
+			scanner := bufio.NewScanner(gz)
+			for scanner.Scan() {
+				text := scanner.Text()
+				strs := strings.Split(text, "\n")
+				for _, str := range strs {
+					pattern := `(\S+) (\S+) (\d+) \[(.*?)\] "(\S+) (.*?) (\S+)" (\d+) (\d+) "(.*?)" "(.*?)"`
+					re := regexp.MustCompile(pattern)
+					// Find the matches
+					info := re.FindStringSubmatch(str)
+					if len(info) != 12 {
+						return fmt.Errorf("invalid log format, expect 12 fields, get %d fields: %s", len(info), str)
+					}
+
+					respTime, err := strconv.ParseFloat(info[3], 64)
+					if err != nil {
+						return fmt.Errorf("invalid respTime: %s, expect float: %s", info[3], str)
+					}
+
+					statusCode, err := strconv.ParseInt(info[8], 10, 64)
+					if err != nil {
+						return fmt.Errorf("invalid statusCode: %s, expect int: %s", info[8], str)
+					}
+					respSize, err := strconv.ParseInt(info[9], 10, 64)
+					if err != nil {
+						return fmt.Errorf("invalid respSize: %s, expect int: %s", info[9], str)
+					}
+					accessLog := CdnAccessLog{
+						ClientIp:   info[1],
+						StatusHit:  info[2],
+						RespTime:   respTime,
+						ReqTime:    info[4],
+						Method:     info[5],
+						Url:        info[6],
+						Protocol:   info[7],
+						StatusCode: statusCode,
+						RespSize:   respSize,
+						Referer:    info[10],
+						UserAgent:  info[11],
+					}
+					err = handler(&accessLog)
+					if err != nil {
+						return err
+					}
+				}
+			}
+			return nil
+		}(i)
+
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
