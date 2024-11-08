@@ -159,7 +159,7 @@ func TestCdnClient_GetCdnLogList(t *testing.T) {
 
 func TestCdnClient_AnalyzeCdnAccessLog(t *testing.T) {
 	cdnClient := NewCdnClient(os.Getenv("QINIU_ACCESS_KEY"), os.Getenv("QINIU_SECRET_KEY"))
-	err := cdnClient.AnalyzeCdnAccessLog(os.Getenv("QINIU_LOG_PATH"), func(accessLog *CdnAccessLog) error {
+	err := cdnClient.AnalyzeCdnAccessLog(os.Getenv("QINIU_LOG_PATH"), func(accessLog interface{}) error {
 		return nil
 	})
 	if err != nil {
