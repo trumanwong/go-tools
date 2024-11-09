@@ -6,9 +6,9 @@ require (
 	github.com/alibabacloud-go/alidns-20150109/v4 v4.5.7
 	github.com/alibabacloud-go/cdn-20180510/v4 v4.3.0
 	github.com/alibabacloud-go/darabonba-openapi/v2 v2.0.10
-	github.com/alibabacloud-go/dcdn-20180115/v3 v3.4.2
+	github.com/alibabacloud-go/dcdn-20180115/v3 v3.5.0
 	github.com/alibabacloud-go/docmind-api-20220711 v1.4.2
-	github.com/alibabacloud-go/green-20220302/v2 v2.2.15
+	github.com/alibabacloud-go/green-20220302/v2 v2.18.0
 	github.com/alibabacloud-go/imageseg-20191230/v3 v3.0.1
 	github.com/alibabacloud-go/sts-20150401/v2 v2.0.2
 	github.com/alibabacloud-go/tea v1.2.2
@@ -23,16 +23,16 @@ require (
 	github.com/qiniu/go-sdk/v7 v7.25.0
 	github.com/rabbitmq/amqp091-go v1.10.0
 	github.com/redis/go-redis/v9 v9.7.0
-	github.com/sashabaranov/go-openai v1.32.5
+	github.com/sashabaranov/go-openai v1.35.6
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.9.0
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1031
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/faceid v1.0.1031
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1031
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.1031
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1038
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/faceid v1.0.1038
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1038
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.1038
 	github.com/trumanwong/cryptogo v1.0.5
 	github.com/volcengine/ve-tos-golang-sdk/v2 v2.7.7
-	github.com/volcengine/volc-sdk-golang v1.0.182
+	github.com/volcengine/volc-sdk-golang v1.0.184
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.20
 )
 
@@ -55,9 +55,9 @@ require (
 	github.com/alibabacloud-go/tea-oss-utils v1.1.0 // indirect
 	github.com/alibabacloud-go/tea-utils v1.4.5 // indirect
 	github.com/alibabacloud-go/tea-xml v1.1.3 // indirect
-	github.com/aliyun/credentials-go v1.3.11 // indirect
+	github.com/aliyun/credentials-go v1.4.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bytedance/sonic v1.12.3 // indirect
+	github.com/bytedance/sonic v1.12.4 // indirect
 	github.com/bytedance/sonic/loader v0.2.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -69,7 +69,7 @@ require (
 	github.com/dlclark/regexp2 v1.11.4 // indirect
 	github.com/elastic/go-sysinfo v1.15.0 // indirect
 	github.com/elastic/go-windows v1.0.2 // indirect
-	github.com/emmansun/gmsm v0.29.1 // indirect
+	github.com/emmansun/gmsm v0.29.2 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.6 // indirect
 	github.com/gammazero/toposort v0.1.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
@@ -82,7 +82,7 @@ require (
 	github.com/goccy/go-json v0.10.3 // indirect
 	github.com/gofrs/flock v0.12.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/cpuid/v2 v2.2.8 // indirect
+	github.com/klauspost/cpuid/v2 v2.2.9 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -96,13 +96,13 @@ require (
 	github.com/tjfoc/gmsm v1.4.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
-	golang.org/x/arch v0.11.0 // indirect
-	golang.org/x/crypto v0.28.0 // indirect
-	golang.org/x/net v0.30.0 // indirect
-	golang.org/x/sync v0.8.0 // indirect
-	golang.org/x/sys v0.26.0 // indirect
-	golang.org/x/text v0.19.0 // indirect
-	golang.org/x/time v0.7.0 // indirect
+	golang.org/x/arch v0.12.0 // indirect
+	golang.org/x/crypto v0.29.0 // indirect
+	golang.org/x/net v0.31.0 // indirect
+	golang.org/x/sync v0.9.0 // indirect
+	golang.org/x/sys v0.27.0 // indirect
+	golang.org/x/text v0.20.0 // indirect
+	golang.org/x/time v0.8.0 // indirect
 	google.golang.org/protobuf v1.35.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
