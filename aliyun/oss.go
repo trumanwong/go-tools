@@ -84,6 +84,10 @@ func (a AliOss) ListObjects(prefix string) ([]oss.ObjectProperties, error) {
 	return fileList, nil
 }
 
+func (a AliOss) ListObjectsWithOptions(options ...oss.Option) (oss.ListObjectsResult, error) {
+	return a.bucket.ListObjects(options...)
+}
+
 // GetSignUrl generates a signed URL for accessing a file in the OSS bucket with limited time access.
 //
 // This method creates a URL that grants temporary access to an object in the OSS bucket. The access duration is defined by the expiredInSec parameter, after which the URL becomes invalid. This is particularly useful for scenarios where you need to share files with users without giving them direct access to your OSS bucket or requiring them to have an OSS account.
