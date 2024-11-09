@@ -43,8 +43,8 @@ func (c CdnClient) UpdateCdnConfig(req *cdn.UpdateCdnConfigRequest) (*cdn.Update
 }
 
 // AddCertificate 上传证书
-func (c CdnClient) AddCertificate(req *cdn.AddCdnCertificateRequest) (*cdn.AddCdnCertificateResponse, error) {
-	return c.instance.AddCdnCertificate(req)
+func (c CdnClient) AddCertificate(req *cdn.AddCertificateRequest) (*cdn.AddCertificateResponse, error) {
+	return c.instance.AddCertificate(req)
 }
 
 // BatchDeployCert 关联证书与加速域名
