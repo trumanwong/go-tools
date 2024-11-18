@@ -393,3 +393,7 @@ func (a AliOss) MoveObjectFrom(srcBucketName, srcObjectName, dstObjectName strin
 func (a AliOss) Bucket(bucket string) (*oss.Bucket, error) {
 	return a.client.Bucket(bucket)
 }
+
+func (a AliOss) CopyObjectTo(destBucketName, destObjectKey, srcObjectKey string, options ...oss.Option) (oss.CopyObjectResult, error) {
+	return a.bucket.CopyObjectTo(destBucketName, destObjectKey, srcObjectKey, options...)
+}
