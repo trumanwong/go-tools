@@ -14,13 +14,13 @@ type allowCors struct {
 	mode         string
 	allowHeaders string
 	allowMethods string
-	allowOrigins []string
+	allowOrigins *[]string
 }
 
 // NewAllowCors is a function that creates a new AllowCors object.
 // It takes the mode, the allowed headers, the allowed methods, and the allowed origins as parameters,
 // and returns a pointer to the created AllowCors object.
-func NewAllowCors(mode, allowHeaders, allowMethods string, allowOrigins []string) Middleware {
+func NewAllowCors(mode, allowHeaders, allowMethods string, allowOrigins *[]string) Middleware {
 	return &allowCors{mode: mode, allowHeaders: allowHeaders, allowMethods: allowMethods, allowOrigins: allowOrigins}
 }
 
@@ -36,8 +36,8 @@ func (cors *allowCors) Handle() gin.HandlerFunc {
 			ctx.Header("Access-Control-Allow-Origin", origin)
 		} else {
 			originUrl, err := url.Parse(origin)
-			if err == nil {
-				for _, v := range cors.allowOrigins {
+			if err == nil && cors.allowOrigins != nil {
+				for _, v := range *cors.allowOrigins {
 					if originUrl.Host == v {
 						ctx.Header("Access-Control-Allow-Origin", origin)
 						break

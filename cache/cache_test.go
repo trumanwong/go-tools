@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
+	"log"
+	"math/rand"
 	"os"
 	"testing"
+	"time"
 )
 
 func TestNewCache_WithValidOptions(t *testing.T) {
@@ -78,4 +81,31 @@ func TestCache_Remember(t *testing.T) {
 	})
 	assert.NoError(t, err)
 	assert.Equal(t, "test", string(ret))
+}
+
+func TestCache_SetNX(t *testing.T) {
+	options := &redis.Options{
+		Addr:     os.Getenv("REDIS_ADDR"),
+		Password: os.Getenv("REDIS_PASSWORD"),
+		DB:       0,
+	}
+
+	cache, err := NewCache(options, "test:")
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	for val, err := cache.SetNX(context.Background(), &SetNXRequest{
+		Key:     "test",
+		Value:   rand.Int(),
+		Seconds: 60,
+	}); !val || err != nil; val, err = cache.SetNX(context.Background(), &SetNXRequest{
+		Key:     "test",
+		Value:   rand.Int(),
+		Seconds: 60,
+	}) {
+		log.Println(val, err)
+		time.Sleep(1 * time.Second)
+	}
 }
