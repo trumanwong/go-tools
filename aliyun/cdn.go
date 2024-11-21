@@ -168,3 +168,28 @@ func (c CdnClient) AnalyzeCdnAccessLog(logPath string, handler func(interface{})
 	}
 	return nil
 }
+
+// DescribeDomainTopClientIpVisitWithOptions 获取ClientIP列表的排序数据
+func (c CdnClient) DescribeDomainTopClientIpVisitWithOptions(req *cdn20180510.DescribeDomainTopClientIpVisitRequest, runtime *util.RuntimeOptions) (*cdn20180510.DescribeDomainTopClientIpVisitResponse, error) {
+	return c.client.DescribeDomainTopClientIpVisitWithOptions(req, runtime)
+}
+
+// DescribeCdnDomainConfigsWithOptions 获取加速域名的配置信息
+func (c CdnClient) DescribeCdnDomainConfigsWithOptions(req *cdn20180510.DescribeCdnDomainConfigsRequest, runtime *util.RuntimeOptions) (*cdn20180510.DescribeCdnDomainConfigsResponse, error) {
+	return c.client.DescribeCdnDomainConfigsWithOptions(req, runtime)
+}
+
+type CdnConfigFunctions struct {
+	FunctionArgs []CdnConfigFunctionArg `json:"functionArgs"`
+	FunctionName string                 `json:"functionName"`
+	ParentID     *string                `json:"parentId"`
+}
+
+type CdnConfigFunctionArg struct {
+	ArgName  string `json:"argName"`
+	ArgValue string `json:"argValue"`
+}
+
+func (c CdnClient) BatchSetCdnDomainConfig(req *cdn20180510.BatchSetCdnDomainConfigRequest, runtime *util.RuntimeOptions) (*cdn20180510.BatchSetCdnDomainConfigResponse, error) {
+	return c.client.BatchSetCdnDomainConfigWithOptions(req, runtime)
+}

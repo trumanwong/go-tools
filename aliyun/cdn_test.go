@@ -1,6 +1,7 @@
 package aliyun
 
 import (
+	"encoding/json"
 	"fmt"
 	cdn20180510 "github.com/alibabacloud-go/cdn-20180510/v4/client"
 	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
@@ -8,11 +9,13 @@ import (
 	"github.com/alibabacloud-go/tea/tea"
 	"github.com/trumanwong/go-tools/crawler"
 	"github.com/trumanwong/go-tools/helper"
+	"github.com/trumanwong/go-tools/trans"
 	"log"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 )
@@ -169,10 +172,123 @@ func TestCdnClient_AnalyzeCdnAccessLog(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	err = client.AnalyzeCdnAccessLog(os.Getenv("LogPath"), func(accessLog *CdnAccessLog) error {
+	err = client.AnalyzeCdnAccessLog(os.Getenv("LogPath"), func(accessLog interface{}) error {
 		return nil
 	})
 	if err != nil {
 		t.Error(err)
 	}
+}
+
+func TestCdnClient_DescribeDomainTopClientIpVisitWithOptions(t *testing.T) {
+	client, err := NewCdnClient(&openapi.Config{
+		AccessKeyId:     tea.String(os.Getenv("AccessKeyId")),
+		AccessKeySecret: tea.String(os.Getenv("AccessKeySecret")),
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	intervalTime := helper.GetIntervalTime(&helper.GetIntervalTimeRequest{
+		Time: time.Now(),
+		Type: helper.Day,
+		Num:  0,
+	})
+
+	resp, err := client.DescribeDomainTopClientIpVisitWithOptions(&cdn20180510.DescribeDomainTopClientIpVisitRequest{
+		DomainName: tea.String(os.Getenv("DomainName")),
+		StartTime:  trans.String(intervalTime.StartAt.UTC().Format("2006-01-02T15:04:05Z")),
+		EndTime:    trans.String(intervalTime.EndAt.UTC().Format("2006-01-02T15:04:05Z")),
+		SortBy:     tea.String("acc"),
+	}, &util.RuntimeOptions{})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	for _, v := range resp.Body.ClientIpList {
+		log.Println(*v.ClientIp, *v.Acc, *v.Traffic, *v.Rank)
+	}
+}
+
+func TestCdnClient_DescribeCdnDomainConfigsWithOptions(t *testing.T) {
+	client, err := NewCdnClient(&openapi.Config{
+		AccessKeyId:     tea.String(os.Getenv("AccessKeyId")),
+		AccessKeySecret: tea.String(os.Getenv("AccessKeySecret")),
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	// https://help.aliyun.com/zh/cdn/developer-reference/parameters-for-configuring-features-for-domain-names?spm=api-workbench.api_explorer.0.0.1bfa5307hgHDmJ#section-g65-mfm-jvd
+	resp, err := client.DescribeCdnDomainConfigsWithOptions(&cdn20180510.DescribeCdnDomainConfigsRequest{
+		DomainName:    tea.String(os.Getenv("DomainName")),
+		FunctionNames: tea.String("ip_black_list_set"),
+	}, &util.RuntimeOptions{})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	for _, v := range resp.Body.DomainConfigs.DomainConfig {
+		for _, arg := range v.FunctionArgs.FunctionArg {
+			log.Println(*arg.ArgName, *arg.ArgValue)
+		}
+	}
+}
+
+func TestCdnClient_BatchSetCdnDomainConfig(t *testing.T) {
+	client, err := NewCdnClient(&openapi.Config{
+		AccessKeyId:     tea.String(os.Getenv("AccessKeyId")),
+		AccessKeySecret: tea.String(os.Getenv("AccessKeySecret")),
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	describeResp, err := client.DescribeCdnDomainConfigsWithOptions(&cdn20180510.DescribeCdnDomainConfigsRequest{
+		DomainName:    tea.String(os.Getenv("DomainName")),
+		FunctionNames: tea.String("ip_black_list_set"),
+	}, &util.RuntimeOptions{})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	var blockIps []string
+	for _, v := range describeResp.Body.DomainConfigs.DomainConfig {
+		for _, arg := range v.FunctionArgs.FunctionArg {
+			if *arg.ArgName == "ip_list" {
+				blockIps = strings.Split(*arg.ArgValue, ",")
+			}
+		}
+	}
+
+	//blockIps = append(blockIps, os.Getenv("BlockIp"))
+	functions, _ := json.Marshal([]CdnConfigFunctions{
+		{
+			FunctionName: "ip_black_list_set",
+			FunctionArgs: []CdnConfigFunctionArg{
+				{
+					ArgName:  "ip_list",
+					ArgValue: strings.Join(blockIps, ","),
+				},
+				{
+					ArgName:  "ip_acl_xfwd",
+					ArgValue: "all",
+				},
+			},
+		},
+	})
+
+	resp, err := client.BatchSetCdnDomainConfig(&cdn20180510.BatchSetCdnDomainConfigRequest{
+		DomainNames: tea.String(os.Getenv("DomainName")),
+		Functions:   tea.String(string(functions)),
+	}, &util.RuntimeOptions{})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	log.Println(resp.Body.DomainConfigList)
 }
