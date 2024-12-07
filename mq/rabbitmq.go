@@ -238,7 +238,7 @@ func (rabbitMQ *RabbitMQ) Push(data []byte) error {
 		select {
 		case confirm := <-rabbitMQ.notifyConfirm:
 			if confirm.Ack {
-				rabbitMQ.logger.Println("Push confirmed!")
+				//rabbitMQ.logger.Println("Push confirmed!")
 				return nil
 			}
 		case <-time.After(resendDelay):
@@ -283,7 +283,7 @@ func (rabbitMQ *RabbitMQ) PushV2(msg amqp.Publishing) error {
 		select {
 		case confirm := <-rabbitMQ.notifyConfirm:
 			if confirm.Ack {
-				rabbitMQ.logger.Println("Push confirmed!")
+				//rabbitMQ.logger.Println("Push confirmed!")
 				return nil
 			}
 		case <-time.After(resendDelay):
