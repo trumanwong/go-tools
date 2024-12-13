@@ -26,6 +26,13 @@ func NewCache(options *redis.Options, prefix string) (*Cache, error) {
 	}, nil
 }
 
+func NewCacheByFailover(options *redis.FailoverOptions, prefix string) (*Cache, error) {
+	return &Cache{
+		prefix: prefix,
+		client: redis.NewFailoverClient(options),
+	}, nil
+}
+
 // prefixKey is a method of Cache that prepends the cache's prefix to a key.
 // If a custom prefix is provided, it is used instead of the cache's prefix.
 func (c *Cache) prefixKey(key string, prefix *string) string {
