@@ -247,6 +247,8 @@ func TestGenTypeEUrl(t *testing.T) {
 func TestCdnClient_ListCertInfo(t *testing.T) {
 	cdnClient := NewCdnClient(os.Getenv("VOLC_ACCESS_KEY"), os.Getenv("VOLC_SECRET_KEY"))
 	resp, err := cdnClient.ListCertInfo(&cdn.ListCertInfoRequest{
+		// volc_cert_center：表示火山引擎证书中心。
+		// cdn_cert_hosting：表示火山引擎内容分发网络（CDN）。
 		Source: "cdn_cert_hosting",
 		Name:   trans.String(os.Getenv("VOLC_DOMAIN")),
 	})
