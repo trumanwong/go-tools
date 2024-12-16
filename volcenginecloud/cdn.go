@@ -317,3 +317,13 @@ func GenTypeEUrl(link, key, signName, tsName string, timestamp int64, base int) 
 	parseUrl.RawQuery = fmt.Sprintf("%s&%s", parseUrl.RawQuery, authArg)
 	return parseUrl.String(), nil
 }
+
+// ListCdnCertInfo 获取已与加速域名关联的证书列表
+func (c CdnClient) ListCdnCertInfo(req *cdn.ListCdnCertInfoRequest) (responseBody *cdn.ListCdnCertInfoResponse, err error) {
+	return c.instance.ListCdnCertInfo(req)
+}
+
+// ListCertInfo 获取证书列表
+func (c CdnClient) ListCertInfo(req *cdn.ListCertInfoRequest) (responseBody *cdn.ListCertInfoResponse, err error) {
+	return c.instance.ListCertInfo(req)
+}

@@ -162,8 +162,8 @@ func TestCdnClient_DescribeCdnAccessLog(t *testing.T) {
 
 func TestCdnClient_AnalyzeCdnAccessLog(t *testing.T) {
 	cdnClient := NewCdnClient(os.Getenv("VOLC_ACCESS_KEY"), os.Getenv("VOLC_SECRET_KEY"))
-	err := cdnClient.AnalyzeCdnAccessLog("temp", func(accessLog *CdnAccessLog) error {
-		log.Println(accessLog.RespSize)
+	err := cdnClient.AnalyzeCdnAccessLog("temp", func(accessLog interface{}) error {
+		log.Println(accessLog)
 		return nil
 	})
 	if err != nil {
@@ -242,4 +242,18 @@ func TestGenTypeEUrl(t *testing.T) {
 		return
 	}
 	t.Log(link)
+}
+
+func TestCdnClient_ListCertInfo(t *testing.T) {
+	cdnClient := NewCdnClient(os.Getenv("VOLC_ACCESS_KEY"), os.Getenv("VOLC_SECRET_KEY"))
+	resp, err := cdnClient.ListCertInfo(&cdn.ListCertInfoRequest{
+		Source: "cdn_cert_hosting",
+		Name:   trans.String(os.Getenv("VOLC_DOMAIN")),
+	})
+	if err != nil {
+		t.Error(err)
+	}
+	for _, v := range resp.Result.CertInfo {
+		t.Log(v.CertId, v.ExpireTime)
+	}
 }
