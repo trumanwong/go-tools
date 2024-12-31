@@ -138,10 +138,6 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 				if link == "" {
 					return nil, fmt.Errorf("%s参数值不能为空", param)
 				}
-				u, err := url.Parse(link)
-				if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
-					return nil, fmt.Errorf("%s参数值必须是一个有效的URL", param)
-				}
 			}
 			parameters[param] = val
 		case "cref":
