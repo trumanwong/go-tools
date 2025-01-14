@@ -541,3 +541,15 @@ func Ternary(condition bool, trueVal, falseVal interface{}) interface{} {
 	}
 	return falseVal
 }
+
+// CreateDir is a function that creates a directory at the specified file path.
+func CreateDir(filePath string) error {
+	dirPath := filepath.Dir(filePath)
+	if !PathExists(dirPath) {
+		err := os.MkdirAll(dirPath, os.ModePerm)
+		if err != nil {
+			return errors.New("failed to create directory: " + err.Error())
+		}
+	}
+	return nil
+}
