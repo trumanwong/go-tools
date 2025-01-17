@@ -193,3 +193,11 @@ type CdnConfigFunctionArg struct {
 func (c CdnClient) BatchSetCdnDomainConfig(req *cdn20180510.BatchSetCdnDomainConfigRequest, runtime *util.RuntimeOptions) (*cdn20180510.BatchSetCdnDomainConfigResponse, error) {
 	return c.client.BatchSetCdnDomainConfigWithOptions(req, runtime)
 }
+
+func (c CdnClient) StopCdnDomainWithOptions(req *cdn20180510.StopCdnDomainRequest, runtime *util.RuntimeOptions) (*cdn20180510.StopCdnDomainResponse, error) {
+	return c.client.StopCdnDomainWithOptions(req, runtime)
+}
+
+func (c CdnClient) StartCdnDomainWithOptions(req *cdn20180510.StartCdnDomainRequest, runtime *util.RuntimeOptions) (*cdn20180510.StartCdnDomainResponse, error) {
+	return c.client.StartCdnDomainWithOptions(req, runtime)
+}
