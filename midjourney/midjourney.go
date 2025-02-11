@@ -63,13 +63,13 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 		val := strings.TrimSpace(strings.Join(paramValue[1:], " "))
 		switch param {
 		case "aspect", "ar":
-			parameters["aspect"] = val
+			parameters["ar"] = val
 		case "chaos", "c":
 			temp, err := strconv.ParseInt(val, 10, 64)
 			if err != nil || temp < 0 || temp > 100 {
 				return nil, errors.New("chaos参数值范围必须在0~100之间")
 			}
-			parameters["chaos"] = val
+			parameters["c"] = val
 		case "iw":
 			temp, err := strconv.ParseFloat(val, 64)
 			if err != nil || temp < 0 || temp > 2 {
@@ -81,13 +81,13 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 			if err != nil || temp < 0 || temp > 2 {
 				return nil, errors.New("quality值范围必须在0~2之间")
 			}
-			parameters["quality"] = val
+			parameters["q"] = val
 		case "repeat", "r":
 			temp, err := strconv.ParseInt(val, 10, 64)
 			if err != nil || temp < 1 || temp > 40 {
 				return nil, fmt.Errorf("%s参数值范围必须在0~40之间", param)
 			}
-			parameters["repeat"] = val
+			parameters["r"] = val
 		case "seed":
 			temp, err := strconv.ParseInt(val, 10, 64)
 			if err != nil || temp < 0 || temp > 4294967295 {
@@ -105,13 +105,13 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 			if err != nil || temp < 0 || temp > 1000 {
 				return nil, fmt.Errorf("%s参数值范围必须在0~1000之间", param)
 			}
-			parameters["stylize"] = val
+			parameters["s"] = val
 		case "weird", "w":
 			temp, err := strconv.ParseInt(val, 10, 64)
 			if err != nil || temp < 0 || temp > 3000 {
 				return nil, fmt.Errorf("%s参数值范围必须在0~3000之间", param)
 			}
-			parameters["weird"] = val
+			parameters["w"] = val
 		case "niji":
 			if val != "4" && val != "5" && val != "6" {
 				return nil, errors.New("niji参数值范围必须是4、5或6")
@@ -125,7 +125,7 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 				return nil, fmt.Errorf("%s参数值必须是4, 5, 5.1, 5.2，6，6.1", param)
 			}
 
-			parameters["version"] = val
+			parameters["v"] = val
 		case "cw":
 			temp, err := strconv.ParseInt(val, 10, 64)
 			if err != nil || temp < 0 || temp > 100 {
