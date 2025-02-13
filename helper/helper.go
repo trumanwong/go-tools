@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"bytes"
 	"crypto/sha1"
 	"crypto/tls"
 	"encoding/binary"
