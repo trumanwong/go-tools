@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -31,7 +30,7 @@ func GetAccessToken(appId, secret, code string) (*string, *string, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	b, err := ioutil.ReadAll(resp.Body)
+	b, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, nil, err
 	}
