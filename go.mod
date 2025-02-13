@@ -1,6 +1,6 @@
 module github.com/trumanwong/go-tools
 
-go 1.23
+go 1.24
 
 require (
 	github.com/alibabacloud-go/alidns-20150109/v4 v4.5.8
