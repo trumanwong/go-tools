@@ -3,6 +3,7 @@ package helper
 import (
 	"crypto/sha1"
 	"crypto/tls"
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf16"
 )
 
 // CheckIdCard is a function that checks if a given string is a valid Chinese ID card number.
@@ -552,4 +554,36 @@ func CreateDir(filePath string) error {
 		}
 	}
 	return nil
+}
+
+// ReadUTF16File reads a UTF-16 encoded file and returns its content as a string.
+func ReadUTF16File(filename string) (string, error) {
+	content, err := os.ReadFile(filename)
+	if err != nil {
+		return "", err
+	}
+
+	var order binary.ByteOrder = binary.LittleEndian // Default to little-endian
+	if len(content) >= 2 {
+		if content[0] == 0xFE && content[1] == 0xFF {
+			order = binary.BigEndian
+			content = content[2:] // Skip BOM
+		} else if content[0] == 0xFF && content[1] == 0xFE {
+			content = content[2:] // Skip BOM
+		}
+	}
+
+	var u16s []uint16
+	reader := bytes.NewReader(content)
+	for {
+		var u16 uint16
+		err = binary.Read(reader, order, &u16)
+		if err != nil {
+			break
+		}
+		u16s = append(u16s, u16)
+	}
+
+	runes := utf16.Decode(u16s)
+	return string(runes), nil
 }
