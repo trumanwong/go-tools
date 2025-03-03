@@ -4,6 +4,7 @@ import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/live"
 	"os"
 	"testing"
+	"time"
 )
 
 func TestNewLiveClient(t *testing.T) {
@@ -30,6 +31,9 @@ func TestNewLiveClient(t *testing.T) {
 
 		for _, v := range describeLiveDomainCertificateInfoResp.CertInfos.CertInfo {
 			t.Logf("[%s] cert status: %s, expire: %v", domain.DomainName, v.SSLProtocol, v.CertExpireTime)
+			if v.SSLProtocol == "on" {
+				t.Log(time.Now().AddDate(0, 0, 30).Format(time.RFC3339) > v.CertExpireTime)
+			}
 		}
 	}
 }
