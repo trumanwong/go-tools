@@ -2,7 +2,6 @@ package alipay
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/go-pay/gopay"
 	"github.com/go-pay/gopay/alipay"
@@ -60,11 +59,11 @@ func (p Pay) Refund(ctx context.Context, outTradeNo, refundAmount, refundReason 
 		Set("refund_reason", refundReason)
 	resp, err := p.client.TradeRefund(ctx, bm)
 	if err != nil {
-		return errors.New(fmt.Sprintf("支付宝退款失败：%s", err))
+		return fmt.Errorf("支付宝退款失败：%s", err)
 	}
 	if resp.Response.Code != "10000" {
-		return errors.New(fmt.Sprintf("支付宝退款失败, msg: %s, code: %s, subMsg: %s, subCode: %s",
-			resp.Response.Msg, resp.Response.Code, resp.Response.SubMsg, resp.Response.SubCode))
+		return fmt.Errorf("支付宝退款失败, msg: %s, code: %s, subMsg: %s, subCode: %s",
+			resp.Response.Msg, resp.Response.Code, resp.Response.SubMsg, resp.Response.SubCode)
 	}
 	return nil
 }

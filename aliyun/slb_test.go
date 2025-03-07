@@ -38,7 +38,7 @@ func TestNewSLBClient(t *testing.T) {
 				t.Fatal(err)
 			}
 			for _, certificate := range caCertificates.Body.ServerCertificates.ServerCertificate {
-				fmt.Println(*certificate.ExpireTime, *certificate.ExpireTimeStamp)
+				fmt.Println(*certificate.CommonName, *certificate.ExpireTime, *certificate.ExpireTimeStamp)
 			}
 		}
 	}

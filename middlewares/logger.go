@@ -7,15 +7,15 @@ import (
 	"time"
 )
 
-type Logger struct {
+type logger struct {
 	Logger *log.Logger
 }
 
-func NewLogger(logger *log.Logger) *Logger {
-	return &Logger{Logger: logger}
+func NewLogger(l *log.Logger) Middleware {
+	return &logger{Logger: l}
 }
 
-func (l *Logger) Handle() gin.HandlerFunc {
+func (l *logger) Handle() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		startTime := time.Now()
 		ctx.Next()

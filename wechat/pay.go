@@ -139,13 +139,13 @@ func (p WeChatPay) Refund(ctx context.Context, title, tradeNo, refundNo, reason 
 		},
 	)
 	if err != nil {
-		return errors.New(fmt.Sprintf("微信退款失败: %s", err))
+		return fmt.Errorf("微信退款失败: %s", err)
 	}
 	if resp.Status == nil {
-		return errors.New("微信退款状态异常")
+		return errors.New("微信退款状态异常: nil")
 	}
 	if *resp.Status != refunddomestic.STATUS_SUCCESS && *resp.Status != refunddomestic.STATUS_PROCESSING {
-		return errors.New(fmt.Sprintf("微信退款状态异常: %s", *resp.Status))
+		return fmt.Errorf("微信退款状态异常: %s", *resp.Status)
 	}
 	return nil
 }
@@ -165,7 +165,7 @@ func (p WeChatPay) QueryRefund(ctx context.Context, refundNo string) (*time.Time
 		return nil, errors.New("查询退款状态失败")
 	}
 	if *resp.Status != refunddomestic.STATUS_SUCCESS {
-		return nil, errors.New(fmt.Sprintf("查询退款状态失败，状态为%s", *resp.Status))
+		return nil, fmt.Errorf("查询退款状态失败，状态为%s", *resp.Status)
 	}
 	return resp.SuccessTime, nil
 }
