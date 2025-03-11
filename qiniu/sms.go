@@ -49,7 +49,7 @@ func (c SmsClient) SendMessage(signatureId, templateId string, mobiles []string,
 	}
 	var response sms.MessagesResponse
 	if resp.StatusCode/100 == 2 || resp.StatusCode/100 == 3 {
-		if resp != nil && resp.ContentLength > 0 {
+		if resp.ContentLength > 0 {
 			b, err := io.ReadAll(resp.Body)
 			if err != nil {
 				return nil, err
