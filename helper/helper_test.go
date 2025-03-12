@@ -65,3 +65,50 @@ func TestTernary(t *testing.T) {
 		t.Fatal("Ternary error")
 	}
 }
+
+func TestExpandIPv6(t *testing.T) {
+	ips := []string{
+		"2001:250:3422:7708:2021::b8",
+		"::0001",
+		"2001:0410::FB00:1400:5000:45FF",
+	}
+	expectedIp := []string{
+		"2001:0250:3422:7708:2021:0000:0000:00b8",
+		"0000:0000:0000:0000:0000:0000:0000:0001",
+		"2001:0410:0000:0000:fb00:1400:5000:45ff",
+	}
+	for i, ip := range ips {
+		expanded, err := ExpandIPv6(ip)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		if expectedIp[i] != expanded {
+			t.Errorf("expanded is %s, expected: %s", expanded, expectedIp[i])
+		}
+	}
+}
+
+func TestShortenIPv6(t *testing.T) {
+	ips := []string{
+		"2001:0250:3422:7708:2021:0000:0000:00b8",
+		"0000:0000:0000:0000:0000:0000:0000:0001",
+		"2001:0410:0000:0000:fb00:1400:5000:45ff",
+	}
+	expectedIp := []string{
+		"2001:250:3422:7708:2021::b8",
+		"::1",
+		"2001:410::fb00:1400:5000:45ff",
+	}
+
+	for i, ip := range ips {
+		shorten, err := ShortenIPv6(ip)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		if expectedIp[i] != shorten {
+			t.Errorf("shorten is %s, expected: %s", shorten, expectedIp[i])
+		}
+	}
+}

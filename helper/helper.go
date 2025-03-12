@@ -598,3 +598,79 @@ func IsASCII(s string) bool {
 	}
 	return true
 }
+
+// ExpandIPv6 expands an abbreviated IPv6 address to its full form.
+func ExpandIPv6(ip string) (string, error) {
+	parsed := net.ParseIP(ip)
+	if parsed == nil {
+		return "", fmt.Errorf("invalid IPv6 address")
+	}
+	bytes := parsed.To16()
+	if bytes == nil {
+		return "", fmt.Errorf("not an IPv6 address")
+	}
+
+	parts := make([]string, 8)
+	for i := 0; i < 16; i += 2 {
+		val := (uint16(bytes[i]) << 8) | uint16(bytes[i+1])
+		parts[i/2] = fmt.Sprintf("%04x", val)
+	}
+	return strings.Join(parts, ":"), nil
+}
+
+// ShortenIPv6 shortens a full IPv6 address to its abbreviated form.
+func ShortenIPv6(addr string) (string, error) {
+	ip := net.ParseIP(addr)
+	if ip == nil {
+		return "", fmt.Errorf("invalid IPv6 address")
+	}
+	ip = ip.To16()
+	if ip == nil {
+		return "", fmt.Errorf("not an IPv6 address")
+	}
+	// Convert to 8 segments.
+	parts := make([]string, 8)
+	for i := 0; i < 16; i += 2 {
+		v := binary.BigEndian.Uint16(ip[i : i+2])
+		parts[i/2] = fmt.Sprintf("%x", v)
+	}
+	// Trim leading zeros in each group.
+	for i, p := range parts {
+		parts[i] = strings.TrimLeft(p, "0")
+		if parts[i] == "" {
+			parts[i] = "0"
+		}
+	}
+	// Find longest sequence of "0".
+	longestStart, longestLen := -1, 0
+	for i := 0; i < 8; {
+		if parts[i] == "0" {
+			j := i
+			for j < 8 && parts[j] == "0" {
+				j++
+			}
+			if length := j - i; length > longestLen {
+				longestStart, longestLen = i, length
+			}
+			i = j
+		} else {
+			i++
+		}
+	}
+	// Replace longest zero run with "::".
+	if longestLen > 1 {
+		left := strings.Join(parts[:longestStart], ":")
+		right := strings.Join(parts[longestStart+longestLen:], ":")
+		switch {
+		case left == "" && right == "":
+			return "::", nil
+		case left == "":
+			return "::" + right, nil
+		case right == "":
+			return left + "::", nil
+		default:
+			return left + "::" + right, nil
+		}
+	}
+	return strings.Join(parts, ":"), nil
+}
