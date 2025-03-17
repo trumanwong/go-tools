@@ -5,16 +5,16 @@ go 1.24
 require (
 	github.com/alibabacloud-go/alidns-20150109/v4 v4.5.8
 	github.com/alibabacloud-go/cdn-20180510/v4 v4.3.0
-	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.2
+	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.4
 	github.com/alibabacloud-go/dcdn-20180115/v3 v3.5.0
 	github.com/alibabacloud-go/docmind-api-20220711 v1.4.4
-	github.com/alibabacloud-go/green-20220302/v2 v2.20.0
+	github.com/alibabacloud-go/green-20220302/v2 v2.20.2
 	github.com/alibabacloud-go/imageseg-20191230/v3 v3.0.1
 	github.com/alibabacloud-go/slb-20140515/v4 v4.0.10
 	github.com/alibabacloud-go/sts-20150401/v2 v2.0.2
-	github.com/alibabacloud-go/tea v1.3.2
+	github.com/alibabacloud-go/tea v1.3.4
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.7
-	github.com/aliyun/alibaba-cloud-sdk-go v1.63.93
+	github.com/aliyun/alibaba-cloud-sdk-go v1.63.98
 	github.com/aliyun/aliyun-oss-go-sdk v3.0.2+incompatible
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-pay/gopay v1.5.109
@@ -28,7 +28,7 @@ require (
 	github.com/sashabaranov/go-openai v1.38.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.10.0
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1118
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1123
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/faceid v1.0.1115
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1115
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.1115
@@ -86,7 +86,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
-	github.com/prometheus/common v0.62.0 // indirect
+	github.com/prometheus/common v0.63.0 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/tjfoc/gmsm v1.4.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
