@@ -5,16 +5,16 @@ go 1.24
 require (
 	github.com/alibabacloud-go/alidns-20150109/v4 v4.5.8
 	github.com/alibabacloud-go/cdn-20180510/v4 v4.3.0
-	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.4
+	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.6
 	github.com/alibabacloud-go/dcdn-20180115/v3 v3.5.0
 	github.com/alibabacloud-go/docmind-api-20220711 v1.4.5
 	github.com/alibabacloud-go/green-20220302/v2 v2.20.4
 	github.com/alibabacloud-go/imageseg-20191230/v3 v3.0.1
 	github.com/alibabacloud-go/slb-20140515/v4 v4.0.10
 	github.com/alibabacloud-go/sts-20150401/v2 v2.0.2
-	github.com/alibabacloud-go/tea v1.3.4
+	github.com/alibabacloud-go/tea v1.3.7
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.7
-	github.com/aliyun/alibaba-cloud-sdk-go v1.63.100
+	github.com/aliyun/alibaba-cloud-sdk-go v1.63.103
 	github.com/aliyun/aliyun-oss-go-sdk v3.0.2+incompatible
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-pay/gopay v1.5.110
@@ -28,13 +28,13 @@ require (
 	github.com/sashabaranov/go-openai v1.38.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.10.0
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1129
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1134
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/faceid v1.0.1115
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1129
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1132
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.1115
 	github.com/trumanwong/cryptogo v1.0.5
-	github.com/volcengine/ve-tos-golang-sdk/v2 v2.7.9
-	github.com/volcengine/volc-sdk-golang v1.0.199
+	github.com/volcengine/ve-tos-golang-sdk/v2 v2.7.11
+	github.com/volcengine/volc-sdk-golang v1.0.202
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.20
 )
 
@@ -71,7 +71,7 @@ require (
 	github.com/go-pay/xtime v0.0.2 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.25.0 // indirect
+	github.com/go-playground/validator/v10 v10.26.0 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/gofrs/flock v0.12.1 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
@@ -93,12 +93,12 @@ require (
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	golang.org/x/arch v0.15.0 // indirect
 	golang.org/x/crypto v0.36.0 // indirect
-	golang.org/x/net v0.37.0 // indirect
+	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/sync v0.12.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
-	google.golang.org/protobuf v1.36.5 // indirect
+	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	modernc.org/fileutil v1.3.0 // indirect
