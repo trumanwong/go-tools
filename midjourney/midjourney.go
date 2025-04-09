@@ -82,12 +82,6 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 				return nil, errors.New("quality值范围必须在0~2之间")
 			}
 			parameters["q"] = val
-		case "repeat", "r":
-			temp, err := strconv.ParseInt(val, 10, 64)
-			if err != nil || temp < 1 || temp > 40 {
-				return nil, fmt.Errorf("%s参数值范围必须在0~40之间", param)
-			}
-			parameters["r"] = val
 		case "seed":
 			temp, err := strconv.ParseInt(val, 10, 64)
 			if err != nil || temp < 0 || temp > 4294967295 {
@@ -116,6 +110,10 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 			if val != "4" && val != "5" && val != "6" {
 				return nil, errors.New("niji参数值范围必须是4、5或6")
 			}
+			//清理模型V
+			if _, ok := parameters["v"]; ok {
+				delete(parameters, "v")
+			}
 			parameters["niji"] = val
 		case "version", "v":
 			temp, err := strconv.ParseFloat(val, 10)
@@ -124,7 +122,10 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 			if err != nil || (temp != 40 && temp != 50 && tempVal != 51 && tempVal != 52 && tempVal != 60 && tempVal != 61 && tempVal != 70) {
 				return nil, fmt.Errorf("%s参数值必须是4, 5, 5.1, 5.2, 6, 6.1, 7", param)
 			}
-
+			//清理模型niji
+			if _, ok := parameters["niji"]; ok {
+				delete(parameters, "niji")
+			}
 			parameters["v"] = val
 		case "cw":
 			temp, err := strconv.ParseInt(val, 10, 64)
@@ -153,8 +154,17 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 			parameters["p"] = val
 		case "no", "style":
 			parameters[param] = val
+		case "tile":
+			parameters[param] = ""
 		default:
-			if helper.InArray(param, []string{"tile", "relax", "fast", "turbo"}) {
+			//模式
+			typs := []string{"relax", "fast", "turbo", "draft"}
+			if helper.InArray(param, typs) {
+				for _, typ := range typs {
+					if _, ok := parameters[typ]; ok {
+						delete(parameters, typ)
+					}
+				}
 				parameters[param] = ""
 			}
 		}
