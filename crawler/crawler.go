@@ -11,6 +11,8 @@ type Request struct {
 	Url string
 	// 请求方法
 	Method string
+	// 指定Host
+	Host *string
 	// 请求头
 	Headers map[string]string
 	// 请求体
@@ -44,6 +46,10 @@ func Send(request *Request) (*http.Response, error) {
 		for k, v := range request.Headers {
 			req.Header.Set(k, v)
 		}
+	}
+	if request.Host != nil {
+		req.Host = *request.Host
+		req.Header.Set("Host", *request.Host)
 	}
 
 	return client.Do(req)
