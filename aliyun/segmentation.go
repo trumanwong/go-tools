@@ -69,3 +69,8 @@ func (s *SegmentationClient) SegmentBodyAdvance(req *imageseg20191230.SegmentBod
 	resp, err := s.client.SegmentBodyAdvance(req, runtime)
 	return resp, err
 }
+
+func (s *SegmentationClient) GetAsyncJobResultWithOptions(req *imageseg20191230.GetAsyncJobResultRequest, runtime *util.RuntimeOptions) (*imageseg20191230.GetAsyncJobResultResponse, error) {
+	resp, err := s.client.GetAsyncJobResultWithOptions(req, runtime)
+	return resp, err
+}
