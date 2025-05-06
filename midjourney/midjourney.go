@@ -156,6 +156,15 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 				return nil, fmt.Errorf("%s参数值必须是一个有效的URL", param)
 			}
 			parameters[param] = val
+		case "oref":
+			if val == "" {
+				return nil, fmt.Errorf("%s参数值不能为空", param)
+			}
+			u, err := url.Parse(val)
+			if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
+				return nil, fmt.Errorf("%s参数值必须是一个有效的URL", param)
+			}
+			parameters[param] = val
 		case "p", "personalize":
 			parameters["p"] = val
 		case "no", "style":
