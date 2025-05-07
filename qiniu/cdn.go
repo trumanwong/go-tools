@@ -5,9 +5,6 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"fmt"
-	"github.com/qiniu/go-sdk/v7/auth"
-	"github.com/qiniu/go-sdk/v7/auth/qbox"
-	"github.com/qiniu/go-sdk/v7/cdn"
 	"io"
 	"log"
 	"net/http"
@@ -16,6 +13,10 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/qiniu/go-sdk/v7/auth"
+	"github.com/qiniu/go-sdk/v7/auth/qbox"
+	"github.com/qiniu/go-sdk/v7/cdn"
 )
 
 type CdnClient struct {
@@ -480,13 +481,14 @@ func (c CdnClient) GetTopCountIp(req *GetTopCountIpRequest) (*GetTopCountIpRespo
 	}
 	defer resp.Body.Close()
 	b, err := io.ReadAll(resp.Body)
+	respHeader, _ := json.Marshal(resp.Header)
 	if err != nil {
-		return nil, fmt.Errorf("read response body failed: %s", err)
+		return nil, fmt.Errorf("read response body failed: %s, header: [%s]", err, respHeader)
 	}
 	var response GetTopCountIpResponse
 	err = json.Unmarshal(b, &response)
 	if err != nil {
-		return nil, fmt.Errorf("unmarshal response body [%s] failed: %s", b, err)
+		return nil, fmt.Errorf("unmarshal response body [%s] failed: %s, header: [%s]", b, err, respHeader)
 	}
 	return &response, nil
 }
