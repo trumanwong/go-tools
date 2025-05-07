@@ -78,8 +78,8 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 			parameters["iw"] = val
 		case "quality", "q":
 			temp, err := strconv.ParseFloat(val, 64)
-			if err != nil || temp < 0 || temp > 2 {
-				return nil, errors.New("quality值范围必须在0~2之间")
+			if err != nil || temp < 0 || temp > 4 {
+				return nil, errors.New("quality值范围必须在0~4之间")
 			}
 			parameters["q"] = val
 		case "seed":
@@ -133,6 +133,12 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 				return nil, fmt.Errorf("%s参数值范围必须在0~100之间", param)
 			}
 			parameters["cw"] = val
+		case "ow":
+			temp, err := strconv.ParseInt(val, 10, 64)
+			if err != nil || temp < 0 || temp > 1000 {
+				return nil, fmt.Errorf("%s参数值范围必须在0~1000之间", param)
+			}
+			parameters[param] = val
 		case "sref":
 			links := strings.Split(val, " ")
 			for _, link := range links {
@@ -150,12 +156,27 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 				return nil, fmt.Errorf("%s参数值必须是一个有效的URL", param)
 			}
 			parameters[param] = val
+		case "oref":
+			if val == "" {
+				return nil, fmt.Errorf("%s参数值不能为空", param)
+			}
+			u, err := url.Parse(val)
+			if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
+				return nil, fmt.Errorf("%s参数值必须是一个有效的URL", param)
+			}
+			parameters[param] = val
 		case "p", "personalize":
 			parameters["p"] = val
 		case "no", "style":
 			parameters[param] = val
 		case "tile":
 			parameters[param] = ""
+		case "exp":
+			temp, err := strconv.ParseInt(val, 10, 64)
+			if err != nil || temp < 0 || temp > 100 {
+				return nil, fmt.Errorf("%s参数值范围必须在0~100之间", param)
+			}
+			parameters[param] = val
 		default:
 			//模式
 			typs := []string{"relax", "fast", "turbo", "draft"}
