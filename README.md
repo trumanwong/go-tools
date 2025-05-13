@@ -21,5 +21,5 @@ http://godoc.org/github.com/trumanwong/go-tools
 This project is licensed under the terms of the MIT license.
 
 ## Acknowledgements
-JetBrains provided an open-source license for their GoLand IDE which was used in the development of this project.
+Special thanks to the Visual Studio Code team for providing an excellent development environment.
 
