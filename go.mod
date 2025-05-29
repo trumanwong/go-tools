@@ -24,12 +24,12 @@ require (
 	github.com/prometheus/client_golang v1.22.0
 	github.com/qiniu/go-sdk/v7 v7.25.3
 	github.com/rabbitmq/amqp091-go v1.10.0
-	github.com/redis/go-redis/v9 v9.8.0
+	github.com/redis/go-redis/v9 v9.9.0
 	github.com/sashabaranov/go-openai v1.40.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.10.0
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1172
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/faceid v1.0.1115
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1176
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/faceid v1.0.1174
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1164
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.1166
 	github.com/trumanwong/cryptogo v1.0.6
@@ -91,7 +91,7 @@ require (
 	github.com/prometheus/procfs v0.16.1 // indirect
 	github.com/tjfoc/gmsm v1.4.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
-	github.com/ugorji/go/codec v1.2.12 // indirect
+	github.com/ugorji/go/codec v1.2.14 // indirect
 	golang.org/x/arch v0.17.0 // indirect
 	golang.org/x/crypto v0.38.0 // indirect
 	golang.org/x/net v0.40.0 // indirect
