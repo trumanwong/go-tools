@@ -147,6 +147,14 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 				}
 			}
 			parameters[param] = val
+		case "sv":
+			parameters[param] = val
+		case "sw":
+			temp, err := strconv.ParseInt(val, 10, 64)
+			if err != nil || temp < 0 || temp > 1000 {
+				return nil, fmt.Errorf("%s参数值范围必须在0~1000之间", param)
+			}
+			parameters[param] = val
 		case "cref":
 			if val == "" {
 				return nil, fmt.Errorf("%s参数值不能为空", param)
