@@ -7,8 +7,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/trumanwong/go-tools/crawler"
 	"io"
 	"math"
 	"math/big"
@@ -23,6 +21,9 @@ import (
 	"strings"
 	"time"
 	"unicode/utf16"
+
+	"github.com/gin-gonic/gin"
+	"github.com/trumanwong/go-tools/crawler"
 )
 
 // CheckIdCard is a function that checks if a given string is a valid Chinese ID card number.
@@ -89,17 +90,17 @@ func CheckIdCard(idCardStr string) bool {
 // The function uses the gin package to send a JSON response with a given HTTP status code, message, and data.
 // The response is a JSON object with two properties: "message" and "data".
 // The "message" property is a string that represents the message to be sent to the client.
-// The "data" property is an interface{} that represents the data to be sent to the client.
+// The "data" property is an any that represents the data to be sent to the client.
 //
 // Parameters:
 // ctx: a pointer to a gin.Context that represents the context of the request.
-// data: an interface{} that represents the data to be sent to the client.
+// data: an any that represents the data to be sent to the client.
 // code: an int that represents the HTTP status code of the response.
 // message: a string that represents the message to be sent to the client.
 //
 // Returns:
 // The function does not return a value.
-func Response(ctx *gin.Context, data interface{}, code int, message string) {
+func Response(ctx *gin.Context, data any, code int, message string) {
 	ctx.JSON(code, gin.H{
 		"message": message,
 		"data":    data,
@@ -260,7 +261,7 @@ func DownloadFile(request *crawler.Request, savePath string, checkContentLength 
 //
 // Returns:
 // A boolean value indicating whether the needle is present in the haystack.
-func InArray(needle interface{}, haystack interface{}) bool {
+func InArray(needle any, haystack any) bool {
 	val := reflect.ValueOf(haystack)
 	switch val.Kind() {
 	case reflect.Slice, reflect.Array:
@@ -336,7 +337,7 @@ func GenerateShortUrl(shortLinkPrefix string, link string) (string, error) {
 	return strings.TrimLeft(shortLinkPrefix, "/") + "/" + shortUrl[:8], nil
 }
 
-func PaginateData(list interface{}, total int64, page, pageSize int) map[string]interface{} {
+func PaginateData(list any, total int64, page, pageSize int) map[string]any {
 	if page <= 0 {
 		page = 1
 	}
@@ -347,7 +348,7 @@ func PaginateData(list interface{}, total int64, page, pageSize int) map[string]
 	case pageSize <= 0:
 		pageSize = 10
 	}
-	res := map[string]interface{}{
+	res := map[string]any{
 		"list":  list,
 		"total": total,
 	}
@@ -538,7 +539,7 @@ func FormatEP(data float64) string {
 // Ternary is a function that implements the ternary operator in Go.
 // It takes a boolean condition and two values as input.
 // If the condition is true, it returns the first value; otherwise, it returns the second value.
-func Ternary(condition bool, trueVal, falseVal interface{}) interface{} {
+func Ternary(condition bool, trueVal, falseVal any) any {
 	if condition {
 		return trueVal
 	}

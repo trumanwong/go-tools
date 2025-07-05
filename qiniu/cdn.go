@@ -58,8 +58,8 @@ type GetDomainResponse struct {
 	CouldOperateBySelf     bool              `json:"couldOperateBySelf"`
 	UIDIsFreezed           bool              `json:"uidIsFreezed"`
 	OemMail                string            `json:"oemMail"`
-	TagList                interface{}       `json:"tagList"`
-	KvTagList              interface{}       `json:"kvTagList"`
+	TagList                any               `json:"tagList"`
+	KvTagList              any               `json:"kvTagList"`
 	IPTypes                int               `json:"ipTypes"`
 	DeliveryBucket         string            `json:"deliveryBucket"`
 	DeliveryBucketType     string            `json:"deliveryBucketType"`
@@ -74,9 +74,9 @@ type GetDomainResponse struct {
 	Referer                Referer           `json:"referer"`
 	TimeACL                TimeACL           `json:"timeACL"`
 	IPACL                  IPACL             `json:"ipACL"`
-	UaACL                  interface{}       `json:"uaACL"`
-	RequestHeaders         interface{}       `json:"requestHeaders"`
-	ResponseHeaderControls []interface{}     `json:"responseHeaderControls"`
+	UaACL                  any               `json:"uaACL"`
+	RequestHeaders         any               `json:"requestHeaders"`
+	ResponseHeaderControls []any             `json:"responseHeaderControls"`
 	HTTPS                  HTTPS             `json:"https"`
 	RegisterNo             string            `json:"registerNo"`
 	ConfigProcessRaTio     int               `json:"configProcessRa   tio"`
@@ -88,11 +88,11 @@ type GetDomainResponse struct {
 	OperTaskErrCode        int               `json:"operTaskErrCode"`
 }
 type DeliveryBucketFop struct {
-	Enable           bool        `json:"enable"`
-	SufyDeliveryHost string      `json:"sufyDeliveryHost"`
-	NewStyle         interface{} `json:"newStyle"`
-	DeleteStyleNames interface{} `json:"deleteStyleNames"`
-	NewSeparator     interface{} `json:"newSeparator"`
+	Enable           bool   `json:"enable"`
+	SufyDeliveryHost string `json:"sufyDeliveryHost"`
+	NewStyle         any    `json:"newStyle"`
+	DeleteStyleNames any    `json:"deleteStyleNames"`
+	NewSeparator     any    `json:"newSeparator"`
 }
 type Range struct {
 	Enable string `json:"enable"`
@@ -111,24 +111,24 @@ type Source struct {
 	SourceDomain                 string         `json:"sourceDomain"`
 	SourceQiniuBucket            string         `json:"sourceQiniuBucket"`
 	SourceURLScheme              string         `json:"sourceURLScheme"`
-	AdvancedSources              interface{}    `json:"advancedSources"`
+	AdvancedSources              any            `json:"advancedSources"`
 	SkipCheckSource              bool           `json:"skipCheckSource"`
-	TransferConf                 interface{}    `json:"transferConf"`
+	TransferConf                 any            `json:"transferConf"`
 	SourceTimeACL                bool           `json:"sourceTimeACL"`
-	SourceTimeACLKeys            interface{}    `json:"sourceTimeACLKeys"`
+	SourceTimeACLKeys            any            `json:"sourceTimeACLKeys"`
 	MaxSourceRate                int            `json:"maxSourceRate"`
 	MaxSourceConcurrency         int            `json:"maxSourceConcurrency"`
-	AddRespHeader                interface{}    `json:"addRespHeader"`
-	URLRewrites                  interface{}    `json:"urlRewrites"`
-	SourceRetryCodes             interface{}    `json:"sourceRetryCodes"`
+	AddRespHeader                any            `json:"addRespHeader"`
+	URLRewrites                  any            `json:"urlRewrites"`
+	SourceRetryCodes             any            `json:"sourceRetryCodes"`
 	FollowRedirect               bool           `json:"followRedirect"`
-	Redirect30X                  interface{}    `json:"redirect30x"`
-	SourceRequestHeaderControls  interface{}    `json:"sourceRequestHeaderControls"`
-	SourceResponseHeaderControls interface{}    `json:"sourceResponseHeaderControls"`
+	Redirect30X                  any            `json:"redirect30x"`
+	SourceRequestHeaderControls  any            `json:"sourceRequestHeaderControls"`
+	SourceResponseHeaderControls any            `json:"sourceResponseHeaderControls"`
 	MaxSourceRatePerIDC          int            `json:"maxSourceRatePerIDC"`
 	MaxSourceConcurrencyPerIDC   int            `json:"maxSourceConcurrencyPerIDC"`
 	TestURLPath                  string         `json:"testURLPath"`
-	SourceIgnoreParams           []interface{}  `json:"sourceIgnoreParams"`
+	SourceIgnoreParams           []any          `json:"sourceIgnoreParams"`
 	SourceIgnoreAllParams        bool           `json:"sourceIgnoreAllParams"`
 	Range                        Range          `json:"range"`
 	EnableSourceAuth             bool           `json:"enableSourceAuth"`
@@ -140,34 +140,34 @@ type UserAuthURLIPLimitConf struct {
 	TimeSlot int  `json:"timeSlot"`
 }
 type UserAuthReqConf struct {
-	Body                       interface{} `json:"body"`
-	Header                     interface{} `json:"header"`
-	Urlquery                   interface{} `json:"urlquery"`
-	IncludeClientHeadersInBody bool        `json:"includeClientHeadersInBody"`
+	Body                       any  `json:"body"`
+	Header                     any  `json:"header"`
+	Urlquery                   any  `json:"urlquery"`
+	IncludeClientHeadersInBody bool `json:"includeClientHeadersInBody"`
 }
 type UserAuthRespBodyConf struct {
-	Enable                 bool        `json:"enable"`
-	ContentType            string      `json:"contentType"`
-	SuccessConditions      interface{} `json:"successConditions"`
-	SuccessLogicalOperator string      `json:"successLogicalOperator"`
-	FailureConditions      interface{} `json:"failureConditions"`
-	FailureLogicalOperator string      `json:"failureLogicalOperator"`
+	Enable                 bool   `json:"enable"`
+	ContentType            string `json:"contentType"`
+	SuccessConditions      any    `json:"successConditions"`
+	SuccessLogicalOperator string `json:"successLogicalOperator"`
+	FailureConditions      any    `json:"failureConditions"`
+	FailureLogicalOperator string `json:"failureLogicalOperator"`
 }
 type UserBsauthResultCacheConf struct {
-	CacheEnable     bool        `json:"cacheEnable"`
-	CacheSingleType string      `json:"cacheSingleType"`
-	CacheKeyElems   interface{} `json:"cacheKeyElems"`
-	CacheShareHost  string      `json:"cacheShareHost"`
-	CacheDuration   int         `json:"cacheDuration"`
+	CacheEnable     bool   `json:"cacheEnable"`
+	CacheSingleType string `json:"cacheSingleType"`
+	CacheKeyElems   any    `json:"cacheKeyElems"`
+	CacheShareHost  string `json:"cacheShareHost"`
+	CacheDuration   int    `json:"cacheDuration"`
 }
 type UserAuthMatchRuleConf struct {
 	Type string `json:"type"`
 	Rule string `json:"rule"`
 }
 type Bsauth struct {
-	Path                           interface{}               `json:"path"`
+	Path                           any                       `json:"path"`
 	Method                         string                    `json:"method"`
-	Parameters                     interface{}               `json:"parameters"`
+	Parameters                     any                       `json:"parameters"`
 	TimeLimit                      int                       `json:"timeLimit"`
 	UserAuthURL                    string                    `json:"userAuthUrl"`
 	Strict                         bool                      `json:"strict"`
@@ -187,9 +187,9 @@ type Bsauth struct {
 	UserAuthMatchRuleConf          UserAuthMatchRuleConf     `json:"userAuthMatchRuleConf"`
 }
 type ImageSlim struct {
-	EnableImageSlim  bool          `json:"enableImageSlim"`
-	PrefixImageSlims []interface{} `json:"prefixImageSlims"`
-	RegexpImageSlims []interface{} `json:"regexpImageSlims"`
+	EnableImageSlim  bool  `json:"enableImageSlim"`
+	PrefixImageSlims []any `json:"prefixImageSlims"`
+	RegexpImageSlims []any `json:"regexpImageSlims"`
 }
 type External struct {
 	EnableFop bool      `json:"enableFop"`
@@ -204,13 +204,13 @@ type CacheControls struct {
 type Cache struct {
 	CacheControls []CacheControls `json:"cacheControls"`
 	IgnoreParam   bool            `json:"ignoreParam"`
-	IgnoreParams  []interface{}   `json:"ignoreParams"`
-	IncludeParams []interface{}   `json:"includeParams"`
+	IgnoreParams  []any           `json:"ignoreParams"`
+	IncludeParams []any           `json:"includeParams"`
 }
 type Referer struct {
-	RefererType   string        `json:"refererType"`
-	RefererValues []interface{} `json:"refererValues"`
-	NullReferer   bool          `json:"nullReferer"`
+	RefererType   string `json:"refererType"`
+	RefererValues []any  `json:"refererValues"`
+	NullReferer   bool   `json:"nullReferer"`
 }
 type Verification struct {
 	Name     string `json:"name"`
@@ -219,16 +219,16 @@ type Verification struct {
 }
 type TimeACL struct {
 	Enable                bool         `json:"enable"`
-	TimeACLKeys           interface{}  `json:"timeACLKeys"`
+	TimeACLKeys           any          `json:"timeACLKeys"`
 	AuthType              string       `json:"authType"`
 	AuthDelta             int          `json:"authDelta"`
-	SufyTimeACLKeys       interface{}  `json:"sufyTimeACLKeys"`
-	SufyCallbackBody      interface{}  `json:"sufyCallbackBody"`
+	SufyTimeACLKeys       any          `json:"sufyTimeACLKeys"`
+	SufyCallbackBody      any          `json:"sufyCallbackBody"`
 	CheckURL              string       `json:"checkUrl"`
 	AdvanceFunctionEnable bool         `json:"advanceFunctionEnable"`
 	RuleType              string       `json:"ruleType"`
-	Rules                 interface{}  `json:"rules"`
-	Params                interface{}  `json:"params"`
+	Rules                 any          `json:"rules"`
+	Params                any          `json:"params"`
 	ParamStr              string       `json:"paramStr"`
 	ToLowerCase           string       `json:"toLowerCase"`
 	URLEncode             string       `json:"urlEncode"`
@@ -559,7 +559,7 @@ type CdnAccessLog struct {
 	UserAgent string
 }
 
-func (c CdnClient) AnalyzeCdnAccessLog(logPath string, handler func(interface{}) error) error {
+func (c CdnClient) AnalyzeCdnAccessLog(logPath string, handler func(any) error) error {
 	fileInfoList, err := os.ReadDir(logPath)
 	if err != nil {
 		return err

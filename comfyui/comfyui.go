@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/trumanwong/go-tools/crawler"
 	"io"
 	"mime/multipart"
 	"net/http"
 	"time"
+
+	"github.com/trumanwong/go-tools/crawler"
 )
 
 type Server struct {
@@ -66,14 +67,14 @@ func (s Server) UploadImage(payload *bytes.Buffer, writer *multipart.Writer) (*U
 }
 
 type PromptResponse struct {
-	NodeErrors interface{} `json:"node_errors"`
-	Number     int         `json:"number"`
-	PromptID   string      `json:"prompt_id"`
+	NodeErrors any    `json:"node_errors"`
+	Number     int    `json:"number"`
+	PromptID   string `json:"prompt_id"`
 }
 
 // Prompt 加入队列
-func (s Server) Prompt(clientId string, prompt map[string]interface{}, extraData map[string]interface{}) (*PromptResponse, error) {
-	payload, err := json.Marshal(map[string]interface{}{
+func (s Server) Prompt(clientId string, prompt map[string]any, extraData map[string]any) (*PromptResponse, error) {
+	payload, err := json.Marshal(map[string]any{
 		"client_id": clientId,
 		"prompt":    prompt,
 		"extraData": extraData,
@@ -123,7 +124,7 @@ type ImageResult struct {
 // History 查询任务状态
 // promptId 任务id
 // keys 要取的结果（outputs）的key
-func (s Server) History(promptId string, timeout *time.Duration, keys ...string) ([]*ImageResult, map[string]interface{}, error) {
+func (s Server) History(promptId string, timeout *time.Duration, keys ...string) ([]*ImageResult, map[string]any, error) {
 	req := &crawler.Request{
 		Url:    s.host + fmt.Sprintf(historyApi, promptId),
 		Method: http.MethodGet,
@@ -135,7 +136,7 @@ func (s Server) History(promptId string, timeout *time.Duration, keys ...string)
 	if err != nil {
 		return nil, nil, err
 	}
-	m := make(map[string]interface{})
+	m := make(map[string]any)
 	err = json.NewDecoder(resp.Body).Decode(&m)
 	if err != nil {
 		return nil, nil, err
@@ -144,12 +145,12 @@ func (s Server) History(promptId string, timeout *time.Duration, keys ...string)
 		return nil, nil, fmt.Errorf("promptId: %s not found", promptId)
 	}
 	// 取出任务详情
-	task := m[promptId].(map[string]interface{})
-	var status map[string]interface{}
+	task := m[promptId].(map[string]any)
+	var status map[string]any
 	if _, ok := task["status"]; !ok {
 		return nil, nil, fmt.Errorf("status not found")
 	} else {
-		status = task["status"].(map[string]interface{})
+		status = task["status"].(map[string]any)
 		if !status["completed"].(bool) || status["status_str"] != "success" {
 			return nil, status, fmt.Errorf("status is not success")
 		}
@@ -157,13 +158,13 @@ func (s Server) History(promptId string, timeout *time.Duration, keys ...string)
 	if _, ok := task["outputs"]; !ok {
 		return nil, status, fmt.Errorf("outputs not found")
 	}
-	outputs := task["outputs"].(map[string]interface{})
+	outputs := task["outputs"].(map[string]any)
 	result := make([]*ImageResult, 0)
 	for _, key := range keys {
 		if _, ok := outputs[key]; !ok {
 			return nil, status, fmt.Errorf("key: %s not found", key)
 		}
-		keyImages := outputs[key].(map[string]interface{})
+		keyImages := outputs[key].(map[string]any)
 		images := make([]*Image, 0)
 		text := make([]string, 0)
 		var b []byte
@@ -214,7 +215,7 @@ func (s Server) QueueIsRunning(promptId string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	m := make(map[string]interface{})
+	m := make(map[string]any)
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return false, fmt.Errorf("read body error: %s", err.Error())
@@ -226,8 +227,8 @@ func (s Server) QueueIsRunning(promptId string) (bool, error) {
 	if _, ok := m["queue_running"]; !ok {
 		return false, fmt.Errorf("queue_running not found, body: %s", b)
 	}
-	for _, item := range m["queue_running"].([]interface{}) {
-		arr := item.([]interface{})
+	for _, item := range m["queue_running"].([]any) {
+		arr := item.([]any)
 		if arr[1].(string) == promptId {
 			return true, nil
 		}
@@ -236,7 +237,7 @@ func (s Server) QueueIsRunning(promptId string) (bool, error) {
 }
 
 func (s Server) Cancel(promptId ...string) error {
-	body, _ := json.Marshal(map[string]interface{}{
+	body, _ := json.Marshal(map[string]any{
 		"delete": promptId,
 	})
 	resp, err := crawler.Send(&crawler.Request{

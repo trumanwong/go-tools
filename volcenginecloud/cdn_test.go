@@ -2,14 +2,15 @@ package volcenginecloud
 
 import (
 	"fmt"
-	"github.com/trumanwong/go-tools/crawler"
-	"github.com/trumanwong/go-tools/helper"
-	"github.com/trumanwong/go-tools/trans"
-	"github.com/volcengine/volc-sdk-golang/service/cdn"
 	"log"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/trumanwong/go-tools/crawler"
+	"github.com/trumanwong/go-tools/helper"
+	"github.com/trumanwong/go-tools/trans"
+	"github.com/volcengine/volc-sdk-golang/service/cdn"
 )
 
 func TestCdnClient_ListDomains(t *testing.T) {
@@ -162,7 +163,7 @@ func TestCdnClient_DescribeCdnAccessLog(t *testing.T) {
 
 func TestCdnClient_AnalyzeCdnAccessLog(t *testing.T) {
 	cdnClient := NewCdnClient(os.Getenv("VOLC_ACCESS_KEY"), os.Getenv("VOLC_SECRET_KEY"))
-	err := cdnClient.AnalyzeCdnAccessLog("temp", func(accessLog interface{}) error {
+	err := cdnClient.AnalyzeCdnAccessLog("temp", func(accessLog any) error {
 		log.Println(accessLog)
 		return nil
 	})

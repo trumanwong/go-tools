@@ -51,13 +51,13 @@ type SentTextRequest struct {
 // If there is an error in creating the request or sending the request, the method logs the error.
 func (robot *WorkWechatRobot) SendText(req *SentTextRequest) {
 	// Create the message and the parameters for the request.
-	messages, params := make([]string, 0), make(map[string]interface{})
+	messages, params := make([]string, 0), make(map[string]any)
 	// Add the time, level, and content to the message.
 	messages = append(messages, fmt.Sprintf("- 时间：%s", time.Now().Format("2006-01-02 15:04:05")))
 	messages = append(messages, fmt.Sprintf("- Level：%s", req.Level))
 	messages = append(messages, fmt.Sprintf("- 信息：%s", req.Content))
 	// Create the text for the request.
-	text := make(map[string]interface{})
+	text := make(map[string]any)
 	text["content"] = strings.Join(messages, "\n")
 	// If IsAtAll is true, mention all users.
 	if req.IsAtAll {

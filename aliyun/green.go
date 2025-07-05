@@ -66,7 +66,7 @@ func (c GreenClient) ImageModeration(req *ImageModerationRequest) (info *ImageMo
 	runtime := &util.RuntimeOptions{}
 
 	// Build the image detection request.
-	m := map[string]interface{}{
+	m := map[string]any{
 		// The ID of the data to be checked.
 		"dataId": uuid.New(),
 	}
@@ -127,7 +127,7 @@ func (c GreenClient) ImageModerationAdvance(req *ImageModerationRequest) (list [
 	runtime := &util.RuntimeOptions{}
 
 	// Build the image detection request.
-	m := map[string]interface{}{
+	m := map[string]any{
 		// The ID of the data to be checked.
 		"dataId": uuid.New(),
 	}

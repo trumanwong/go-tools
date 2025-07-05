@@ -2,9 +2,10 @@ package log
 
 import (
 	"context"
-	"github.com/sirupsen/logrus"
 	"io"
 	"os"
+
+	"github.com/sirupsen/logrus"
 )
 
 // Logger is a struct that encapsulates the logging functionality.
@@ -101,7 +102,7 @@ func (logger *Logger) WithTraceId(ctx context.Context, traceId string) {
 // It takes a key and a value as arguments.
 // The method returns a new logrus Entry with the provided key and value as a field.
 // The Entry also includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) WithField(key string, value interface{}) *logrus.Entry {
+func (logger *Logger) WithField(key string, value any) *logrus.Entry {
 	return logger.withTraceKey().WithField(key, value)
 }
 
@@ -125,7 +126,7 @@ func (logger *Logger) WithError(err error) *logrus.Entry {
 // It takes a format string and a variadic number of arguments.
 // The method logs a debug message with the provided format and arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Debugf(format string, args ...interface{}) {
+func (logger *Logger) Debugf(format string, args ...any) {
 	logger.withTraceKey().Debugf(format, args...)
 }
 
@@ -133,7 +134,7 @@ func (logger *Logger) Debugf(format string, args ...interface{}) {
 // It takes a format string and a variadic number of arguments.
 // The method logs an info message with the provided format and arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Infof(format string, args ...interface{}) {
+func (logger *Logger) Infof(format string, args ...any) {
 	logger.withTraceKey().Infof(format, args...)
 }
 
@@ -141,7 +142,7 @@ func (logger *Logger) Infof(format string, args ...interface{}) {
 // It takes a format string and a variadic number of arguments.
 // The method logs a message with the provided format and arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Printf(format string, args ...interface{}) {
+func (logger *Logger) Printf(format string, args ...any) {
 	logger.withTraceKey().Printf(format, args...)
 }
 
@@ -149,7 +150,7 @@ func (logger *Logger) Printf(format string, args ...interface{}) {
 // It takes a format string and a variadic number of arguments.
 // The method logs a warning message with the provided format and arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Warnf(format string, args ...interface{}) {
+func (logger *Logger) Warnf(format string, args ...any) {
 	logger.withTraceKey().Warnf(format, args...)
 }
 
@@ -157,7 +158,7 @@ func (logger *Logger) Warnf(format string, args ...interface{}) {
 // It takes a format string and a variadic number of arguments.
 // The method logs a warning message with the provided format and arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Warningf(format string, args ...interface{}) {
+func (logger *Logger) Warningf(format string, args ...any) {
 	logger.withTraceKey().Warningf(format, args...)
 }
 
@@ -165,7 +166,7 @@ func (logger *Logger) Warningf(format string, args ...interface{}) {
 // It takes a format string and a variadic number of arguments.
 // The method logs an error message with the provided format and arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Errorf(format string, args ...interface{}) {
+func (logger *Logger) Errorf(format string, args ...any) {
 	logger.withTraceKey().Errorf(format, args...)
 }
 
@@ -174,7 +175,7 @@ func (logger *Logger) Errorf(format string, args ...interface{}) {
 // The method logs a fatal message with the provided format and arguments.
 // The message includes the logger's traceKey and traceId if they are available.
 // After logging the message, the method calls os.Exit(1) to terminate the program.
-func (logger *Logger) Fatalf(format string, args ...interface{}) {
+func (logger *Logger) Fatalf(format string, args ...any) {
 	logger.withTraceKey().Fatalf(format, args...)
 }
 
@@ -183,7 +184,7 @@ func (logger *Logger) Fatalf(format string, args ...interface{}) {
 // The method logs a panic message with the provided format and arguments.
 // The message includes the logger's traceKey and traceId if they are available.
 // After logging the message, the method calls panic() to stop the ordinary flow of a goroutine.
-func (logger *Logger) Panicf(format string, args ...interface{}) {
+func (logger *Logger) Panicf(format string, args ...any) {
 	logger.withTraceKey().Panicf(format, args...)
 }
 
@@ -191,7 +192,7 @@ func (logger *Logger) Panicf(format string, args ...interface{}) {
 // It takes a variadic number of arguments.
 // The method logs a debug message with the provided arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Debug(args ...interface{}) {
+func (logger *Logger) Debug(args ...any) {
 	logger.withTraceKey().Debug(args...)
 }
 
@@ -199,7 +200,7 @@ func (logger *Logger) Debug(args ...interface{}) {
 // It takes a variadic number of arguments.
 // The method logs an info message with the provided arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Info(args ...interface{}) {
+func (logger *Logger) Info(args ...any) {
 	logger.withTraceKey().Info(args...)
 }
 
@@ -207,7 +208,7 @@ func (logger *Logger) Info(args ...interface{}) {
 // It takes a variadic number of arguments.
 // The method logs a message with the provided arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Print(args ...interface{}) {
+func (logger *Logger) Print(args ...any) {
 	logger.withTraceKey().Print(args...)
 }
 
@@ -215,7 +216,7 @@ func (logger *Logger) Print(args ...interface{}) {
 // It takes a variadic number of arguments.
 // The method logs a warning message with the provided arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Warn(args ...interface{}) {
+func (logger *Logger) Warn(args ...any) {
 	logger.withTraceKey().Warn(args...)
 }
 
@@ -223,7 +224,7 @@ func (logger *Logger) Warn(args ...interface{}) {
 // It takes a variadic number of arguments.
 // The method logs a warning message with the provided arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Warning(args ...interface{}) {
+func (logger *Logger) Warning(args ...any) {
 	logger.withTraceKey().Warning(args...)
 }
 
@@ -231,7 +232,7 @@ func (logger *Logger) Warning(args ...interface{}) {
 // It takes a variadic number of arguments.
 // The method logs an error message with the provided arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Error(args ...interface{}) {
+func (logger *Logger) Error(args ...any) {
 	logger.withTraceKey().Error(args...)
 }
 
@@ -240,7 +241,7 @@ func (logger *Logger) Error(args ...interface{}) {
 // The method logs a fatal message with the provided arguments.
 // The message includes the logger's traceKey and traceId if they are available.
 // After logging the message, the method calls os.Exit(1) to terminate the program.
-func (logger *Logger) Fatal(args ...interface{}) {
+func (logger *Logger) Fatal(args ...any) {
 	logger.withTraceKey().Fatal(args...)
 }
 
@@ -249,7 +250,7 @@ func (logger *Logger) Fatal(args ...interface{}) {
 // The method logs a panic message with the provided arguments.
 // The message includes the logger's traceKey and traceId if they are available.
 // After logging the message, the method calls panic() to stop the ordinary flow of a goroutine.
-func (logger *Logger) Panic(args ...interface{}) {
+func (logger *Logger) Panic(args ...any) {
 	logger.withTraceKey().Panic(args...)
 }
 
@@ -257,7 +258,7 @@ func (logger *Logger) Panic(args ...interface{}) {
 // It takes a variadic number of arguments.
 // The method logs a debug message with the provided arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Debugln(args ...interface{}) {
+func (logger *Logger) Debugln(args ...any) {
 	logger.withTraceKey().Debugln(args...)
 }
 
@@ -265,7 +266,7 @@ func (logger *Logger) Debugln(args ...interface{}) {
 // It takes a variadic number of arguments.
 // The method logs an info message with the provided arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Infoln(args ...interface{}) {
+func (logger *Logger) Infoln(args ...any) {
 	logger.withTraceKey().Infoln(args...)
 }
 
@@ -273,7 +274,7 @@ func (logger *Logger) Infoln(args ...interface{}) {
 // It takes a variadic number of arguments.
 // The method logs a message with the provided arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Println(args ...interface{}) {
+func (logger *Logger) Println(args ...any) {
 	logger.withTraceKey().Println(args...)
 }
 
@@ -281,7 +282,7 @@ func (logger *Logger) Println(args ...interface{}) {
 // It takes a variadic number of arguments.
 // The method logs a warning message with the provided arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Warnln(args ...interface{}) {
+func (logger *Logger) Warnln(args ...any) {
 	logger.withTraceKey().Warnln(args...)
 }
 
@@ -289,7 +290,7 @@ func (logger *Logger) Warnln(args ...interface{}) {
 // It takes a variadic number of arguments.
 // The method logs a warning message with the provided arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Warningln(args ...interface{}) {
+func (logger *Logger) Warningln(args ...any) {
 	logger.withTraceKey().Warningln(args...)
 }
 
@@ -297,7 +298,7 @@ func (logger *Logger) Warningln(args ...interface{}) {
 // It takes a variadic number of arguments.
 // The method logs an error message with the provided arguments.
 // The message includes the logger's traceKey and traceId if they are available.
-func (logger *Logger) Errorln(args ...interface{}) {
+func (logger *Logger) Errorln(args ...any) {
 	logger.withTraceKey().Errorln(args...)
 }
 
@@ -306,7 +307,7 @@ func (logger *Logger) Errorln(args ...interface{}) {
 // The method logs a fatal message with the provided arguments.
 // The message includes the logger's traceKey and traceId if they are available.
 // After logging the message, the method calls os.Exit(1) to terminate the program.
-func (logger *Logger) Fatalln(args ...interface{}) {
+func (logger *Logger) Fatalln(args ...any) {
 	logger.withTraceKey().Fatalln(args...)
 }
 
@@ -315,6 +316,6 @@ func (logger *Logger) Fatalln(args ...interface{}) {
 // The method logs a panic message with the provided arguments.
 // The message includes the logger's traceKey and traceId if they are available.
 // After logging the message, the method calls panic() to stop the ordinary flow of a goroutine.
-func (logger *Logger) Panicln(args ...interface{}) {
+func (logger *Logger) Panicln(args ...any) {
 	logger.withTraceKey().Panicln(args...)
 }

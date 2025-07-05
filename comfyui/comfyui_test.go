@@ -3,13 +3,14 @@ package comfyui
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/google/uuid"
 	"io"
 	"log"
 	"mime/multipart"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/google/uuid"
 )
 
 func TestServer_UploadImage(t *testing.T) {
@@ -40,8 +41,8 @@ func TestServer_UploadImage(t *testing.T) {
 
 func TestServer_Prompt(t *testing.T) {
 	s := NewServer(os.Getenv("COMFY_HOST"))
-	prompt := make(map[string]interface{})
-	extraData := make(map[string]interface{})
+	prompt := make(map[string]any)
+	extraData := make(map[string]any)
 	if err := json.Unmarshal([]byte(os.Getenv("TEST_PROMPT")), &prompt); err != nil {
 		t.Fatal(err)
 	}

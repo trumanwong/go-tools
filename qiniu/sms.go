@@ -3,11 +3,12 @@ package qiniu
 import (
 	"bytes"
 	"encoding/json"
+	"io"
+	"net/http"
+
 	"github.com/qiniu/go-sdk/v7/auth"
 	"github.com/qiniu/go-sdk/v7/sms"
 	"github.com/qiniu/go-sdk/v7/sms/rpc"
-	"io"
-	"net/http"
 )
 
 type SmsClient struct {
@@ -23,7 +24,7 @@ func NewSmsClient(accessKey, secretKey string) *SmsClient {
 	}
 }
 
-func (c SmsClient) SendMessage(signatureId, templateId string, mobiles []string, parameters map[string]interface{}) (*string, error) {
+func (c SmsClient) SendMessage(signatureId, templateId string, mobiles []string, parameters map[string]any) (*string, error) {
 	request := sms.MessagesRequest{
 		SignatureID: signatureId,
 		TemplateID:  templateId,

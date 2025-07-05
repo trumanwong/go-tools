@@ -4,15 +4,16 @@ import (
 	"bufio"
 	"compress/gzip"
 	"fmt"
-	"github.com/google/uuid"
-	"github.com/trumanwong/cryptogo"
-	"github.com/volcengine/volc-sdk-golang/service/cdn"
 	"net/url"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/trumanwong/cryptogo"
+	"github.com/volcengine/volc-sdk-golang/service/cdn"
 )
 
 type CdnClient struct {
@@ -142,7 +143,7 @@ type CdnAccessLog struct {
 	ContentType string
 }
 
-func (c CdnClient) AnalyzeCdnAccessLog(logPath string, handler func(interface{}) error) error {
+func (c CdnClient) AnalyzeCdnAccessLog(logPath string, handler func(any) error) error {
 	fileInfoList, err := os.ReadDir(logPath)
 	if err != nil {
 		return err

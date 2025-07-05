@@ -3,13 +3,6 @@ package aliyun
 import (
 	"encoding/json"
 	"fmt"
-	cdn20180510 "github.com/alibabacloud-go/cdn-20180510/v4/client"
-	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
-	util "github.com/alibabacloud-go/tea-utils/v2/service"
-	"github.com/alibabacloud-go/tea/tea"
-	"github.com/trumanwong/go-tools/crawler"
-	"github.com/trumanwong/go-tools/helper"
-	"github.com/trumanwong/go-tools/trans"
 	"log"
 	"net/url"
 	"os"
@@ -18,6 +11,14 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	cdn20180510 "github.com/alibabacloud-go/cdn-20180510/v4/client"
+	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
+	util "github.com/alibabacloud-go/tea-utils/v2/service"
+	"github.com/alibabacloud-go/tea/tea"
+	"github.com/trumanwong/go-tools/crawler"
+	"github.com/trumanwong/go-tools/helper"
+	"github.com/trumanwong/go-tools/trans"
 )
 
 func TestCdnClient_DescribeUserDomainsWithOptions(t *testing.T) {
@@ -172,7 +173,7 @@ func TestCdnClient_AnalyzeCdnAccessLog(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	err = client.AnalyzeCdnAccessLog(os.Getenv("LogPath"), func(accessLog interface{}) error {
+	err = client.AnalyzeCdnAccessLog(os.Getenv("LogPath"), func(accessLog any) error {
 		return nil
 	})
 	if err != nil {

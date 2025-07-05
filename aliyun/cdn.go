@@ -4,13 +4,14 @@ import (
 	"bufio"
 	"compress/gzip"
 	"fmt"
-	cdn20180510 "github.com/alibabacloud-go/cdn-20180510/v4/client"
-	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
-	util "github.com/alibabacloud-go/tea-utils/v2/service"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
+
+	cdn20180510 "github.com/alibabacloud-go/cdn-20180510/v4/client"
+	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
+	util "github.com/alibabacloud-go/tea-utils/v2/service"
 )
 
 type CdnClient struct {
@@ -88,7 +89,7 @@ type CdnAccessLog struct {
 	IP string
 }
 
-func (c CdnClient) AnalyzeCdnAccessLog(logPath string, handler func(interface{}) error) error {
+func (c CdnClient) AnalyzeCdnAccessLog(logPath string, handler func(any) error) error {
 	fileInfoList, err := os.ReadDir(logPath)
 	if err != nil {
 		return err

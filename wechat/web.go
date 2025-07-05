@@ -34,7 +34,7 @@ func GetAccessToken(appId, secret, code string) (*string, *string, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	m := make(map[string]interface{})
+	m := make(map[string]any)
 	err = json.Unmarshal(b, &m)
 	if err != nil {
 		return nil, nil, err

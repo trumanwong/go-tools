@@ -126,7 +126,7 @@ func (c *Cache) Delete(ctx context.Context, request *DeleteRequest) (int64, erro
 // It contains the key of the list, the value to push, and an optional custom prefix.
 type LPushRequest struct {
 	Key    string
-	Value  []interface{}
+	Value  []any
 	Prefix *string
 }
 
@@ -332,7 +332,7 @@ func (c *Cache) ZCard(ctx context.Context, request *ZCardRequest) (int64, error)
 // It contains the key of the sorted set, the members to remove, and an optional custom prefix.
 type ZRemRequest struct {
 	Key     string
-	Members []interface{}
+	Members []any
 	Prefix  *string
 }
 
@@ -364,7 +364,7 @@ func (c *Cache) ZRank(ctx context.Context, request *ZRankRequest) (int64, error)
 // It contains the key of the set, the members to add, and an optional custom prefix.
 type SAddRequest struct {
 	Key    string
-	Value  []interface{}
+	Value  []any
 	Prefix *string
 }
 
@@ -395,7 +395,7 @@ func (c *Cache) SCard(ctx context.Context, request *SCardRequest) (int64, error)
 // It contains the key, the value to set, the expiration time in seconds, and an optional custom prefix.
 type SetNXRequest struct {
 	Key     string
-	Value   interface{}
+	Value   any
 	Seconds int64
 	Prefix  *string
 }
@@ -413,7 +413,7 @@ func (c *Cache) SetNX(ctx context.Context, request *SetNXRequest) (bool, error) 
 type LRemRequest struct {
 	Key    string
 	Count  int64
-	Value  interface{}
+	Value  any
 	Prefix *string
 }
 

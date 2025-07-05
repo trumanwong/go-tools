@@ -2,8 +2,6 @@ package qiniu
 
 import (
 	"fmt"
-	"github.com/trumanwong/go-tools/crawler"
-	"github.com/trumanwong/go-tools/helper"
 	"log"
 	"net/http"
 	"net/url"
@@ -11,6 +9,9 @@ import (
 	"path/filepath"
 	"testing"
 	"time"
+
+	"github.com/trumanwong/go-tools/crawler"
+	"github.com/trumanwong/go-tools/helper"
 )
 
 func TestCdnClient_GetDomains(t *testing.T) {
@@ -159,7 +160,7 @@ func TestCdnClient_GetCdnLogList(t *testing.T) {
 
 func TestCdnClient_AnalyzeCdnAccessLog(t *testing.T) {
 	cdnClient := NewCdnClient(os.Getenv("QINIU_ACCESS_KEY"), os.Getenv("QINIU_SECRET_KEY"))
-	err := cdnClient.AnalyzeCdnAccessLog(os.Getenv("QINIU_LOG_PATH"), func(accessLog interface{}) error {
+	err := cdnClient.AnalyzeCdnAccessLog(os.Getenv("QINIU_LOG_PATH"), func(accessLog any) error {
 		return nil
 	})
 	if err != nil {
