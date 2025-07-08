@@ -8,6 +8,7 @@ require (
 	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.7
 	github.com/alibabacloud-go/dcdn-20180115/v3 v3.5.0
 	github.com/alibabacloud-go/docmind-api-20220711 v1.4.5
+	github.com/alibabacloud-go/ecs-20140526/v7 v7.0.12
 	github.com/alibabacloud-go/green-20220302/v2 v2.21.2
 	github.com/alibabacloud-go/imageseg-20191230/v3 v3.0.1
 	github.com/alibabacloud-go/slb-20140515/v4 v4.0.10
@@ -28,14 +29,14 @@ require (
 	github.com/sashabaranov/go-openai v1.40.3
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.10.0
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1199
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/faceid v1.0.1184
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1196
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.1166
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1202
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/faceid v1.0.1200
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1200
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.1200
 	github.com/trumanwong/cryptogo v1.0.6
 	github.com/volcengine/ve-tos-golang-sdk/v2 v2.7.18
 	github.com/volcengine/volc-sdk-golang v1.0.214
-	github.com/wechatpay-apiv3/wechatpay-go v0.2.20
+	github.com/wechatpay-apiv3/wechatpay-go v0.2.21
 )
 
 require (
@@ -54,7 +55,7 @@ require (
 	github.com/aliyun/credentials-go v1.4.6 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bytedance/sonic v1.13.3 // indirect
-	github.com/bytedance/sonic/loader v0.2.4 // indirect
+	github.com/bytedance/sonic/loader v0.3.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/clbanning/mxj/v2 v2.7.0 // indirect
