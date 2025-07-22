@@ -55,7 +55,6 @@ func (c CdnAuth) AuthB(rawUrl string, expireTime int64) (string, error) {
 	// 转换时间戳为"YYYYmmDDHHMM"格式
 	nexp := time.Unix(expireTime, 0).Format("200601021504")
 	sstring := c.Key + nexp + encodePath
-	fmt.Println(sstring)
 	hashvalue := cryptogo.MD5([]byte(sstring))
 	// 拼接最终URL
 	finalUrl := fmt.Sprintf("%s://%s/%s/%s%s%s", scheme, host, nexp, hashvalue, encodePath, args)
