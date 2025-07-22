@@ -2,9 +2,11 @@ package aliyun
 
 import (
 	"fmt"
-	"github.com/trumanwong/cryptogo"
 	"net/url"
 	"strings"
+	"time"
+
+	"github.com/trumanwong/cryptogo"
 )
 
 type CdnAuth struct {
@@ -29,4 +31,32 @@ func (c CdnAuth) AuthA(rawUrl string, expireTime int64, rand string) (string, er
 	authKey := fmt.Sprintf("%s-%d-%s-0-%s", encodePath, expireTime, rand, c.Key)
 	mdHash := cryptogo.MD5([]byte(authKey))
 	return urlPath.Scheme + "://" + urlPath.Host + encodePath + "?auth_key=" + fmt.Sprintf("%d-%s-0-%s", expireTime, rand, mdHash), nil
+}
+
+func (c CdnAuth) AuthB(rawUrl string, expireTime int64) (string, error) {
+	urlPath, err := url.Parse(rawUrl)
+	if err != nil {
+		return "", err
+	}
+	scheme := urlPath.Scheme
+	if scheme == "" {
+		scheme = "http"
+	}
+	host := urlPath.Host
+	path := urlPath.Path
+	if path == "" {
+		path = "/"
+	}
+	args := ""
+	if urlPath.RawQuery != "" {
+		args = "?" + urlPath.RawQuery
+	}
+	// 转换时间戳为"YYYYmmDDHHMM"格式
+	nexp := time.Unix(expireTime, 0).Format("200601021504")
+	sstring := c.Key + nexp + path
+	fmt.Println(sstring)
+	hashvalue := cryptogo.MD5([]byte(sstring))
+	// 拼接最终URL
+	finalUrl := fmt.Sprintf("%s://%s/%s/%s%s%s", scheme, host, nexp, hashvalue, path, args)
+	return finalUrl, nil
 }
