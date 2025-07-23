@@ -12,14 +12,15 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"github.com/aliyun/aliyun-oss-go-sdk/oss"
-	"github.com/trumanwong/go-tools/encoding"
 	"hash"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/aliyun/aliyun-oss-go-sdk/oss"
+	"github.com/trumanwong/go-tools/encoding"
 )
 
 // AliOss is a struct that holds the client and bucket information for interacting with Aliyun OSS.
@@ -396,4 +397,12 @@ func (a AliOss) Bucket(bucket string) (*oss.Bucket, error) {
 
 func (a AliOss) CopyObjectTo(destBucketName, destObjectKey, srcObjectKey string, options ...oss.Option) (oss.CopyObjectResult, error) {
 	return a.bucket.CopyObjectTo(destBucketName, destObjectKey, srcObjectKey, options...)
+}
+
+func (a AliOss) MoveObject(srcObjectKey, destObjectKey string, options ...oss.Option) error {
+	_, err := a.bucket.CopyObject(srcObjectKey, destObjectKey, options...)
+	if err != nil {
+		return err
+	}
+	return a.bucket.DeleteObject(srcObjectKey)
 }

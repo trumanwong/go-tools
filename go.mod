@@ -5,11 +5,11 @@ go 1.24
 require (
 	github.com/alibabacloud-go/alidns-20150109/v4 v4.5.10
 	github.com/alibabacloud-go/cdn-20180510/v4 v4.3.0
-	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.7
+	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.8
 	github.com/alibabacloud-go/dcdn-20180115/v3 v3.5.0
 	github.com/alibabacloud-go/docmind-api-20220711 v1.4.5
-	github.com/alibabacloud-go/ecs-20140526/v7 v7.0.12
-	github.com/alibabacloud-go/green-20220302/v2 v2.21.2
+	github.com/alibabacloud-go/ecs-20140526/v7 v7.0.16
+	github.com/alibabacloud-go/green-20220302/v2 v2.22.0
 	github.com/alibabacloud-go/imageseg-20191230/v3 v3.0.1
 	github.com/alibabacloud-go/slb-20140515/v4 v4.0.10
 	github.com/alibabacloud-go/sts-20150401/v2 v2.0.4
@@ -26,16 +26,16 @@ require (
 	github.com/qiniu/go-sdk/v7 v7.25.4
 	github.com/rabbitmq/amqp091-go v1.10.0
 	github.com/redis/go-redis/v9 v9.11.0
-	github.com/sashabaranov/go-openai v1.40.3
+	github.com/sashabaranov/go-openai v1.40.5
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.10.0
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1202
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/faceid v1.0.1200
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1200
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.1200
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1212
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/faceid v1.0.1206
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1211
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.1203
 	github.com/trumanwong/cryptogo v1.0.6
 	github.com/volcengine/ve-tos-golang-sdk/v2 v2.7.18
-	github.com/volcengine/volc-sdk-golang v1.0.214
+	github.com/volcengine/volc-sdk-golang v1.0.216
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.21
 )
 
@@ -78,7 +78,7 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/cpuid/v2 v2.2.11 // indirect
+	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -93,12 +93,12 @@ require (
 	github.com/tjfoc/gmsm v1.4.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.3.0 // indirect
-	golang.org/x/arch v0.18.0 // indirect
-	golang.org/x/crypto v0.39.0 // indirect
-	golang.org/x/net v0.41.0 // indirect
-	golang.org/x/sync v0.15.0 // indirect
-	golang.org/x/sys v0.33.0 // indirect
-	golang.org/x/text v0.26.0 // indirect
+	golang.org/x/arch v0.19.0 // indirect
+	golang.org/x/crypto v0.40.0 // indirect
+	golang.org/x/net v0.42.0 // indirect
+	golang.org/x/sync v0.16.0 // indirect
+	golang.org/x/sys v0.34.0 // indirect
+	golang.org/x/text v0.27.0 // indirect
 	golang.org/x/time v0.12.0 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
