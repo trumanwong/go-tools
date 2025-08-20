@@ -260,3 +260,28 @@ func TestCdnClient_ListCertInfo(t *testing.T) {
 		t.Log(v.CertId, v.ExpireTime)
 	}
 }
+
+func TestCdnClient_DescribeDistrictData(t *testing.T) {
+	cdnClient := NewCdnClient(os.Getenv("VOLC_ACCESS_KEY"), os.Getenv("VOLC_SECRET_KEY"))
+	yesterday := time.Now().AddDate(0, 0, -1)
+	startAt := time.Date(yesterday.Year(), yesterday.Month(), yesterday.Day(), 0, 0, 0, 0, time.Local).UTC()
+	endAt := time.Date(yesterday.Year(), yesterday.Month(), yesterday.Day(), 23, 59, 59, 0, time.Local).UTC()
+	resp, err := cdnClient.DescribeDistrictData(&cdn.DescribeDistrictDataRequest{
+		Metric:    "traffic",
+		Domain:    trans.String(os.Getenv("VOLC_DOMAIN")),
+		StartTime: startAt.Unix(),
+		EndTime:   endAt.Unix(),
+		Interval:  trans.String("hour"),
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	total := 0
+	for _, item := range resp.Result.MetricDataList {
+		for _, v := range item.Values {
+			total += int(v.Value)
+		}
+	}
+	fmt.Println("Total traffic:", total)
+}
