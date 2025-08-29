@@ -11,10 +11,11 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"github.com/volcengine/ve-tos-golang-sdk/v2/tos"
 	"io"
 	"net/http"
 	"sort"
+
+	"github.com/volcengine/ve-tos-golang-sdk/v2/tos"
 )
 
 type OssClient struct {
@@ -41,6 +42,11 @@ func (c OssClient) HeadObject(ctx context.Context, req *tos.HeadObjectV2Input) (
 // DeleteObject 删除对象
 func (c OssClient) DeleteObject(ctx context.Context, req *tos.DeleteObjectV2Input) (*tos.DeleteObjectV2Output, error) {
 	return c.client.DeleteObjectV2(ctx, req)
+}
+
+// DeleteObject 批量删除对象
+func (c OssClient) DeleteMultiObjects(ctx context.Context, req *tos.DeleteMultiObjectsInput) (*tos.DeleteMultiObjectsOutput, error) {
+	return c.client.DeleteMultiObjects(ctx, req)
 }
 
 // RenameObject 重命名对象
