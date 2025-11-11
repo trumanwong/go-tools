@@ -141,6 +141,8 @@ type CdnAccessLog struct {
 	UserAgent string
 	// CDN 响应中 Content-Type 头部的值。如果响应不包含该头部，该字段的值是 -。
 	ContentType string
+	// 日志原文
+	RawLog string
 }
 
 func (c CdnClient) AnalyzeCdnAccessLog(logPath string, handler func(any) error) error {
@@ -201,6 +203,7 @@ func (c CdnClient) AnalyzeCdnAccessLog(logPath string, handler func(any) error) 
 						Referer:      info[12],
 						UserAgent:    info[13],
 						ContentType:  info[14],
+						RawLog:       str,
 					}
 					err = handler(&accessLog)
 					if err != nil {
