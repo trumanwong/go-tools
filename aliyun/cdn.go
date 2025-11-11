@@ -87,6 +87,8 @@ type CdnAccessLog struct {
 	ContentType string
 	// 建连IP地址
 	IP string
+	// 日志原文
+	RawLog string
 }
 
 func (c CdnClient) AnalyzeCdnAccessLog(logPath string, handler func(any) error) error {
@@ -153,6 +155,7 @@ func (c CdnClient) AnalyzeCdnAccessLog(logPath string, handler func(any) error) 
 						UserAgent:   info[12],
 						ContentType: info[13],
 						IP:          info[14],
+						RawLog:      str,
 					}
 					err = handler(&accessLog)
 					if err != nil {
