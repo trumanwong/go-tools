@@ -331,3 +331,7 @@ func (c CdnClient) ListCdnCertInfo(req *cdn.ListCdnCertInfoRequest) (responseBod
 func (c CdnClient) ListCertInfo(req *cdn.ListCertInfoRequest) (responseBody *cdn.ListCertInfoResponse, err error) {
 	return c.instance.ListCertInfo(req)
 }
+
+func (c CdnClient) DeleteCdnCertificate(req *cdn.DeleteCdnCertificateRequest) (responseBody *cdn.DeleteCdnCertificateResponse, err error) {
+	return c.instance.DeleteCdnCertificate(req)
+}

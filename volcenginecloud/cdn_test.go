@@ -285,3 +285,45 @@ func TestCdnClient_DescribeDistrictData(t *testing.T) {
 	}
 	fmt.Println("Total traffic:", total)
 }
+
+func TestCdnClient_DeleteCdnCertificate(t *testing.T) {
+	cdnClient := NewCdnClient(os.Getenv("VOLC_ACCESS_KEY"), os.Getenv("VOLC_SECRET_KEY"))
+	for {
+		resp, err := cdnClient.ListCertInfo(&cdn.ListCertInfoRequest{
+			// volc_cert_center：表示火山引擎证书中心。
+			// cdn_cert_hosting：表示火山引擎内容分发网络（CDN）。
+			Source:   "cdn_cert_hosting",
+			Status:   trans.String("expired"),
+			PageSize: trans.Int64(100),
+		})
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		if resp.Result.Total == 0 {
+			break
+		}
+		for _, v := range resp.Result.CertInfo {
+			_, err = cdnClient.DeleteCdnCertificate(&cdn.DeleteCdnCertificateRequest{
+				CertId: v.CertId,
+			})
+			if err != nil {
+				t.Error(err)
+				return
+			}
+		}
+	}
+}
+
+func TestCdnClient_SubmitRefreshTask(t *testing.T) {
+	cdnClient := NewCdnClient(os.Getenv("VOLC_ACCESS_KEY"), os.Getenv("VOLC_SECRET_KEY"))
+	resp, err := cdnClient.SubmitRefreshTask(&cdn.SubmitRefreshTaskRequest{
+		Type: trans.String("dir"),
+		Urls: os.Getenv("VOLC_URL"),
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(resp.ResponseMetadata.RequestId)
+}
