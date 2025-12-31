@@ -3,8 +3,9 @@ package cache
 import (
 	"context"
 	"errors"
-	"github.com/redis/go-redis/v9"
 	"time"
+
+	"github.com/redis/go-redis/v9"
 )
 
 // Cache is a struct that represents a Redis cache.
@@ -173,6 +174,8 @@ func (c *Cache) RPop(ctx context.Context, request *RPopRequest) (string, error) 
 type LRangeRequest struct {
 	Key    string
 	Value  string
+	Start  *int64
+	End    *int64
 	Prefix *string
 }
 
@@ -181,7 +184,15 @@ type LRangeRequest struct {
 // and returns the values as a slice of strings and an error.
 // The method uses the Redis LRANGE command to get the values.
 func (c *Cache) LRange(ctx context.Context, request *LRangeRequest) ([]string, error) {
-	return c.client.LRange(ctx, c.prefixKey(request.Key, request.Prefix), 0, -1).Result()
+	var start int64 = 0
+	var end int64 = -1
+	if request.Start != nil {
+		start = *request.Start
+	}
+	if request.End != nil {
+		end = *request.End
+	}
+	return c.client.LRange(ctx, c.prefixKey(request.Key, request.Prefix), start, end).Result()
 }
 
 // GetListIndexRequest is a struct that represents a request to get the index of a value in a list in the cache.
