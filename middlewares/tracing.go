@@ -3,18 +3,17 @@ package middlewares
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/trumanwong/go-tools/log"
 )
 
 type tracing struct {
-	Logger *log.Logger
-	Key    *string
+	Key *string
 }
 
-func NewTracing(key *string, logger *log.Logger) Middleware {
+// NewTracing 创建一个追踪中间件，将 traceId 存储到 gin.Context 中
+// 使用时可以通过 ctx.GetString(key) 获取 traceId
+func NewTracing(key *string) Middleware {
 	return &tracing{
-		Logger: logger,
-		Key:    key,
+		Key: key,
 	}
 }
 
@@ -31,7 +30,8 @@ func (p *tracing) Handle() gin.HandlerFunc {
 		if traceId == "" {
 			traceId = uuid.New().String()
 		}
-		p.Logger.WithTraceId(ctx, traceId)
+		// 将 traceId 存储到 gin.Context 中，而不是修改全局 Logger
+		ctx.Set(p.getKey(), traceId)
 		ctx.Header(p.getKey(), traceId)
 		ctx.Next()
 	}

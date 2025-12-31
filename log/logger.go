@@ -10,13 +10,12 @@ import (
 
 // Logger is a struct that encapsulates the logging functionality.
 // It uses the logrus library for logging and allows for context-based logging.
-// The context is used to store and retrieve values across API boundaries and between processes.
 // The traceKey is a string that is used as a key to retrieve the trace ID from the context.
 // The logger is an instance of the logrus.Logger struct, which is used to perform the actual logging.
+// This struct is designed to be safely used concurrently across multiple goroutines.
 type Logger struct {
-	ctx      context.Context // The context in which the logger operates.
-	traceKey string          // The key used to retrieve the trace ID from the context.
-	logger   *logrus.Logger  // The underlying logrus logger.
+	traceKey string         // The key used to retrieve the trace ID from the context.
+	logger   *logrus.Logger // The underlying logrus logger.
 }
 
 type Options struct {
@@ -71,31 +70,46 @@ func NewLogger(options *Options) *Logger {
 	}
 
 	return &Logger{
-		ctx:      context.Background(),
 		traceKey: key,
 		logger:   logger,
 	}
 }
 
-// withTraceKey is a method on the Logger struct.
-// It checks if the traceKey of the logger is not an empty string.
-// If the traceKey is not empty, it retrieves the traceId from the logger's context using the traceKey.
-// If the traceId is successfully retrieved, it returns a new logrus Entry with the traceKey and traceId as a field.
-// If the traceKey is empty or the traceId could not be retrieved, it returns a new logrus Entry with the logger's context.
+// withTraceKey is an internal method that returns a base logrus Entry.
+// Use WithContext or WithTraceId for trace-aware logging.
 func (logger *Logger) withTraceKey() *logrus.Entry {
+	return logger.logger.WithContext(context.Background())
+}
+
+// WithContext returns a logrus Entry with the traceId extracted from the provided context.
+// This is the recommended way to log with traceId in concurrent environments.
+// The traceId is retrieved from the context using the logger's traceKey.
+//
+// Example usage with gin:
+//
+//	func YourHandler(ctx *gin.Context) {
+//	    logger.WithContext(ctx).Info("处理请求")
+//	}
+func (logger *Logger) WithContext(ctx context.Context) *logrus.Entry {
 	if logger.traceKey != "" {
-		if traceId, ok := logger.ctx.Value(logger.traceKey).(string); ok {
+		if traceId, ok := ctx.Value(logger.traceKey).(string); ok {
 			return logger.logger.WithField(logger.traceKey, traceId)
 		}
 	}
-	return logger.logger.WithContext(logger.ctx)
+	return logger.logger.WithContext(ctx)
 }
 
-// WithTraceId is a method on the Logger struct.
-// It takes a context and a traceId as arguments.
-// The method sets the logger's context to a new context with the logger's traceKey and the provided traceId as a value.
-func (logger *Logger) WithTraceId(ctx context.Context, traceId string) {
-	logger.ctx = context.WithValue(ctx, logger.traceKey, traceId)
+// WithTraceId returns a logrus Entry with the provided traceId.
+// This is useful when you have the traceId directly available.
+//
+// Example:
+//
+//	logger.WithTraceId("abc-123").Info("处理请求")
+func (logger *Logger) WithTraceId(traceId string) *logrus.Entry {
+	if logger.traceKey != "" && traceId != "" {
+		return logger.logger.WithField(logger.traceKey, traceId)
+	}
+	return logger.logger.WithContext(context.Background())
 }
 
 // WithField is a method on the Logger struct.
