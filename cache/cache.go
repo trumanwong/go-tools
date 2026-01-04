@@ -511,3 +511,32 @@ func (c *Cache) Remember(ctx context.Context, request *RememberRequest) ([]byte,
 	}
 	return []byte(value), nil
 }
+
+type PublishRequest struct {
+	Channel string
+	Message interface{}
+	Prefix  *string
+}
+
+func (c *Cache) Publish(ctx context.Context, request *PublishRequest) (int64, error) {
+	return c.client.Publish(ctx, request.Channel, request.Message).Result()
+}
+
+type SubscribeRequest struct {
+	Channels string
+	Prefix   *string
+}
+
+func (c *Cache) Subscribe(ctx context.Context, request *SubscribeRequest) *redis.PubSub {
+	return c.client.Subscribe(ctx, request.Channels)
+}
+
+type RPushRequest struct {
+	Key    string
+	Value  []any
+	Prefix *string
+}
+
+func (c *Cache) RPush(ctx context.Context, request *RPushRequest) (int64, error) {
+	return c.client.RPush(ctx, c.prefixKey(request.Key, request.Prefix), request.Value...).Result()
+}
