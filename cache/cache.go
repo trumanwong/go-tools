@@ -541,6 +541,6 @@ func (c *Cache) RPush(ctx context.Context, request *RPushRequest) (int64, error)
 	return c.client.RPush(ctx, c.prefixKey(request.Key, request.Prefix), request.Value...).Result()
 }
 
-func (c *Cache) Ping(ctx context.Context, request *RPushRequest) *redis.StatusCmd {
+func (c *Cache) Ping(ctx context.Context) *redis.StatusCmd {
 	return c.client.Ping(ctx)
 }
