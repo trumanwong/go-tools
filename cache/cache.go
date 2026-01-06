@@ -540,3 +540,7 @@ type RPushRequest struct {
 func (c *Cache) RPush(ctx context.Context, request *RPushRequest) (int64, error) {
 	return c.client.RPush(ctx, c.prefixKey(request.Key, request.Prefix), request.Value...).Result()
 }
+
+func (c *Cache) Ping(ctx context.Context, request *RPushRequest) *redis.StatusCmd {
+	return c.client.Ping(ctx)
+}
