@@ -107,8 +107,9 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 			}
 			parameters["w"] = val
 		case "niji":
-			if val != "4" && val != "5" && val != "6" {
-				return nil, errors.New("niji参数值范围必须是4、5或6")
+			// 4,5,6,7
+			if val != "4" && val != "5" && val != "6" && val != "7" {
+				return nil, errors.New("niji参数值范围必须是4、5、6、7")
 			}
 			//清理模型V
 			if _, ok := parameters["v"]; ok {
@@ -118,7 +119,7 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 		case "version", "v":
 			temp, err := strconv.ParseFloat(val, 10)
 			tempVal := int(temp * 10)
-			// "1", "2", "3", "4", "5.0", "5.1", "5.2", "6", "6.1"
+			// "1", "2", "3", "4", "5", "5.1", "5.2", "6", "6.1", "7"
 			if err != nil || (temp != 40 && temp != 50 && tempVal != 51 && tempVal != 52 && tempVal != 60 && tempVal != 61 && tempVal != 70) {
 				return nil, fmt.Errorf("%s参数值必须是4, 5, 5.1, 5.2, 6, 6.1, 7", param)
 			}
