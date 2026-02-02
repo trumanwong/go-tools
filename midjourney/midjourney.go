@@ -178,7 +178,7 @@ func GetPromptAndParameters(req *GetPromptAndParametersRequest) (*GetPromptAndPa
 			parameters["p"] = val
 		case "no", "style":
 			parameters[param] = val
-		case "tile":
+		case "tile", "raw":
 			parameters[param] = ""
 		case "exp":
 			temp, err := strconv.ParseInt(val, 10, 64)
