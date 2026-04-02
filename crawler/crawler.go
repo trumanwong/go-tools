@@ -3,6 +3,7 @@ package crawler
 import (
 	"io"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -22,6 +23,8 @@ type Request struct {
 	// 请求超时时间
 	Timeout   time.Duration
 	BasicAuth *BasicAuth
+	// 表单数据
+	PostForm url.Values
 }
 
 type BasicAuth struct {
@@ -50,6 +53,9 @@ func Send(request *Request) (*http.Response, error) {
 	if request.Host != nil {
 		req.Host = *request.Host
 		req.Header.Set("Host", *request.Host)
+	}
+	if request.PostForm != nil {
+		req.PostForm = request.PostForm
 	}
 
 	return client.Do(req)
