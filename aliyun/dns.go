@@ -27,3 +27,8 @@ func (d DnsClient) DescribeDomains(describeDomainsRequest *alidns20150109.Descri
 func (d DnsClient) DeleteDomainRecord(deleteDomainRecordRequest *alidns20150109.DeleteDomainRecordRequest, runtime *util.RuntimeOptions) (*alidns20150109.DeleteDomainRecordResponse, error) {
 	return d.client.DeleteDomainRecordWithOptions(deleteDomainRecordRequest, runtime)
 }
+
+// DescribeDomainRecords 获取域名解析记录列表
+func (d DnsClient) DescribeDomainRecords(describeDomainRecordsRequest *alidns20150109.DescribeDomainRecordsRequest, runtime *util.RuntimeOptions) (*alidns20150109.DescribeDomainRecordsResponse, error) {
+	return d.client.DescribeDomainRecordsWithOptions(describeDomainRecordsRequest, runtime)
+}
