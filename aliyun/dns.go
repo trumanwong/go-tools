@@ -22,3 +22,8 @@ func NewDnsClient(config *openapi.Config) (*DnsClient, error) {
 func (d DnsClient) DescribeDomains(describeDomainsRequest *alidns20150109.DescribeDomainsRequest, runtime *util.RuntimeOptions) (*alidns20150109.DescribeDomainsResponse, error) {
 	return d.client.DescribeDomainsWithOptions(describeDomainsRequest, runtime)
 }
+
+// DeleteDomainRecord 删除解析记录
+func (d DnsClient) DeleteDomainRecord(deleteDomainRecordRequest *alidns20150109.DeleteDomainRecordRequest, runtime *util.RuntimeOptions) (*alidns20150109.DeleteDomainRecordResponse, error) {
+	return d.client.DeleteDomainRecordWithOptions(deleteDomainRecordRequest, runtime)
+}
